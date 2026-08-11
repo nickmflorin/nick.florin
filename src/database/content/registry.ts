@@ -5,8 +5,11 @@ import {
   type ParsedRecord,
   type SluggedFieldCodecRecord,
 } from './bindings/content-binding';
+import { CourseBinding } from './bindings/course';
 import { DegreeBinding } from './bindings/degree';
 import { ProfileBinding } from './bindings/profile';
+import { ProjectBinding } from './bindings/project';
+import { RepositoryBinding } from './bindings/repository';
 import { ResumeSheetBinding } from './bindings/resume-sheet';
 import { RoleBinding } from './bindings/role';
 import { SchoolBinding } from './bindings/school';
@@ -26,6 +29,9 @@ export const ContentBindings: readonly AnyContentBinding[] = [
   new RoleBinding(),
   new DegreeBinding(),
   new ResumeSheetBinding(),
+  new RepositoryBinding(),
+  new ProjectBinding(),
+  new CourseBinding(),
 ];
 
 export const findBinding = (key: string): AnyContentBinding => {

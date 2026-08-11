@@ -1,6 +1,3 @@
-# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
-# Until the fixture <-> database sync tooling lands, those modules are the operative source:
-# edit them and regenerate rather than editing this file directly.
 sheets:
   - competencyGroups:
       - competencies:
@@ -164,7 +161,6 @@ sheets:
       - corsha
       - greenbudget
       - nirveda
-      - saracen
     slug: page-2
   - competencyGroups:
       - competencies:
@@ -190,6 +186,7 @@ sheets:
       - jhu-financial
       - rpi
     roles:
+      - saracen
       - atlantic
       - rockcreek
       - pianalytics

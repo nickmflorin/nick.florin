@@ -2,18 +2,19 @@
  * Normalization: authoring input in, content model out.
  *
  * The model types in `src/documents/resume/data/types.ts` are shaped as Prisma models, which means
- * a non-null `slug`, `order`, `isVisible` and `excludedChannels` on every node: correct for a
- * database and miserable to write by hand. The data files are therefore authored against the
- * `*Input` types, and this module is the single boundary that turns them into `ContentOwner`s. It
- * generates slugs, stamps `order` from array position, applies the defaults, and collapses the
- * whitespace of copy authored as indented template literals.
+ * a non-null `slug`, `order`, `isVisible` and `channels` on every node: correct for a database and
+ * miserable to write by hand. The data files are therefore authored against the `*Input` types,
+ * and this module is the single boundary that turns them into `ContentOwner`s. It generates slugs,
+ * stamps `order` from array position, applies the defaults, resolves each node's channel allowlist
+ * (an omitted `channels` inherits the parent's; an authored one may only narrow it), and collapses
+ * the whitespace of copy authored as indented template literals.
  *
  * It also enforces the invariants Postgres cannot (see the `resume-gen` repository's
  * `docs/content-model.md`), loudly. A data file that violates one fails the build rather than
  * rendering something subtly wrong.
  *
- * This module WRITES `isVisible` and `excludedChannels`; it never reads them to decide anything.
- * That decision lives in exactly one place, `resolveSyndication` in `./syndication.ts`.
+ * This module WRITES `isVisible` and `channels`; it never reads them to decide anything. That
+ * decision lives in exactly one place, `resolveSyndication` in `./syndication.ts`.
  */
 import {
   type ContentInput,
@@ -68,21 +69,28 @@ function assertSingleParagraph(content: string, where: string): void {
 }
 
 /**
- * Invariant 5: a node should not repeat an exclusion its owner already declares. Harmless — the
- * cascade AND-s anyway — but it makes the data lie about intent, so it fails here.
+ * Invariant 5: a node may only NARROW its parent's channel grants. A channel listed here that the
+ * parent does not carry could never render — the cascade masks it anyway — so the useless grant
+ * makes the data lie about intent, and it fails here.
+ *
+ * Returns the node's effective allowlist: the authored value when present, otherwise the parent's.
  */
-function assertNoRedundantExclusions(
-  own: readonly SyndicationChannel[],
+function resolveChannels(
+  own: readonly SyndicationChannel[] | undefined,
   inherited: readonly SyndicationChannel[],
   where: string,
-): void {
-  const repeated = own.filter(channel => inherited.includes(channel));
-  if (repeated.length > 0) {
+): readonly SyndicationChannel[] {
+  if (own === undefined) {
+    return inherited;
+  }
+  const useless = own.filter(channel => !inherited.includes(channel));
+  if (useless.length > 0) {
     throw new Error(
-      `${where}: excludes ${repeated.join(', ')}, which an ancestor already excludes. The ` +
-        'cascade handles this; listing it again is noise.',
+      `${where}: grants ${useless.join(', ')}, which the parent does not carry. A node can only ` +
+        "narrow its parent's channels; a grant the cascade would mask is noise.",
     );
   }
+  return own;
 }
 
 function normalizeNested(
@@ -100,13 +108,12 @@ function normalizeNested(
   if (content !== null) {
     assertSingleParagraph(content, where);
   }
-  const excludedChannels = input.excludedChannels ?? [];
-  assertNoRedundantExclusions(excludedChannels, inherited, where);
+  const channels = resolveChannels(input.channels, inherited, where);
 
   return {
+    channels,
     competencies: input.competencies ?? [],
     content,
-    excludedChannels,
     isVisible: input.isVisible ?? true,
     order,
     slug,
@@ -142,19 +149,17 @@ function normalizeNode(
   if (content !== null) {
     assertSingleParagraph(content, path);
   }
-  const excludedChannels = input.excludedChannels ?? [];
-  assertNoRedundantExclusions(excludedChannels, inherited, path);
+  const channels = resolveChannels(input.channels, inherited, path);
 
-  const childInherited = [...inherited, ...excludedChannels];
   const childSlugs = new Set<string>();
 
   return {
+    channels,
     children: (input.children ?? []).map((child, index) =>
-      normalizeNested(child, index, path, childInherited, childSlugs),
+      normalizeNested(child, index, path, channels, childSlugs),
     ),
     competencies: input.competencies ?? [],
     content,
-    excludedChannels,
     isVisible: input.isVisible ?? true,
     kind,
     order,
@@ -178,20 +183,19 @@ export function normalizeOwner(
   ownerType: ContentOwnerType,
   input: ContentInput,
 ): ContentOwner {
-  const excludedChannels = input.excludedChannels ?? [];
   /* Summaries and content share one `nodes` collection because they are one table, and one slug
      namespace because they share the `@@unique([slug, ownerId, ownerType])` key. */
   const taken = new Set<string>();
   const summary = (input.summary ?? []).map((node, index) =>
-    normalizeNode(node, index, NodeKind.Summary, slug, ownerType, excludedChannels, taken),
+    normalizeNode(node, index, NodeKind.Summary, slug, ownerType, input.channels, taken),
   );
   const content = (input.content ?? []).map((node, index) =>
-    normalizeNode(node, index, NodeKind.Content, slug, ownerType, excludedChannels, taken),
+    normalizeNode(node, index, NodeKind.Content, slug, ownerType, input.channels, taken),
   );
 
   return {
+    channels: input.channels,
     competencies: input.competencies ?? [],
-    excludedChannels,
     isVisible: input.isVisible ?? true,
     nodes: [...summary, ...content],
     ownerType,

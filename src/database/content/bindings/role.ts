@@ -23,6 +23,7 @@ import {
   contentTreeReferences,
   createContentNodes,
   readContentTrees,
+  stampContentTreeChannels,
   stampContentTreeSlugs,
   validateContentTree,
 } from './content-tree';
@@ -47,7 +48,7 @@ export type CanonicalRole = ParsedRecord<typeof RoleFields>;
 /**
  * The `Role` aggregate: one fixture record, but a `Role` row plus its polymorphic content tree in
  * the database. The tree's owner-level syndication fields (`content.isVisible`,
- * `content.excludedChannels`) and chip-row competencies map to columns and relations of the
+ * `content.channels`) and chip-row competencies map to columns and relations of the
  * `Role` row itself, not to rows of their own.
  */
 class RolePrismaCodec extends PrismaCodec<CanonicalRole> {
@@ -59,12 +60,12 @@ class RolePrismaCodec extends PrismaCodec<CanonicalRole> {
     const created = await tx.role.create({
       data: {
         ...omitBookkeeping(record, ['company', 'content']),
+        channels: record.content.channels,
         company: { connect: { slug: record.company } },
         competencies: {
           connect: record.content.competencies.map(slug => ({ slug })),
         },
         createdBy: { connect: { id: context.userId } },
-        excludedChannels: record.content.excludedChannels,
         isVisible: record.content.isVisible,
         updatedBy: { connect: { id: context.userId } },
       },
@@ -87,24 +88,15 @@ class RolePrismaCodec extends PrismaCodec<CanonicalRole> {
             'the fixture reference.',
         );
       }
-      const {
-        company,
-        competencies,
-        createdAt,
-        excludedChannels,
-        id,
-        isVisible,
-        updatedAt,
-        ...role
-      } = row;
+      const { channels, company, competencies, createdAt, id, isVisible, updatedAt, ...role } = row;
       const tree = trees.get(id) ?? { content: [], summary: [] };
       return {
         ...omitBookkeeping(role),
         company: company.slug ?? slugify(company.name),
         content: {
+          channels,
           competencies: competencies.map(competency => competency.slug),
           content: tree.content,
-          excludedChannels,
           isVisible,
           meta: null,
           summary: tree.summary,
@@ -131,7 +123,7 @@ export class RoleBinding extends ContentBinding<typeof RoleFields> {
   protected override finalize(
     record: CanonicalRecord<typeof RoleFields>,
   ): CanonicalRecord<typeof RoleFields> {
-    return { ...record, content: stampContentTreeSlugs(record.content) };
+    return { ...record, content: stampContentTreeChannels(stampContentTreeSlugs(record.content)) };
   }
 
   protected override validate(record: CanonicalRole, issues: IssueCollector): void {

@@ -1,299 +1,1157 @@
-# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
-# Until the fixture <-> database sync tooling lands, those modules are the operative source:
-# edit them and regenerate rather than editing this file directly.
 competencies:
-  - label: Accessibility
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Accessibility
     slug: accessibility
-  - label: Accessibility (axe-core)
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Accessibility (axe-core)
     slug: accessibility-axe-core
-  - label: Accessibility (WCAG)
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Accessibility (WCAG)
     slug: accessibility-wcag
-  - label: Affected-task Pipelines
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Affected-task Pipelines
     slug: affected-task-pipelines
-  - label: Agent Guardrails (ESLint, CI)
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Agent Guardrails (ESLint, CI)
     slug: agent-guardrails-eslint-ci
-  - label: Agentic Workflows
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Agentic Workflows
     slug: agentic-workflows
-  - label: AI Code Review Automation
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: AI Code Review Automation
     slug: ai-code-review-automation
-  - label: Apollo Server
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Amplitude
+    slug: amplitude
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: Third-party React component library developed by Ant Design.
+    isPrioritized: true
+    label: antd (Ant Design)
+    slug: antd-ant-design
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Apollo Server
     slug: apollo-server
-  - label: Auth0
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Application Security
+    slug: application-security
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: asyncio
+    slug: asyncio
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Auth0
     slug: auth0
-  - label: AWS
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Authentication & Authorization
+    slug: authentication-authorization
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: AWS
     proficiency: ADVANCED
     slug: aws
-  - label: AWS EC2
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: AWS Cloudwatch
+    slug: aws-cloudwatch
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: AWS DynamoDB
+    slug: aws-dynamodb
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: AWS EC2
     slug: aws-ec2
-  - label: AWS Elastic Beanstalk
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: AWS Elastic Container Service
+    isPrioritized: true
+    label: AWS ECS
+    slug: aws-ecs
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: AWS Elastic Beanstalk
     slug: aws-elastic-beanstalk
-  - label: AWS Lambda
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: AWS ElastiCache
+    slug: aws-elasticache
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: AWS IAM
+    slug: aws-iam
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 1
+    label: AWS Lambda
+    proficiency: FAMILIAR
     slug: aws-lambda
-  - label: AWS S3
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: AWS Relational Database Service
+    isPrioritized: true
+    label: AWS RDS
+    slug: aws-rds
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: AWS S3
     slug: aws-s3
-  - label: black
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 2
+    label: Bash
+    proficiency: PROFICIENT
+    slug: bash
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: black
     slug: black
-  - label: Bundle Analysis
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: BugSnag
+    slug: bugsnag
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Bundle Analysis
     slug: bundle-analysis
-  - label: C++
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 2
+    label: C++
     proficiency: FAMILIAR
     slug: c
-  - label: Celery
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Celery
     slug: celery
-  - label: CI/CD Pipeline Design
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: CI/CD Pipeline Design
     shortLabel: CI/CD
     slug: ci-cd-pipeline-design
-  - label: CircleCI
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: CircleCI
     slug: circleci
-  - label: Claude Code
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Claude Code
     slug: claude-code
-  - label: Claude Design
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Claude Design
     slug: claude-design
-  - label: codecov
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 2
+    label: Clerk
+    proficiency: PROFICIENT
+    slug: clerk
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: codecov
     slug: codecov
-  - label: Commitlint
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Commitlint
     slug: commitlint
-  - label: Component Architecture
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description: Component development in React.
+    isHighlighted: true
+    isPrioritized: true
+    label: Component Architecture
     slug: component-architecture
-  - label: Context Engineering
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Context Engineering
     slug: context-engineering
-  - label: Credit Default Risk Modeling
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Credit Default Risk Modeling
     slug: credit-default-risk-modeling
-  - label: Cross-Functional Delivery
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Cross-Functional Delivery
     slug: cross-functional-delivery
-  - label: Cursor
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 10
+    isPrioritized: true
+    label: CSS
+    proficiency: ADVANCED
+    slug: css
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Cursor
     slug: cursor
-  - label: Custom Agents & Skills
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Custom Agents & Skills
     slug: custom-agents-skills
-  - label: Cypress
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Cypress
     slug: cypress
-  - label: d3.js
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: d3.js
     slug: d3-js
-  - label: Datadog
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Data Scraping
+    slug: data-scraping
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Data Visualization
+    slug: data-visualization
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Datadog
     slug: datadog
-  - label: Dependabot
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Dependabot
     slug: dependabot
-  - label: Design Systems
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Design Systems
     slug: design-systems
-  - label: Design / UX Partnership
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: Design / UX Partnership
     slug: design-ux-partnership
-  - label: Developer Experience
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Developer Experience
     slug: developer-experience
-  - label: Django
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 10
+    isHighlighted: true
+    isPrioritized: true
+    label: Django
+    proficiency: EXPERT
     slug: django
-  - label: Django Channels
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Django Channels
     slug: django-channels
-  - label: Django REST Framework
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 8
+    isHighlighted: true
+    isPrioritized: true
+    label: Django REST Framework
     proficiency: EXPERT
     shortLabel: Django / DRF
     slug: django-rest-framework
-  - label: Docker
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: Docker
     proficiency: ADVANCED
     slug: docker
-  - label: ElasticSearch
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: ElasticSearch
     slug: elasticsearch
-  - label: Emotion
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Emotion
     slug: emotion
-  - label: Engineering Leadership
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Engineering Leadership
     slug: engineering-leadership
-  - label: ESLint
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: ESLint
     slug: eslint
-  - label: Event-Driven Architecture
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Event-Driven Architecture
     slug: event-driven-architecture
-  - label: Express.js
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Express.js
     proficiency: PROFICIENT
     slug: express-js
-  - label: flake8
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: A real-time, no-SQL database.
+    label: Firebase
+    slug: firebase
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: flake8
     slug: flake8
-  - label: Flask
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: Flask
     proficiency: EXPERT
     slug: flask
-  - label: Full-Stack Ownership
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: Floating UI
+    slug: floating-ui
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: framer-motion
+    slug: framer-motion
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Full-Stack Ownership
     slug: full-stack-ownership
-  - label: GCP
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description: Google Cloud Platform
+    experience: 2
+    isHighlighted: true
+    isPrioritized: true
+    label: GCP
     proficiency: PROFICIENT
     slug: gcp
-  - label: GitHub Actions
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: git
+    slug: git
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: GitHub Actions
     slug: github-actions
-  - label: GitHub Copilot
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: GitHub Copilot
     slug: github-copilot
-  - label: Go
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Go
     proficiency: FAMILIAR
     slug: go
-  - label: GraphQL
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 2
+    label: GraphQL
     proficiency: ADVANCED
     slug: graphql
-  - label: GraphQL Schema Design
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: GraphQL Schema Design
     slug: graphql-schema-design
-  - label: Husky
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Handlebars
+    slug: handlebars
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: HTML
+    slug: html
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Husky
     slug: husky
-  - label: JavaScript
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 10
+    isHighlighted: true
+    isPrioritized: true
+    label: JavaScript
     proficiency: EXPERT
     slug: javascript
-  - label: Jenkins
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Jenkins
     slug: jenkins
-  - label: Jest
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: Jest
     slug: jest
-  - label: Lerna
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Jinja
+    slug: jinja
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: jQuery
+    slug: jquery
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Lerna
     slug: lerna
-  - label: lint-staged
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: lint-staged
     slug: lint-staged
-  - label: Mantine
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description: Third-party React component library.
+    isPrioritized: true
+    label: Mantine
     slug: mantine
-  - label: MCP Integrations
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 5
+    label: Matlab
+    proficiency: ADVANCED
+    slug: matlab
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: MCP Integrations
     slug: mcp-integrations
-  - label: Mesh-Style Architecture
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Mesh-Style Architecture
     slug: mesh-style-architecture
-  - label: Microfrontends
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: MeteorJS
+    slug: meteorjs
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Microfrontends
     slug: microfrontends
-  - label: Microservices
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Microservices
     slug: microservices
-  - label: MongoDB
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isPrioritized: true
+    label: MongoDB
     slug: mongodb
-  - label: Monorepo (Nx)
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Monorepo (Nx)
     shortLabel: Nx
     slug: monorepo-nx
-  - label: Monte Carlo Methods
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Monte Carlo Methods
     slug: monte-carlo-methods
-  - label: MUI (Material UI)
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description: Third-party React component library.
+    isPrioritized: true
+    label: MUI (Material UI)
     slug: mui-material-ui
-  - label: mypy
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: mypy
     slug: mypy
-  - label: mySQL
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: mySQL
     slug: mysql
-  - label: Next.js
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 5
+    isHighlighted: true
+    isPrioritized: true
+    label: Next.js
     proficiency: EXPERT
     slug: next-js
-  - label: Node.js
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 7
+    isHighlighted: true
+    isPrioritized: true
+    label: Node.js
     proficiency: ADVANCED
     slug: node-js
-  - label: NoSQL Databases
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: NoSQL Databases
     proficiency: FAMILIAR
     slug: nosql-databases
-  - label: Numerical Computation
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: npm
+    slug: npm
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Numerical Computation
     slug: numerical-computation
-  - label: Observability
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: numpy
+    slug: numpy
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: nvm
+    slug: nvm
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: Observability
     slug: observability
-  - label: pandas
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Optimization Methods
+    slug: optimization-methods
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Package Development
+    slug: package-development
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: pandas
     slug: pandas
-  - label: Performance Engineering
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Performance Engineering
     slug: performance-engineering
-  - label: Playwright
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: Pino Logging Package
+    label: pino
+    slug: pino
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: pip
+    slug: pip
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Playwright
     slug: playwright
-  - label: pnpm workspaces
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: pnpm workspaces
     shortLabel: pnpm
     slug: pnpm-workspaces
-  - label: Poetry
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Poetry
     slug: poetry
-  - label: PostgreSQL
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: PostgreSQL
     proficiency: ADVANCED
     slug: postgresql
-  - label: Prettier
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Prettier
     slug: prettier
-  - label: Prisma
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: Prisma
     proficiency: ADVANCED
     slug: prisma
-  - label: Prompt Engineering
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Prompt Engineering
     slug: prompt-engineering
-  - label: pylint
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: pyenv
+    slug: pyenv
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: pylint
     slug: pylint
-  - label: pytest
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: pytest
     slug: pytest
-  - label: Python
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 11
+    isHighlighted: true
+    isPrioritized: true
+    label: Python
     proficiency: EXPERT
     slug: python
-  - label: RabbitMQ
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 2
+    label: R
+    proficiency: FAMILIAR
+    slug: r
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: RabbitMQ
     slug: rabbitmq
-  - label: Radix UI
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Radix UI
     slug: radix-ui
-  - label: React
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 8
+    isHighlighted: true
+    isPrioritized: true
+    label: React
     proficiency: EXPERT
     slug: react
-  - label: React Native
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 2
+    isPrioritized: true
+    label: React Native
+    proficiency: PROFICIENT
     slug: react-native
-  - label: React-Redux
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: React-Redux
     slug: react-redux
-  - label: React Testing Library
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: React Testing Library
     slug: react-testing-library
-  - label: Redis
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Redis
     proficiency: FAMILIAR
     slug: redis
-  - label: Redux
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Redux
     proficiency: ADVANCED
     slug: redux
-  - label: Redux-Sagas
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 5
+    isHighlighted: true
+    isPrioritized: true
+    label: Redux-Sagas
+    proficiency: ADVANCED
     slug: redux-sagas
-  - label: Remote Build Caching
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    isHighlighted: true
+    isPrioritized: true
+    label: Relational Databases
+    slug: relational-databases
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Remote Build Caching
     slug: remote-build-caching
-  - label: Renovate
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Renovate
     slug: renovate
-  - label: Responsive Design
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 8
+    label: Responsive Design
+    proficiency: ADVANCED
     slug: responsive-design
-  - label: REST API Design
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: REST API Design
     slug: rest-api-design
-  - label: Reusable Workflows
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Reusable Workflows
     slug: reusable-workflows
-  - label: Sass
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Rundeck
+    slug: rundeck
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 5
+    isHighlighted: true
+    isPrioritized: true
+    label: Sass
     proficiency: ADVANCED
     slug: sass
-  - label: Server-Oriented Frontend
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: scikit-learn
+    slug: scikit-learn
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: scipy
+    slug: scipy
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: Sentry
+    slug: sentry
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Server-Oriented Frontend
     slug: server-oriented-frontend
-  - label: Service-Oriented Arch
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Service-Oriented Arch
     slug: service-oriented-arch
-  - label: shadcn/ui
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: shadcn/ui
     slug: shadcn-ui
-  - label: SonarQube
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: SonarQube
     slug: sonarqube
-  - label: Spec-Driven Development
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Spec-Driven Development
     slug: spec-driven-development
-  - label: SQLAlchemy
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: SQLAlchemy
     slug: sqlalchemy
-  - label: SSR / RSC
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: SSR / RSC
     shortLabel: SSR
     slug: ssr-rsc
-  - label: Storybook
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: Storybook
     slug: storybook
-  - label: Structured Logging
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Structured Logging
     slug: structured-logging
-  - label: Styled Components
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: Styled Components
     slug: styled-components
-  - label: Stylelint
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Stylelint
     slug: stylelint
-  - label: Swift
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 2
+    isHighlighted: true
+    label: Swift
     proficiency: PROFICIENT
     slug: swift
-  - label: Systems Architecture
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description: Vercel's SWR Hook
+    isPrioritized: true
+    label: SWR
+    slug: swr
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Systems Architecture
     slug: systems-architecture
-  - label: TailwindCSS
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 2
+    isHighlighted: true
+    isPrioritized: true
+    label: TailwindCSS
     proficiency: ADVANCED
     slug: tailwindcss
-  - label: Testing (RTL, Jest, Playwright)
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    description:
+      Powerful asynchronous state management for TS/JS, React, Solid, Vue, Svelte and Angular
+    label: TanStack Query
+    slug: tanstack-query
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Testing (RTL, Jest, Playwright)
     slug: testing-rtl-jest-playwright
-  - label: tox
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: tox
     slug: tox
-  - label: Tree-shaking
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Tree-shaking
     slug: tree-shaking
-  - label: TRPC
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: TRPC
     slug: trpc
-  - label: Turborepo
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description: Vercel's TurboRepo for monolithic architectures.
+    label: Turborepo
     slug: turborepo
-  - label: TypeScript
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 5
+    isHighlighted: true
+    isPrioritized: true
+    label: TypeScript
     proficiency: EXPERT
     slug: typescript
-  - label: TypeScript Strict
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: TypeScript Strict
     slug: typescript-strict
-  - label: Unit / Integration / E2E
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    isPrioritized: true
+    label: Unit / Integration / E2E
     slug: unit-integration-e2e
-  - label: Vercel
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    experience: 2
+    label: Vercel
     proficiency: PROFICIENT
     slug: vercel
-  - label: Visual Regression
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: Visual Regression
     slug: visual-regression
-  - label: vitest
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: vitest
     slug: vitest
-  - label: WebSockets
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    experience: 1
+    label: Vue
+    proficiency: FAMILIAR
+    slug: vue
+  - channels:
+      - LINKEDIN
+      - WEBSITE
+    label: WebSockets
     slug: websockets
-  - label: yarn workspaces
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    label: yarn workspaces
     slug: yarn-workspaces
-  - label: Zod
+  - channels:
+      - LINKEDIN
+      - RESUME
+      - WEBSITE
+    description:
+      Zod is a TypeScript-first schema declaration and validation library. I'm using the term
+      "schema" to broadly refer to any data type, from a simple string to a complex nested object.
+    isPrioritized: true
+    label: Zod
     slug: zod

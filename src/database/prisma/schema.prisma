@@ -172,22 +172,26 @@ model Resume {
 }
 
 model Repository {
-  id             String    @id @default(uuid()) @db.Uuid
-  slug           String    @unique
+  id             String               @id @default(uuid()) @db.Uuid
+  slug           String               @unique
   description    String?
-  createdAt      DateTime  @default(now())
-  createdBy      User      @relation("createdRepositories", fields: [createdById], references: [id])
-  createdById    String    @db.Uuid
-  updatedAt      DateTime  @updatedAt
-  updatedBy      User      @relation("updatedRepositories", fields: [updatedById], references: [id])
-  updatedById    String    @db.Uuid
-  skills         Skill[]   @relation("skillRepositories")
-  projects       Project[] @relation("projectRepositories")
-  visible        Boolean   @default(false)
-  highlighted    Boolean   @default(false)
+  createdAt      DateTime             @default(now())
+  createdBy      User                 @relation("createdRepositories", fields: [createdById], references: [id])
+  createdById    String               @db.Uuid
+  updatedAt      DateTime             @updatedAt
+  updatedBy      User                 @relation("updatedRepositories", fields: [updatedById], references: [id])
+  updatedById    String               @db.Uuid
+  skills         Skill[]              @relation("skillRepositories")
+  projects       Project[]            @relation("projectRepositories")
+  visible        Boolean              @default(false)
+  highlighted    Boolean              @default(false)
   // The start date is used to determine the experience of a given skill in the repository.
   startDate      DateTime
-  npmPackageName String?   @unique
+  npmPackageName String?              @unique
+  // Additive new-model membership (carried over intact, decided 2026-08-11): syndication
+  // allowlist and competency associations. The legacy `skills` relation remains until adoption.
+  channels       SyndicationChannel[] @default([])
+  competencies   Competency[]         @relation("repositoryCompetencies")
 }
 
 model Skill {
@@ -222,46 +226,57 @@ model Skill {
 }
 
 model Course {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String    @unique
-  shortName   String?   @unique
+  id           String               @id @default(uuid()) @db.Uuid
+  name         String               @unique
+  shortName    String?              @unique
   // This is currently not being used, and we may want to remove it in the near future.
-  slug        String    @unique
-  createdAt   DateTime  @default(now())
-  createdBy   User      @relation("createdCourses", fields: [createdById], references: [id])
-  createdById String    @db.Uuid
-  updatedAt   DateTime  @updatedAt
-  updatedBy   User      @relation("updatedCourses", fields: [updatedById], references: [id])
-  updatedById String    @db.Uuid
-  education   Education @relation("courses", fields: [educationId], references: [id])
-  educationId String    @db.Uuid
-  visible     Boolean   @default(true)
-  description String?
-  skills      Skill[]   @relation("courseSkills")
+  slug         String               @unique
+  createdAt    DateTime             @default(now())
+  createdBy    User                 @relation("createdCourses", fields: [createdById], references: [id])
+  createdById  String               @db.Uuid
+  updatedAt    DateTime             @updatedAt
+  updatedBy    User                 @relation("updatedCourses", fields: [updatedById], references: [id])
+  updatedById  String               @db.Uuid
+  education    Education            @relation("courses", fields: [educationId], references: [id])
+  educationId  String               @db.Uuid
+  visible      Boolean              @default(true)
+  description  String?
+  skills       Skill[]              @relation("courseSkills")
+  // Additive new-model membership (carried over intact, decided 2026-08-11): the parallel
+  // re-parent onto `Degree` (the legacy `educationId` remains until adoption), the syndication
+  // allowlist, and competency associations.
+  degree       Degree?              @relation("degreeCourses", fields: [degreeId], references: [id])
+  degreeId     String?              @db.Uuid
+  channels     SyndicationChannel[] @default([])
+  competencies Competency[]         @relation("courseCompetencies")
 }
 
 model Project {
-  id            String         @id @default(uuid()) @db.Uuid
-  name          String         @unique
-  shortName     String?        @unique
+  id            String               @id @default(uuid()) @db.Uuid
+  name          String               @unique
+  shortName     String?              @unique
   // TODO: We may want to use a rich text editor for this in the future, so we can show it on the
   // projects page with embedded links and things of that nature.
   description   String
-  slug          String         @unique
-  createdAt     DateTime       @default(now())
-  createdBy     User           @relation("createdProjects", fields: [createdById], references: [id])
-  createdById   String         @db.Uuid
-  updatedAt     DateTime       @updatedAt
-  updatedBy     User           @relation("updatedProjects", fields: [updatedById], references: [id])
-  updatedById   String         @db.Uuid
+  slug          String               @unique
+  createdAt     DateTime             @default(now())
+  createdBy     User                 @relation("createdProjects", fields: [createdById], references: [id])
+  createdById   String               @db.Uuid
+  updatedAt     DateTime             @updatedAt
+  updatedBy     User                 @relation("updatedProjects", fields: [updatedById], references: [id])
+  updatedById   String               @db.Uuid
   // The start date is used to determine the experience of a given skill in the project.
   startDate     DateTime
-  skills        Skill[]        @relation("projectSkills")
-  details       Detail[]       @relation("details")
-  nestedDetails NestedDetail[] @relation("nestedDetails")
-  repositories  Repository[]   @relation("projectRepositories")
-  highlighted   Boolean        @default(false)
-  visible       Boolean        @default(false)
+  skills        Skill[]              @relation("projectSkills")
+  details       Detail[]             @relation("details")
+  nestedDetails NestedDetail[]       @relation("nestedDetails")
+  repositories  Repository[]         @relation("projectRepositories")
+  highlighted   Boolean              @default(false)
+  visible       Boolean              @default(false)
+  // Additive new-model membership (carried over intact, decided 2026-08-11): syndication
+  // allowlist and competency associations. The legacy `skills` relation remains until adoption.
+  channels      SyndicationChannel[] @default([])
+  competencies  Competency[]         @relation("projectCompetencies")
 }
 
 model Company {
@@ -497,42 +512,45 @@ model Competency {
   isHighlighted        Boolean                   @default(false)
   isPrioritized        Boolean                   @default(false)
   isVisible            Boolean                   @default(true)
-  excludedChannels     SyndicationChannel[]      @default([])
+  channels             SyndicationChannel[]      @default([])
   roles                Role[]                    @relation("roleCompetencies")
   degrees              Degree[]                  @relation("degreeCompetencies")
   contentNodes         ContentNode[]             @relation("contentNodeCompetencies")
   nestedContentNodes   NestedContentNode[]       @relation("nestedContentNodeCompetencies")
   competencyGroups     ResumeCompetenciesGroup[] @relation("groupCompetencies")
+  projects             Project[]                 @relation("projectCompetencies")
+  repositories         Repository[]              @relation("repositoryCompetencies")
+  courses              Course[]                  @relation("courseCompetencies")
 }
 
 // The successor to `Experience`. Its content tree attaches polymorphically through
 // `ContentNode.ownerId`/`ownerType`, so no `nodes` relation appears here.
 model Role {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdRoles", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedRoles", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
-  slug             String               @unique
-  title            String
-  shortTitle       String?
-  company          Company              @relation("roles", fields: [companyId], references: [id])
-  companyId        String               @db.Uuid
-  startDate        DateTime
-  endDate          DateTime?
-  isCurrent        Boolean              @default(false)
-  isRemote         Boolean              @default(false)
-  isHighlighted    Boolean              @default(false)
+  id            String               @id @default(uuid()) @db.Uuid
+  createdAt     DateTime             @default(now())
+  createdBy     User                 @relation("createdRoles", fields: [createdById], references: [id])
+  createdById   String               @db.Uuid
+  updatedAt     DateTime             @updatedAt
+  updatedBy     User                 @relation("updatedRoles", fields: [updatedById], references: [id])
+  updatedById   String               @db.Uuid
+  slug          String               @unique
+  title         String
+  shortTitle    String?
+  company       Company              @relation("roles", fields: [companyId], references: [id])
+  companyId     String               @db.Uuid
+  startDate     DateTime
+  endDate       DateTime?
+  isCurrent     Boolean              @default(false)
+  isRemote      Boolean              @default(false)
+  isHighlighted Boolean              @default(false)
   // Where the work was done, not the company's location; null whenever `isRemote` is true.
-  city             String?
-  state            String?
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
-  competencies     Competency[]         @relation("roleCompetencies")
-  resumeSheet      ResumeSheet?         @relation("resumeSheetRoles", fields: [resumeSheetId], references: [id])
-  resumeSheetId    String?              @db.Uuid
+  city          String?
+  state         String?
+  isVisible     Boolean              @default(true)
+  channels      SyndicationChannel[] @default([])
+  competencies  Competency[]         @relation("roleCompetencies")
+  resumeSheet   ResumeSheet?         @relation("resumeSheetRoles", fields: [resumeSheetId], references: [id])
+  resumeSheetId String?              @db.Uuid
 
   @@unique([title, companyId])
 }
@@ -566,8 +584,9 @@ model Degree {
   // A degree begun and deliberately paused; renders in place of an end date.
   isPostponed        Boolean              @default(false)
   isVisible          Boolean              @default(true)
-  excludedChannels   SyndicationChannel[] @default([])
+  channels           SyndicationChannel[] @default([])
   competencies       Competency[]         @relation("degreeCompetencies")
+  courses            Course[]             @relation("degreeCourses")
   resumeSheet        ResumeSheet?         @relation("resumeSheetDegrees", fields: [resumeSheetId], references: [id])
   resumeSheetId      String?              @db.Uuid
 
@@ -580,31 +599,31 @@ model Degree {
 // `ownerId` + `ownerType`, which carries no database-level foreign key — the accepted cost of one
 // content tree serving both roles and degrees.
 model ContentNode {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdContentNodes", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedContentNodes", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
+  id           String               @id @default(uuid()) @db.Uuid
+  createdAt    DateTime             @default(now())
+  createdBy    User                 @relation("createdContentNodes", fields: [createdById], references: [id])
+  createdById  String               @db.Uuid
+  updatedAt    DateTime             @updatedAt
+  updatedBy    User                 @relation("updatedContentNodes", fields: [updatedById], references: [id])
+  updatedById  String               @db.Uuid
   // Generated rather than authored (a paragraph has no natural name), then sticky once stamped.
-  slug             String
-  ownerId          String               @db.Uuid
-  ownerType        ContentOwnerType
-  kind             NodeKind
+  slug         String
+  ownerId      String               @db.Uuid
+  ownerType    ContentOwnerType
+  kind         NodeKind
   // Null means `PARAGRAPH`; meaningless when `kind` is `SUMMARY`.
-  type             NodeType?
+  type         NodeType?
   // A short bold lead-in, as HTML. A node is never rendered as a title alone.
-  title            String?
+  title        String?
   // A SINGLE paragraph of HTML; several paragraphs are several nodes, one row each, because
   // syndication is decided per paragraph.
-  content          String?
-  titleLayout      TitleLayout?
-  order            Int
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
-  children         NestedContentNode[]  @relation("children")
-  competencies     Competency[]         @relation("contentNodeCompetencies")
+  content      String?
+  titleLayout  TitleLayout?
+  order        Int
+  isVisible    Boolean              @default(true)
+  channels     SyndicationChannel[] @default([])
+  children     NestedContentNode[]  @relation("children")
+  competencies Competency[]         @relation("contentNodeCompetencies")
 
   @@unique([slug, ownerId, ownerType])
 }
@@ -613,23 +632,23 @@ model ContentNode {
 // capped at two by the schema itself, which is why this is a separate model rather than a
 // self-referential `parentId` on one table.
 model NestedContentNode {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdNestedContentNodes", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedNestedContentNodes", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
-  slug             String
-  parent           ContentNode          @relation("children", fields: [parentId], references: [id], onDelete: Cascade)
-  parentId         String               @db.Uuid
-  title            String?
-  content          String?
-  titleLayout      TitleLayout?
-  order            Int
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
-  competencies     Competency[]         @relation("nestedContentNodeCompetencies")
+  id           String               @id @default(uuid()) @db.Uuid
+  createdAt    DateTime             @default(now())
+  createdBy    User                 @relation("createdNestedContentNodes", fields: [createdById], references: [id])
+  createdById  String               @db.Uuid
+  updatedAt    DateTime             @updatedAt
+  updatedBy    User                 @relation("updatedNestedContentNodes", fields: [updatedById], references: [id])
+  updatedById  String               @db.Uuid
+  slug         String
+  parent       ContentNode          @relation("children", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId     String               @db.Uuid
+  title        String?
+  content      String?
+  titleLayout  TitleLayout?
+  order        Int
+  isVisible    Boolean              @default(true)
+  channels     SyndicationChannel[] @default([])
+  competencies Competency[]         @relation("nestedContentNodeCompetencies")
 
   @@unique([slug, parentId])
 }
@@ -637,64 +656,64 @@ model NestedContentNode {
 // One paragraph of the "About" block. Modeled as rows rather than a string array so each
 // paragraph has stable identity, explicit order, and its own syndication decision.
 model ProfileAboutParagraph {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdProfileAboutParagraphs", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedProfileAboutParagraphs", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
-  slug             String
-  profile          Profile              @relation("about", fields: [profileId], references: [id])
-  profileId        String               @db.Uuid
-  content          String
-  shortContent     String?
-  order            Int
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
+  id           String               @id @default(uuid()) @db.Uuid
+  createdAt    DateTime             @default(now())
+  createdBy    User                 @relation("createdProfileAboutParagraphs", fields: [createdById], references: [id])
+  createdById  String               @db.Uuid
+  updatedAt    DateTime             @updatedAt
+  updatedBy    User                 @relation("updatedProfileAboutParagraphs", fields: [updatedById], references: [id])
+  updatedById  String               @db.Uuid
+  slug         String
+  profile      Profile              @relation("about", fields: [profileId], references: [id])
+  profileId    String               @db.Uuid
+  content      String
+  shortContent String?
+  order        Int
+  isVisible    Boolean              @default(true)
+  channels     SyndicationChannel[] @default([])
 
   @@unique([slug, profileId])
 }
 
 // One plus-marked one-liner beneath the "About" block.
 model ProfileHighlight {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdProfileHighlights", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedProfileHighlights", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
-  slug             String
-  profile          Profile              @relation("highlights", fields: [profileId], references: [id])
-  profileId        String               @db.Uuid
-  text             String
-  shortText        String?
-  order            Int
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
+  id          String               @id @default(uuid()) @db.Uuid
+  createdAt   DateTime             @default(now())
+  createdBy   User                 @relation("createdProfileHighlights", fields: [createdById], references: [id])
+  createdById String               @db.Uuid
+  updatedAt   DateTime             @updatedAt
+  updatedBy   User                 @relation("updatedProfileHighlights", fields: [updatedById], references: [id])
+  updatedById String               @db.Uuid
+  slug        String
+  profile     Profile              @relation("highlights", fields: [profileId], references: [id])
+  profileId   String               @db.Uuid
+  text        String
+  shortText   String?
+  order       Int
+  isVisible   Boolean              @default(true)
+  channels    SyndicationChannel[] @default([])
 
   @@unique([slug, profileId])
 }
 
 // One icon-labelled row of the contact block.
 model ProfileContactEntry {
-  id               String               @id @default(uuid()) @db.Uuid
-  createdAt        DateTime             @default(now())
-  createdBy        User                 @relation("createdProfileContactEntries", fields: [createdById], references: [id])
-  createdById      String               @db.Uuid
-  updatedAt        DateTime             @updatedAt
-  updatedBy        User                 @relation("updatedProfileContactEntries", fields: [updatedById], references: [id])
-  updatedById      String               @db.Uuid
-  slug             String
-  profile          Profile              @relation("contacts", fields: [profileId], references: [id])
-  profileId        String               @db.Uuid
-  icon             ContactIcon
-  text             String
-  shortText        String?
-  order            Int
-  isVisible        Boolean              @default(true)
-  excludedChannels SyndicationChannel[] @default([])
+  id          String               @id @default(uuid()) @db.Uuid
+  createdAt   DateTime             @default(now())
+  createdBy   User                 @relation("createdProfileContactEntries", fields: [createdById], references: [id])
+  createdById String               @db.Uuid
+  updatedAt   DateTime             @updatedAt
+  updatedBy   User                 @relation("updatedProfileContactEntries", fields: [updatedById], references: [id])
+  updatedById String               @db.Uuid
+  slug        String
+  profile     Profile              @relation("contacts", fields: [profileId], references: [id])
+  profileId   String               @db.Uuid
+  icon        ContactIcon
+  text        String
+  shortText   String?
+  order       Int
+  isVisible   Boolean              @default(true)
+  channels    SyndicationChannel[] @default([])
 
   @@unique([slug, profileId])
 }

@@ -1,0 +1,172 @@
+projects:
+  - channels:
+      - WEBSITE
+    competencies:
+      - data-visualization
+      - html
+      - responsive-design
+      - javascript
+      - aws-lambda
+      - d3-js
+    description:
+      An animated JavaScript charting library that can be used to visualize data in up to 5
+      dimensions simultaneously.
+    highlighted: true
+    name: n-Dimensional Charting Library for Asset Management
+    repositories: []
+    shortName: Asset Visualizations
+    slug: asset-visualizations
+    startDate: 2017-11-01
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - django
+      - aws-elastic-beanstalk
+      - observability
+      - python
+      - aws-rds
+      - aws
+      - prettier
+      - antd-ant-design
+      - aws-ecs
+      - aws-iam
+      - pytest
+      - ci-cd-pipeline-design
+      - aws-elasticache
+      - django-channels
+      - bash
+      - authentication-authorization
+      - application-security
+      - unit-integration-e2e
+      - design-ux-partnership
+      - django-rest-framework
+      - aws-ec2
+      - html
+      - sass
+      - responsive-design
+      - css
+      - aws-cloudwatch
+      - javascript
+      - git
+      - nvm
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - pyenv
+      - pip
+      - celery
+      - yarn-workspaces
+      - poetry
+      - aws-lambda
+      - circleci
+      - react-redux
+      - redux-sagas
+      - tox
+      - docker
+      - pylint
+      - flake8
+      - engineering-leadership
+      - aws-s3
+      - rest-api-design
+      - jinja
+      - sentry
+      - relational-databases
+    description:
+      A modern, multi-user collaborative budgeting & accounting solution for film production.
+    highlighted: true
+    name: GreenBudget
+    repositories:
+      - happybudget
+      - happybudget-api
+    slug: greenbudget
+    startDate: 2021-03-01
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - observability
+      - zod
+      - pino
+      - prettier
+      - framer-motion
+      - mantine
+      - ci-cd-pipeline-design
+      - floating-ui
+      - next-js
+      - application-security
+      - pnpm-workspaces
+      - design-ux-partnership
+      - html
+      - prisma
+      - sass
+      - responsive-design
+      - css
+      - javascript
+      - git
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - ssr-rsc
+      - tailwindcss
+      - clerk
+      - rest-api-design
+      - swr
+      - relational-databases
+    description:
+      An application that allows users to monitor, manage and configure notifications and alerts
+      that they will receive as it relates to inventory & price changes that occur for products
+      offered by the woodworking hand tool manufacturer, Lie Nielsen.
+    highlighted: true
+    name: ToolTrack
+    repositories:
+      - tooltrack
+    slug: tooltrack
+    startDate: 2024-05-01
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - observability
+      - zod
+      - pino
+      - prettier
+      - framer-motion
+      - mantine
+      - ci-cd-pipeline-design
+      - floating-ui
+      - next-js
+      - application-security
+      - design-ux-partnership
+      - prisma
+      - sass
+      - responsive-design
+      - css
+      - javascript
+      - git
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - ssr-rsc
+      - vercel
+      - tailwindcss
+      - clerk
+      - rest-api-design
+      - swr
+      - relational-databases
+    description:
+      A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.
+    highlighted: true
+    name: nick.florin
+    repositories:
+      - nick.florin
+    slug: website
+    startDate: 2024-01-15
+    visible: true

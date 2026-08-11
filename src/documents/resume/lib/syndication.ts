@@ -2,7 +2,7 @@
  * Resolving a content tree for one syndication channel.
  *
  * THIS IS THE ONLY PLACE THE CASCADE RULE LIVES. Nothing else should read `isVisible` or
- * `excludedChannels` directly; render from the `Resolved*` types this module returns. The rule is
+ * `channels` directly; render from the `Resolved*` types this module returns. The rule is
  * specified in the `resume-gen` repository's `docs/content-model.md` and summarized here.
  *
  * Resolution is two directions in a single post-order walk:
@@ -20,6 +20,7 @@
  * an owner with empty `summary` and `content` rather than null.
  */
 import {
+  type Competency,
   type ContentNode,
   type ContentOwner,
   type NestedContentNode,
@@ -37,7 +38,22 @@ import {
  * Whether a single level permits the channel, ignoring ancestors and descendants.
  */
 function permits(node: Syndicated, channel: SyndicationChannel): boolean {
-  return node.isVisible && !node.excludedChannels.includes(channel);
+  return node.isVisible && node.channels.includes(channel);
+}
+
+/**
+ * The competencies of an owner or node that the channel may render as chips.
+ *
+ * A competency association is data — which competencies a role, degree, or node is tied to —
+ * while chip rendering is presentation. Filtering here lets an association exist for every channel
+ * while its chip renders only on the channels the competency itself permits, so the catalog can
+ * carry the full association history without widening any chip row.
+ */
+function resolveCompetencies(
+  competencies: readonly Competency[],
+  channel: SyndicationChannel,
+): readonly Competency[] {
+  return competencies.filter(competency => permits(competency, channel));
 }
 
 /**
@@ -78,8 +94,12 @@ function resolveNested(
   if (isEmpty(node.content, 0)) {
     return null;
   }
-  const { excludedChannels: _excluded, isVisible: _isVisible, ...rest } = node;
-  return { ...rest, titleLayout: resolveTitleLayout(node.titleLayout, parentType) };
+  const { channels: _channels, isVisible: _isVisible, ...rest } = node;
+  return {
+    ...rest,
+    competencies: resolveCompetencies(node.competencies, channel),
+    titleLayout: resolveTitleLayout(node.titleLayout, parentType),
+  };
 }
 
 function resolveNode(node: ContentNode, channel: SyndicationChannel): null | ResolvedNode {
@@ -100,8 +120,8 @@ function resolveNode(node: ContentNode, channel: SyndicationChannel): null | Res
   }
 
   const {
+    channels: _channels,
     children: _children,
-    excludedChannels: _excluded,
     isVisible: _isVisible,
     type: _type,
     ...rest
@@ -109,6 +129,7 @@ function resolveNode(node: ContentNode, channel: SyndicationChannel): null | Res
   return {
     ...rest,
     children,
+    competencies: resolveCompetencies(node.competencies, channel),
     titleLayout: resolveTitleLayout(node.titleLayout, null),
     type,
   };
@@ -141,9 +162,10 @@ export function resolveSyndication(
       .map(entry => entry.node)
       .sort((a, b) => a.order - b.order);
 
-  const { excludedChannels: _excluded, isVisible: _isVisible, nodes: _nodes, ...rest } = owner;
+  const { channels: _channels, isVisible: _isVisible, nodes: _nodes, ...rest } = owner;
   return {
     ...rest,
+    competencies: resolveCompetencies(owner.competencies, channel),
     content: byKind(NodeKind.Content),
     summary: byKind(NodeKind.Summary),
   };

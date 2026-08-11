@@ -62,17 +62,52 @@ discuss together, then record the outcome in `decisions.md`.
       configuration on the shared records. Already settled outside this item (2026-08-04, see
       decisions.md): `isHighlighted` stays a plain boolean meaning dashboard presence, subordinate
       to website syndication.
-- [ ] Competency categorization — see [context/open-questions.md](./context/open-questions.md).
-      Current lean (2026-08-04): do not carry the legacy `Skill.categories` / `programmingLanguages`
-      / `programmingDomains` forward onto `Competency`; instead, design a future bucketing/tagging
-      mechanism for grouping competencies when the need firms up. Still open alongside it: whether a
-      bucket and a `ResumeCompetenciesGroup` are the same thing, in which case the sidebar groups
-      become derivable rather than authored. The legacy columns stay on `Skill` untouched in the
-      interim.
+- [ ] Competency categorization — see [context/open-questions.md](./context/open-questions.md). The
+      2026-08-04 lean became a decision on 2026-08-09 (see decisions.md): the legacy
+      `Skill.categories` / `programmingLanguages` / `programmingDomains` are **held out of the
+      JSON→YAML port**, and the skills audit doubles as the design pass for the successor
+      categorization scheme — schema fields, codecs, YAML shape and ported values all follow from
+      it. Still open alongside it: whether a bucket and a `ResumeCompetenciesGroup` are the same
+      thing, in which case the sidebar groups become derivable rather than authored. The legacy
+      columns stay on `Skill` untouched in the interim.
+- [x] Settle the disposition of every legacy model not yet redefined — **decided 2026-08-11** (see
+      decisions.md): `Project`, `Repository` and `Course` all **carry over intact** with additive
+      membership (Competency m2m, `channels`, bindings/fixtures; `Course` additionally gains a
+      nullable `degreeId` re-parent, and `ContentOwnerType.PROJECT` waits until the website wants
+      rich project content). Implementation is its own item under Data Modeling, sequenced after the
+      channels-allowlist inversion.
+- [ ] **(tentative, added 2026-08-11)** Research whether nested competency hierarchies make sense —
+      competencies grouped as children under other competencies (e.g. specific tools under a parent
+      practice). As part of the same research, investigate the broader competency-system
+      improvements that keep coming up: more granular control of which competencies are shown for
+      individual content items and nested content items, and the ability to turn competencies off
+      for roles/degrees or content items **on a per-medium basis** (the per-owner/per-association
+      granularity the 2026-08-10 association-merge amendment deferred — subsumes the design half of
+      the competency-pill display-controls item in Data Modeling). Overlaps the competency
+      categorization item above: a hierarchy may be the bucketing/tagging mechanism that question is
+      waiting for, so the two should be researched together rather than decided separately.
 - [ ] GitHub-driven content sync design: the deterministic flows (projects, job info, skills) and
       the Claude-assisted skill-inference flow.
 
 ## Data Modeling
+
+- [x] **(done 2026-08-11)** Invert syndication from an
+      exclusion list to an allowlist: `excludedChannels: SyndicationChannel[]` becomes
+      `channels: SyndicationChannel[]` on **every** syndicated model, defaulting to `[]` — a newly
+      created record syndicates **nowhere** until channels are explicitly granted. Reverses the
+      permissive-default shape the discovery notes recorded. Touches: the parallel Prisma models
+      (migration), the fixture codecs/bindings (`channelsField` semantics), the TS data modules and
+      emitter, the resolution cascade in `normalize.ts`/`syndication.ts` (exclusion inheritance
+      becomes allowlist intersection — the cascade rule needs a rethink), and a data migration of
+      all authored values (current implicit "everywhere" becomes explicit channel grants so nothing
+      visibly changes at flip time).
+- [x] **(done 2026-08-11)** Implement the carried-over models' membership (decided
+      2026-08-11, see decisions.md): additive migration giving `Project`/`Repository`/`Course` a
+      `Competency` m2m and `channels`, plus `Course.degreeId` (nullable, populated from the
+      education ↔ degree correspondence); bindings and one fixture file per model (`projects.yaml`,
+      `repositories.yaml`, `courses.yaml`) with slug refs; then port the prod data (4 projects, 22
+      repositories, ~24 courses) with skill links translated through
+      [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md).
 
 _Gated on the Research & Discussion items above — no schema work until those are settled._
 
@@ -89,11 +124,15 @@ _Gated on the Research & Discussion items above — no schema work until those a
       scannable), `Django` and `Django Channels`, `AWS` vs `AWS Lambda`, `React` vs `React Native`,
       `Redux` vs `Redux-Sagas`, and the category labels `Testing (RTL, Jest, Playwright)` and
       `Unit / Integration / E2E`.
-- [ ] **(immediate follow-up to the types migration)** Assign proficiencies.
-      `Competency.proficiency` is nullable because only 24 of the 145 had a level authored — those
-      were the sidebar bars. The remaining 121 appeared only as pills or role chips and were never
-      rated. A competency rendered in a `BARS` group must have one, which is currently an
-      application-level invariant rather than a schema constraint.
+- [x] Assign proficiencies from experience years — **done 2026-08-11** for every competency the
+      approach can reach: the 11 unrated competencies carrying a legacy `experience` value were
+      bucketed by the year→bucket pattern calibrated on the already-rated set and signed off by Nick
+      with adjustments (CSS 10y → ADVANCED, Django 10y → EXPERT, Responsive Design 8y → ADVANCED,
+      Matlab/Redux-Sagas 5y → ADVANCED, Bash/Clerk/React Native 2y → PROFICIENT, R 2y → FAMILIAR
+      (academic, like C++), AWS Lambda/Vue 1y → FAMILIAR). Rated: 24 → 35. The remaining 142 unrated
+      competencies have no years to estimate from and stay null — every `BARS`-group member is
+      rated, so the application invariant holds; rating the long tail (or deriving years via
+      `calculatedExperience` once role dates back them) is future content work, not a blocker.
 - [x] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
       `schema.prisma` as parallel models (done 2026-08-04: migration
       `20260804145452_parallel_content_models`, applied to the dev database — see decisions.md).
@@ -108,7 +147,11 @@ _Gated on the Research & Discussion items above — no schema work until those a
       competencies syndication-channels enum array controlling which mediums the pills render on.
       Applies uniformly to `ContentNode`, `NestedContentNode`, `Role`, `Degree` and any other
       competency-bearing model — the pills' visibility is controllable both overall and
-      per-syndication, independently of the owning record's own syndication.
+      per-syndication, independently of the owning record's own syndication. No longer gates the
+      association merge — that landed 2026-08-10 via competency-level channel exclusion with the
+      syndication cascade filtering chip lists (see decisions.md). This item remains for the
+      **per-owner granularity** it would add: a shared competency chipping on one role but not
+      another, which the competency-level mechanism cannot express.
 - [x] Design the `Competency` model — landed 2026-08-04 in the parallel schema per the rehearsal
       types (see decisions.md). Remaining from the requirements below: the m2m links to the legacy
       `Course`/`Project`/`Repository` models (deferred to the syndication-modeling research item).
@@ -144,6 +187,28 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 ## Fixtures & DB Sync
 
+- [ ] **(consider before the port executes)** Decide the write-review model for data transformations
+      (added 2026-08-10): assemble the complete change set in memory first, then present one full
+      diff and walk through the changes at the end — writing nothing until the whole set is reviewed
+      — versus walking through changes intermittently and writing each as it is confirmed. Applies
+      to the legacy-data port below and generalizes to the sync engine (whose per-batch
+      itemized-diff confirmation decision, 2026-08-04, already leans assemble-first).
+- [x] Port the legacy prod data (the JSON seed fixtures, confirmed current with production
+      2026-08-09) into the YAML fixture layer via the TS data modules — **done 2026-08-10**:
+      competencies 133 → 177 with legacy field enrichment; USLege.ai company + hidden role; the full
+      association merge under the sidebar-sanctioned chip policy (55 competencies `RESUME`-excluded,
+      `django` exempt; associations never removed); the prose-comparison pass (seven website-only
+      nodes ported, seven superseded items skipped); `middleName`, `intro` and the JHU `note`
+      scalars; and the Saracen pagination rebalance the chip growth required. Final PDF reviewed and
+      approved by Nick. All mechanics and rulings are in decisions.md (2026-08-09 → 2026-08-10
+      entries); the translation table is
+      [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md).
+- [x] **(before the competency port)** Audit the 158 legacy skills — done 2026-08-09 via an
+      eight-stop grouped walkthrough (see decisions.md): full mapping recorded in
+      [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md) — 67 direct matches, 31
+      folds, 47 → 44 new competencies, 13 confirmed drops (amended 2026-08-10: nine drops
+      reinstated). Still outstanding from this item: the successor **categorization scheme** design
+      (the audit settled membership, not taxonomy — see the Research & Discussion item).
 - [x] Establish the YAML fixture files for the new models (done 2026-08-04): one file per model in
       `src/documents/resume/fixtures/` (`competencies`, `companies`, `schools`, `profile`, `roles`,
       `degrees`, `resume-sheets`), emitted from the TS data modules by `pnpm resume:fixtures`
@@ -162,7 +227,9 @@ _Gated on the Research & Discussion items above — no schema work until those a
       bypass it for scripted runs. The structural layer exists (`ContentStore` port with YAML and
       Prisma adapters, dependency-ordered registry, create-only writes); what remains is the sync
       engine itself — diff canonical-vs-canonical, update writes, `meta:`/sticky-slug write-back to
-      fixtures after a push, and the script entry point.
+      fixtures after a push, and the script entry point. New requirement (2026-08-09, see
+      decisions.md): the push seeds `createdAt` from the legacy counterpart row (competency ↔ skill,
+      role ↔ experience, …) rather than `now()`, so derived website ordering survives adoption.
 - [x] ~~Preserve authored competency ordering across the m2m relations~~ — resolved 2026-08-04 the
       other way (see decisions.md): competency order is derived, never stored. Website and resume
       body chips sort by `isPrioritized` then `createdAt`; the resume sidebar's pill order comes
@@ -267,6 +334,11 @@ components must stay pure (no Next-coupled APIs) so they serve both._
 
 _Not gated — these live in resume-gen today and can proceed anytime._
 
+- [ ] Mine all available sources for missing competencies (added 2026-08-10): GitHub history and
+      repositories, projects, and any documents Nick provides — generate candidate skills and
+      competencies absent from the catalog. Per the catalog principle (decided 2026-08-10, see
+      decisions.md), candidates are judged on "was this actually used/learned", never on whether any
+      channel would display them; candidates land with Nick's sign-off, not automatically.
 - [ ] Update the Craft role end date (still `Oct 2024 - Present` in resume-gen; last day was
       2026-07-31).
 - [ ] Content rewrite against resume-gen's `content/feedback.md` (not started; the model-porting

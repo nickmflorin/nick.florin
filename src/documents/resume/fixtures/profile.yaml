@@ -1,34 +1,59 @@
-# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
-# Until the fixture <-> database sync tooling lands, those modules are the operative source:
-# edit them and regenerate rather than editing this file directly.
 profile:
   about:
-    - content:
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      content:
         A detail-obsessed, ownership-driven, product-first engineer who goes well beyond closing
         tickets. Deeply invested in the <em>why</em> behind every feature, proactively identifying
         architectural gaps, raising engineering standards, and driving meaningful improvements
         across the product and the team, end-to-end, pushing the user experience forward at every
         turn.
       slug: beyond-tickets
-    - content:
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      content:
         'Proactive by default: He proposes the fix before being asked, carries features from
         ambiguous scope to production polish.'
       slug: proactive-by-default
-    - content:
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      content:
         Has a proven track record of leading cross-functional pods, delivering high-impact features,
         and elevating the engineering bar at every stage of a company's growth.
       slug: track-record
   contacts:
-    - icon: AT
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      icon: AT
       slug: email
       text: nickmflorin@gmail.com
-    - icon: LINKEDIN
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      icon: LINKEDIN
       slug: linkedin
       text: in/nick-florin-5046063b/
-    - icon: GITHUB
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      icon: GITHUB
       slug: github
       text: github.com/nickmflorin
-    - icon: GLOBE
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      icon: GLOBE
       slug: website
       text: www.nickflorin.com
   displayName: Nick Florin
@@ -37,14 +62,30 @@ profile:
   githubUrl: https://github.com/nickmflorin
   handle: '@nickmflorin'
   highlights:
-    - slug: years-of-experience
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      slug: years-of-experience
       text: <strong>11 years</strong> of software engineering
-    - slug: masters
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      slug: masters
       text: <strong>M.S. in Financial Mathematics</strong>, JHU
-    - slug: bachelors
+    - channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      slug: bachelors
       text: <strong>B.S. in Electrical Engineering</strong>, RPI
+  intro:
+    A passionate engineer that thrives on solving complex problems - the more complex the problem,
+    the more I am drawn to it. I love to build things, and sometimes break them as well.
   lastName: Florin
   linkedinUrl: https://www.linkedin.com/in/nick-florin-5046063b/
+  middleName: Mark
   photoFileName: Headshot.jpeg
   slug: nick-florin
   tagline: Senior Software Engineer

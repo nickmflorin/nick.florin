@@ -22,6 +22,11 @@ rendered and distributed. Key tenets:
    fixture files.
 5. **External syndication**: LinkedIn API syncing, GitHub-driven content updates (both deterministic
    and Claude-assisted).
+6. **The competency registry is an exhaustive catalog** (decided 2026-08-10, see
+   [decisions.md](./decisions.md)): it records everything Nick has used, learned, and worked with
+   throughout his career. Membership is never determined by any syndication channel — a competency
+   shown nowhere is normal and expected. Channels select from the catalog; the catalog never mirrors
+   the channels.
 
 The `resume-gen` repo (`~/repos/resume-gen`, an Astro app) is the current standalone resume
 generator. Its content types are the _general_ direction for the new modeling here, and its

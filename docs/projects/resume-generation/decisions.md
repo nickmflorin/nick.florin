@@ -16,6 +16,314 @@ Format:
 
 ---
 
+## 2026-08-10 — The competency registry is an exhaustive career catalog
+
+**Decision:** The competencies registry is a **global, exhaustive catalog** of everything Nick has
+used, learned, and worked with throughout his career. Membership in the catalog is never determined
+by whether a competency appears in any syndication channel — resume, website, or LinkedIn. A
+competency that renders nowhere is entirely legitimate and expected: the catalog is the history the
+channels select from, which is what makes per-channel add/remove/visibility control possible from
+one source of truth. Consequences: audits and future additions judge only whether something is a
+real skill/technology/practice that was actually used — never whether it is displayed; the
+`isVisible`/`excludedChannels` flags govern presentation only; and any future bucketing/tagging
+mechanism must not gate membership by channel. Recorded as a README tenet, on the `Competency`
+rehearsal type, in the legacy-skill mapping doc, and as a constraint on the open competency
+categorization question.
+
+**Why:** If membership tracked what channels display, the catalog would collapse into a mirror of
+its own outputs and stop being usable as the source the channels draw from.
+
+## 2026-08-11 — Carried-over model membership implemented (Project, Repository, Course)
+
+**Decision (implementation record):** The three carried-over models are full members of the new
+ecosystem, one sweep after the channels inversion. Schema: the same migration added `channels`, the
+competency join tables, and `Course.degreeId`. Data: new TS modules
+(`repositories.ts`/`projects.ts`/`courses.ts`) generated from the legacy prod JSON with skill links
+translated through the audit mapping table (24 repositories, 4 projects, 24 courses; channel seeding
+`visible → [WEBSITE]`, hidden → `[]`; courses re-parented by degree slug). The emitter writes three
+new fixture files, and three new bindings joined the registry (repository depends on competency;
+project on repository+competency; course on degree+competency). Push semantics mirror the `Company`
+precedent — link against existing rows and write only the additive membership; a repository or
+project not yet in the database is created whole, while a **new course cannot be pushed** (the
+required legacy `educationId` is deliberately not in the fixture) and is reported instead. All ten
+entities parse the fixture set with zero validation issues; resume output unchanged.
+
+## 2026-08-11 — Channels-allowlist inversion implemented end to end
+
+**Decision (implementation record):** `excludedChannels` → `channels` landed across every layer,
+with `@default([])` now meaning **a record syndicates nowhere until channels are granted**:
+
+- **Schema**: migration `20260811181344` renames the column on all eight parallel models and inverts
+  existing rows in place (`channels` = every enum member EXCEPT the old exclusions), so effective
+  syndication is unchanged; applied to the dev DB, client regenerated. The same migration lands the
+  carried-over models' schema half: `channels` on `Project`/`Repository`/`Course`,
+  `Course.degreeId`, and the three competency join tables.
+- **Document layer**: `Syndicated.channels`; `permits()` checks membership; authored trees state
+  channels explicitly at the root (`AllSyndicationChannels`) and nodes inherit, narrowing only — a
+  grant the parent doesn't carry fails normalization ("no useless grants", replacing "no redundant
+  exclusions"). All 177 competencies carry explicit grants (55 → `[LINKEDIN, WEBSITE]`); eleven node
+  narrowings converted (seven website-only ports plus four pre-existing page-fit exclusions in the
+  Craft tree).
+- **Transfer layer**: codecs/bindings renamed; node channels resolve by a `stampContentTreeChannels`
+  pass at parse (empty = inherit parent, mirroring slug stamping), so DB rows always carry explicit
+  allowlists. All seven entities parse the regenerated fixtures with zero issues.
+- **Verified**: emitted resume HTML byte-identical before and after.
+
+**Why:** Nick's ruling — creation should syndicate nowhere by default; explicit grants make every
+record's reach visible in the data instead of implied by absence.
+
+## 2026-08-11 — Legacy-model disposition: Project, Repository and Course carry over intact
+
+**Decision:** None of the three models without successors gets a redesign — all three receive the
+`Company`/`School` treatment: reused intact with additive membership in the new ecosystem.
+
+- **`Repository`** carries over as-is: it mirrors GitHub (the sync integration creates its rows), so
+  its shape is dictated by the source. Additive: a `Competency` m2m (its skill links translate
+  through the mapping table), `channels` participation, and a binding + `repositories.yaml`.
+- **`Project`** carries over as-is: its fields already read like the new models. Additive:
+  `Competency` m2m, `channels`, a binding + `projects.yaml` (repository/competency slug refs). A
+  `ContentOwnerType.PROJECT` member is added **only when** the website wants rich project content —
+  prod has no project details today, so nothing waits on it.
+- **`Course`** carries over with an additive re-parent: a nullable `degreeId` FK to `Degree` lands
+  alongside the legacy `educationId` (populated from the education ↔ degree correspondence), plus a
+  `Competency` m2m and a binding + `courses.yaml` keyed by degree slug refs. `slug` is kept despite
+  the schema comment doubting it: in the fixture layer, slug is the correlation key.
+
+Implementation is sequenced **after the channels-allowlist inversion**, so all three models are born
+with `channels` rather than migrated twice.
+
+**Why:** The successor treatment exists for models whose shape was wrong (`Skill`'s taxonomy,
+`Experience`/`Education`'s detail trees). These three have sound shapes; what they lack is
+membership — competency links, channel participation, and fixture representation — all of which is
+additive.
+
+## 2026-08-11 — Proficiency buckets estimated from experience years
+
+**Decision:** The 11 unrated competencies carrying a legacy `experience` value received proficiency
+buckets, estimated from the year→bucket pattern in the already-rated set and adjusted by Nick: `CSS`
+10y → ADVANCED, `Django` 10y → EXPERT, `Responsive Design` 8y → ADVANCED, `Matlab` and `Redux-Sagas`
+5y → ADVANCED, `Bash`, `Clerk` and `React Native` 2y → PROFICIENT, `R` 2y → FAMILIAR
+(academic-language treatment, matching C++), `AWS Lambda` and `Vue` 1y → FAMILIAR. Rated
+competencies: 24 → 35. The 142 unrated competencies without years stay null — nothing renders from
+proficiency outside `BARS` groups, all of whose members are rated. Verified: generated resume output
+unchanged.
+
+**Why:** Years are the only evidence available for unrated records, and calibrating against the
+existing hand-rated pairs keeps the estimates consistent with claims already published.
+
+## 2026-08-10 — Association-merge amendment: associations are sacred, chips are expendable
+
+**Decision:** The case-(a) rule is enforced as Nick ruled it, with a clear priority order:
+**role/degree ↔ competency associations are never removed — they are data the website and future
+channels need — while resume chips are freely expendable.** A new chip may appear on a role/degree
+only if the competency is a resume-sidebar member. The eleven old, non-sidebar competencies the
+merge had spread to additional roles (`responsive-design`, `aws-s3`, `aws-ec2`,
+`aws-elastic-beanstalk`, `react-redux`, `django-channels`, `websockets`, `mysql`, `mongodb`,
+`react-native`, `pandas`) are **globally `RESUME`-excluded** (55 exclusions total, with the 44 port
+additions), accepting that their existing curated chips disappear from the resume rows (e.g.
+`pandas` off Rock Creek, `responsive-design`/`react-native` off Northbeam) — "it is fine if the
+resume roles/degrees lose a skill or two; it is not fine to remove the relationship." One exemption:
+**`django` is not excluded** and keeps all chips including its new GreenBudget/Nirveda attachments,
+because "Django / DRF" represents it in the sidebar. An interim revert that removed the 23 new
+attachments instead was rejected and undone — it protected chips by deleting relationships, exactly
+backwards. Verified: associations fully restored, and every rendered new chip is a sidebar member or
+django.
+
+**Why:** The catalog principle extended to associations: data existence is never subordinated to
+presentation. Per-association channel control (chip on role X, not role Y) remains future work with
+the pill-display-controls item; until then, competency-level exclusion is the mechanism, and its
+global blast radius on curated chips is an accepted cost.
+
+## 2026-08-10 — Prose-comparison pass complete: seven website-only nodes port, seven skips
+
+**Decision:** The compare-then-selectively-add pass over legacy prose is done. The comparison
+collapsed dramatically because the prod content had been synced from the resume content: all ten
+experience descriptions and the entire Craft and Northbeam detail trees are verbatim-identical to
+authored nodes (no action), leaving fifteen genuinely divergent legacy items. Outcomes:
+
+- **Ported as `RESUME`-excluded website nodes (7):** Corsha's "Notable Technical Contributions"
+  (children: Component Library, Error Communication Protocols — with the prod typo "resusable"
+  corrected to "reusable"), Nirveda's "Rebuild", Saracen's "Diff Reporting", The Atlantic's
+  "Accounts API", and Rock Creek's "Transparency", "Rock Creek Insights", and "Asset
+  Visualizations". Verified byte-identical generated output after the port.
+- **Skipped as superseded (7, confirmed by Nick):** Corsha Leadership/Design/Planning & Road
+  Mapping, GreenBudget Release, Nirveda Testing/Leadership, Atlantic Apple News — each is
+  semantically carried by its role's authored summary in better form; the legacy wording remains in
+  the legacy JSON only.
+- **Scalar captures:** `profile.intro` and the JHU-computational `Degree.note` ("~50% of
+  coursework") ported — neither field is rendered by any document component. `middleName` had
+  already landed.
+- **Conflicts resolved:** authored `displayName: 'Nick Florin'` wins over legacy `nickmflorin` (the
+  username survives as `handle` and the GitHub URL); authored `linkedinUrl` (trailing slash) wins;
+  legacy `profileImageUrl` is represented by `photoFileName`.
+
+**Why:** The authored content was written as the deliberate successor of exactly this legacy prose;
+porting reworded duplicates would recreate the two-renditions problem the flag-4 decision exists to
+prevent, while the seven ported items are real accomplishments the website displays that appear
+nowhere in the authored trees.
+
+## 2026-08-10 — Association merge lands via competency-level channel exclusion
+
+**Decision:** The legacy experience/education → skill associations merge into the new model **now**,
+using competency-level syndication rather than waiting for per-owner pill controls. Three parts:
+
+1. **The pipeline honors competency channels.** `resolveSyndication`/`resolveNode`/`resolveNested`
+   filter every competencies list through the same `permits()` gate as nodes, so a chip renders only
+   on channels the competency itself permits. Associations are data; chips are presentation.
+2. **Catalog exclusions follow the a/b rule:** a competency already visible anywhere on the resume
+   (sidebar or chips) stays resume-permitted, and the extra chips it adds to merged roles are an
+   **accepted temporary difference** in the generated output; a competency visible nowhere on the
+   resume carries `excludedChannels: [RESUME]` — which turned out to be exactly the 44 port
+   additions. Every pre-existing catalog record was already resume-visible somewhere.
+3. **The merge itself:** all eleven legacy experience skill lists and three education skill lists
+   translated through the mapping table and appended to the owners' competencies lists (curated
+   entries preserved in place, additions appended). Verified: the only output change is chips — zero
+   non-chip diff lines in every emitted page; page 1 unchanged, page 2 +117 chips, page 3 +33.
+   Degrees carry associations but render no chips (the Education component has no pill row).
+
+Per-owner granularity — a shared competency chipping on one role but not another — was not needed
+for this merge and remains with the pill-display-controls backlog item as a future enhancement.
+
+**Why:** The models should behave like the Prisma models they mirror: associations recorded as m2m
+data, presentation resolved per channel by the one cascade. Waiting for per-owner controls blocked
+real data movement on a mechanism nothing yet requires.
+
+**Alternatives considered:** Deferring the merge until per-owner pill controls exist (rejected:
+blocks the port on unbuilt schema for a granularity nothing currently needs); separating association
+lists from curated chip lists as distinct fields (rejected for now: diverges from the Prisma-mirror
+principle; revisit if per-owner needs materialize).
+
+## 2026-08-10 — Audit amendment: nine dropped skills reinstated
+
+**Decision:** Nine of the 22 audit drops are reinstated as their own competencies: `git`, `pyenv`,
+`nvm`, `npm`, `pip`, `CSS`, `HTML`, `jQuery`, `MeteorJS`. The mapping table
+([context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md)) is regenerated: **44** new
+competencies and **13** remaining drops (`Client Side Rendering`, `Error Handling`, `SVGs`,
+`HTML Templating`, `Package & Dependency Management`, `linux`, `Jira`, `Notion`, `ClickUp`,
+`Clubhouse`, `Agile Software Development`, `VBA`, `@react-pdf`). Also confirmed: `pnpm` was never
+dropped — it keeps its stop-1 fold into the existing `pnpm workspaces` competency.
+
+**Why:** Nick's call on review of the drop list — these carry enough history/breadth signal to keep,
+and competencies render nowhere unless referenced, so reinstating them costs nothing on any surface.
+
+## 2026-08-09 — Legacy skill audit: the full 158-skill mapping is decided
+
+**Decision:** Every one of the 158 legacy skills has a decided disposition, recorded as the port's
+translation table in [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md): **67**
+map to existing competencies directly (61 identical slugs, 6 slug variants where the YAML slug
+wins), **31** fold into existing competencies, **38** map into **35 new competencies** (including
+two consolidation concepts — `Authentication & Authorization` absorbing the JWT/session/protocols
+trio, and `Application Security` absorbing `Security Practices`), and **22** are confirmed drops
+(legacy-only): ambient tooling (`git`, `npm`, `nvm`, `pip`, `pyenv`, `linux`), PM products (`Jira`,
+`Notion`, `ClickUp`, `Clubhouse`), process labels (`Agile Software Development`), fundamentals
+carried by concrete tools (`HTML`, `CSS`, `SVGs`, `HTML Templating`,
+`Package & Dependency Management`), non-skills (`Client Side Rendering`, `Error Handling`), and
+dated tech (`jQuery`, `MeteorJS`, `VBA`, `@react-pdf`). Settled family-by-family in an eight-stop
+walkthrough; notable calls: substantive AWS services stay individual (RDS, DynamoDB, ECS,
+ElastiCache, Cloudwatch, IAM) while thin ones fold into `AWS`; academic parity kept
+(`numpy`/`scipy`/`scikit-learn` alongside `pandas`, `Matlab`/`R`, `Optimization Methods`);
+`Relational Databases` added for parity with the kept `NoSQL Databases`.
+
+**Why:** The port translates every legacy `skills:` reference through this table, so it had to be
+total — and auditing before porting keeps vague, duplicated, or superseded skills from ever entering
+`competencies.yaml`. Drops don't delete anything: legacy JSON and models are untouched.
+
+**Alternatives considered:** Porting all 158 mechanically and cleaning up afterward (rejected: junk
+enters the canonical fixture layer and has to be destructively removed later, which the sync safety
+rules make deliberately noisy).
+
+## 2026-08-09 — Sync push preserves legacy `createdAt`; fixtures never author timestamps
+
+**Decision:** Ported records carry no timestamps in YAML — the `meta:` block stays strictly
+DB-write-back bookkeeping. In its place, a recorded **requirement on the sync engine**: when the
+push creates a new-model row whose record has a legacy counterpart (competency ↔ skill, role ↔
+experience, degree ↔ education, company/school/profile ↔ themselves), it seeds `createdAt` from the
+legacy row rather than `now()`. The mechanism is designed as part of the sync-engine build, which is
+the next roadmap item anyway.
+
+**Why:** `createdAt` is load-bearing: the 2026-08-04 ordering decision derives website competency
+order from prioritized-then-`createdAt`, so fresh timestamps at push time would scramble today's
+website ordering at adoption. Authoring timestamps into fixtures would overload transfer bookkeeping
+with authored data.
+
+**Alternatives considered:** Relaxing the `meta:` schema so legacy timestamps can be authored
+(pollutes the bookkeeping/authored-state separation); accepting fresh timestamps with the audit
+assigning explicit order (re-introduces stored ordering, which the 2026-08-04 decision deliberately
+rejected).
+
+## 2026-08-09 — Port visibility maps 1-1; empty legacy detail fields port nothing
+
+**Decision:** Legacy `visible: false` maps to `isVisible: false` — hidden everywhere. Verified by
+direct count against the prod JSON: exactly **one** hidden record exists (the USLege.ai Founding
+Senior Software Engineer experience), and it ports hidden, reproducing today's behavior (off the
+website, absent from the resume). Also verified: across all 36 prod details, `highlighted` is never
+true and `shortDescription` is never set — so neither field ports, no schema accommodation is
+needed, `Detail.shortDescription`'s successor remains the variant table (2026-08-04), and
+detail-level highlighting is confirmed unread by any public-site rendering code.
+
+**Why:** The counts collapse what looked like three mapping questions into zero-data non-issues, and
+the single hidden record's semantics (`hidden everywhere`) match `isVisible: false` exactly.
+
+**Alternatives considered:** Mapping legacy `visible: false` to `excludedChannels: [WEBSITE]`
+(rejected: leaves the record eligible for resume/LinkedIn syndication, which differs from today's
+behavior).
+
+## 2026-08-09 — JSON→YAML port scope: models without successors deferred, designed next
+
+**Decision:** The port of legacy prod data (the JSON seed fixtures, confirmed current with
+production) into the YAML fixture layer covers only the aggregates that have successor bindings:
+Profile, Company, Role, Degree, School, Competency, and ResumeSheet. `Project` (4 records),
+`Repository` (22), and `Course` (~15, nested in schools) have no successor models or bindings; they
+are **deferred from this port**, and designing their successors becomes the immediate next task
+after the port completes — through the same research → recommendation → decision process the other
+models received. The port is additive with respect to the YAML files: nothing already authored is
+deleted, and the generated resume PDF/HTML output must be byte-equivalent before and after.
+
+**Why:** The syndication-channel participation of Project/Repository/Company/School is one of the
+five unresolved open questions from the paused research walkthrough; designing those models inline
+would block the port on design work it does not need, while dropping them entirely would abandon the
+single-source-of-truth goal.
+
+**Alternatives considered:** Designing the successor models first (blocks the port); leaving
+projects/repositories/courses on legacy models permanently (contradicts the project charter).
+
+## 2026-08-09 — Skill taxonomy does not port; the audit designs its successor
+
+**Decision:** The legacy `Skill` taxonomy fields — `categories`, `programmingLanguages`, and
+`programmingDomains` — are **held out of the JSON→YAML port**. `Competency` gains no equivalent
+columns yet. The planned skills audit (concreteness, duplicates, supersets) doubles as the design
+pass for a successor categorization scheme; the schema fields, codecs, YAML representation, and
+ported values all follow from what the audit produces. Until then the legacy JSON/models remain the
+only carrier of the taxonomy, so nothing is lost by deferring.
+
+**Why:** The audit exists precisely because the current skill set — and by extension its
+categorization — is not trusted as-is. Porting the taxonomy verbatim would enshrine a scheme that is
+about to be redesigned, and the website features that read it (dashboard chart, skill filters) still
+read the legacy models today.
+
+**Alternatives considered:** Porting all three fields 1-1 now with the audit refining values later
+(rejected: bakes in a scheme the audit may replace); porting only `categories` (rejected: same
+problem, partially).
+
+## 2026-08-09 — Legacy prose ports by comparison, not wholesale
+
+**Decision:** Legacy experience/education `description` values and `details`/`nestedDetails` trees
+enter `roles.yaml`/`degrees.yaml` through a **compare-then-selectively-add** pass, not a mechanical
+copy. For each role/degree, legacy prose is compared against the content nodes already authored for
+the resume: legacy items with no semantic counterpart port in as nodes carrying
+`excludedChannels: [RESUME]` (captured for the website, invisible to the generated documents); items
+that overlap an authored node are flagged for an item-by-item ruling rather than silently duplicated
+or dropped. The generated PDF/HTML must be unchanged by the port.
+
+**Why:** The authored trees are curated rewrites of the same underlying content the legacy details
+carry; wholesale duplication would leave every role holding two renditions of its own history
+forever, while skipping legacy prose entirely would silently lose website content the new models are
+supposed to power.
+
+**Alternatives considered:** Porting every legacy detail as a website-only node (complete but
+pollutes the trees with near-duplicates); treating the curated trees as superseding legacy prose
+(loses prod content without review).
+
 ## 2026-08-04 — Per-context text: one variant table, built when the third context arrives
 
 **Decision:** Per-context text variation — both prose (the `Detail.shortDescription` successor

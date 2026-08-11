@@ -35,9 +35,9 @@ import { type SlugReference } from './content-binding';
  * fixture it is sticky — a later title edit never changes identity.
  */
 export const NestedNodeFields = {
+  channels: channelsField(),
   competencies: slugRefListField('competency'),
   content: nullableProseField(),
-  excludedChannels: channelsField(),
   isVisible: visibilityField(),
   slug: nullableStringField(),
   title: nullableProseField(),
@@ -55,9 +55,9 @@ export const NodeFields = {
 export const NodeCodec = new RecordCodec(NodeFields);
 
 export const ContentTreeFields = {
+  channels: channelsField(),
   competencies: slugRefListField('competency'),
   content: recordListField(NodeCodec),
-  excludedChannels: channelsField(),
   isVisible: visibilityField(),
   summary: recordListField(NodeCodec),
 } satisfies FieldCodecRecord;
@@ -116,6 +116,29 @@ export const stampContentTreeSlugs = (tree: CanonicalContentTree): CanonicalCont
     content: stampCollection(tree.content, 'content'),
     summary: stampCollection(tree.summary, 'summary'),
   };
+};
+
+/**
+ * Resolves the channel allowlist of every node that does not author one. An empty `channels` on a
+ * node reads as "inherit the parent's" — the fixture authoring shape omits node channels except to
+ * narrow — so stamping replaces empty lists with the nearest ancestor's resolved set, rooted at
+ * the tree's own (owner-level) channels. A node that should render nowhere authors
+ * `isVisible: false` instead of an empty list.
+ */
+export const stampContentTreeChannels = (tree: CanonicalContentTree): CanonicalContentTree => {
+  const resolve = (nodes: CanonicalNode[]): CanonicalNode[] =>
+    nodes.map(node => {
+      const channels = node.channels.length > 0 ? node.channels : tree.channels;
+      return {
+        ...node,
+        channels,
+        children: node.children.map(child => ({
+          ...child,
+          channels: child.channels.length > 0 ? child.channels : channels,
+        })),
+      };
+    });
+  return { ...tree, content: resolve(tree.content), summary: resolve(tree.summary) };
 };
 
 /**

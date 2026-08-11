@@ -156,3 +156,8 @@ forward onto `Competency` — but some way to bucket or tag competencies for gro
 eventually, so the question stays open as "design a future bucketing/tagging mechanism" rather than
 "port the legacy fields". The legacy columns stay untouched on `Skill` (the site's chart and admin
 filters keep working) until that mechanism exists.
+
+**Constraint recorded 2026-08-10 (see decisions.md):** the registry is an exhaustive career catalog
+whose membership is independent of syndication. Whatever bucketing/tagging mechanism is designed
+must classify the whole catalog — including competencies no channel currently renders — and must
+never gate membership by channel.

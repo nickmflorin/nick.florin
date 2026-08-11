@@ -1,0 +1,158 @@
+courses:
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Advanced Equity Derivatives
+    slug: advanced-equity-derivatives
+  - channels:
+      - WEBSITE
+    competencies:
+      - c
+    degree: rpi
+    name: Computer Science
+    slug: computer-science
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Credit Default Risk Modeling
+    shortName: Credit Default Risk
+    slug: credit-default-risk-modeling
+  - channels:
+      - WEBSITE
+    competencies:
+      - data-visualization
+      - python
+      - data-scraping
+      - scipy
+      - numpy
+      - scikit-learn
+    degree: jhu-computational
+    name: Data Mining
+    slug: data-mining
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Digital Components & Operations
+    slug: digital-components-operations
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Economics
+    slug: economics
+  - channels:
+      - WEBSITE
+    competencies:
+      - django
+      - python
+      - html
+      - jinja
+    degree: rpi
+    name: Electrical Engineering Design
+    slug: electrical-engineering-design
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Electrical Power Systems
+    slug: electrical-power-systems
+  - channels:
+      - WEBSITE
+    competencies:
+      - c
+    degree: rpi
+    name: Embedded Control
+    slug: embedded-control
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Fields & Waves
+    slug: fields-waves
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Financial Derivatives
+    slug: financial-derivatives
+  - channels:
+      - WEBSITE
+    competencies:
+      - python
+    degree: jhu-financial
+    name: Machine Learning
+    slug: machine-learning
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Managerial Economics
+    slug: managerial-economics
+  - channels:
+      - WEBSITE
+    competencies:
+      - matlab
+      - optimization-methods
+      - numerical-computation
+      - python
+    degree: jhu-financial
+    name: Monte Carlo Methods
+    slug: monte-carlo-methods
+  - channels:
+      - WEBSITE
+    competencies:
+      - data-visualization
+      - python
+    degree: jhu-computational
+    name: Neural Networks
+    slug: neural-networks
+  - channels:
+      - WEBSITE
+    degree: jhu-computational
+    name: Probabalistic Models in Computer Science
+    shortName: Probabalistic Models
+    slug: probabilistic-models-in-computer-science
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Probability Theory
+    slug: probability-theory
+  - channels:
+      - WEBSITE
+    competencies:
+      - numerical-computation
+    degree: jhu-computational
+    name: Queueing Theory and its Applications in Computer Science
+    shortName: Queueing Theory
+    slug: queueing-theory-and-its-applications-in-computer-science
+  - channels:
+      - WEBSITE
+    competencies:
+      - matlab
+      - numerical-computation
+      - python
+    degree: rpi
+    name: Robotics
+    slug: robotics
+  - channels:
+      - WEBSITE
+    degree: rpi
+    name: Signals & Systems
+    slug: signals-systems
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Stochastic Calculus
+    slug: stochastic-calculus
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Stochastic Processes
+    slug: stochastic-processes
+  - channels:
+      - WEBSITE
+    degree: jhu-financial
+    name: Structured Products
+    slug: structured-products
+  - channels:
+      - WEBSITE
+    competencies:
+      - data-visualization
+    degree: jhu-financial
+    name: Time Series Analysis
+    slug: time-series-analysis

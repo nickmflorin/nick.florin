@@ -85,7 +85,10 @@ export const nullableEnumField = <E extends z.EnumLike>(
 });
 
 /**
- * The `excludedChannels` exclusion list, whose default is the permissive empty list.
+ * The `channels` allowlist. Omitted decodes to the empty list, which — per the 2026-08-11
+ * inversion — means the record syndicates NOWHERE until channels are granted. On content-tree
+ * nodes an empty list additionally reads as "inherit the parent's channels" and is resolved by
+ * `stampContentTreeChannels`; a node that should truly render nowhere authors `isVisible: false`.
  */
 export const channelsField = (): FieldCodec<
   SyndicationChannel[] | undefined,

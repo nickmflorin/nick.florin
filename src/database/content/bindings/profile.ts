@@ -23,8 +23,8 @@ import { type IssueCollector } from '../issues';
 import { ContentBinding, type ParsedRecord } from './content-binding';
 
 const AboutParagraphFields = {
+  channels: channelsField(),
   content: proseField(),
-  excludedChannels: channelsField(),
   isVisible: visibilityField(),
   shortContent: nullableProseField(),
   slug: stringField(),
@@ -33,7 +33,7 @@ const AboutParagraphFields = {
 const AboutParagraphCodec = new RecordCodec(AboutParagraphFields);
 
 const HighlightFields = {
-  excludedChannels: channelsField(),
+  channels: channelsField(),
   isVisible: visibilityField(),
   shortText: nullableProseField(),
   slug: stringField(),
@@ -43,7 +43,7 @@ const HighlightFields = {
 const HighlightCodec = new RecordCodec(HighlightFields);
 
 const ContactFields = {
-  excludedChannels: channelsField(),
+  channels: channelsField(),
   icon: enumField(ContactIcon),
   isVisible: visibilityField(),
   shortText: nullableStringField(),

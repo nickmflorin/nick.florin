@@ -1,9 +1,10 @@
-# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
-# Until the fixture <-> database sync tooling lands, those modules are the operative source:
-# edit them and regenerate rather than editing this file directly.
 roles:
   - company: craft-education-system
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - typescript
         - react
@@ -38,7 +39,10 @@ roles:
                 (view/edit/attach/score) and a schema-driven form architecture unifying every
                 surface behind one rendering pipeline.
               title: Rubrics
-            - content:
+            - channels:
+                - LINKEDIN
+                - WEBSITE
+              content:
                 'Activity-logging and approval workflow for learners, instructors, evaluators, and
                 admins, with program-specific validation and submit-on-behalf-of flows. Kept it
                 extensible without per-customer forks: modeled approval as a state machine with
@@ -46,18 +50,17 @@ roles:
                 tailor how learners tracked time - daily vs. monthly entry cadence, minimum time per
                 activity, whether learners could log above the target, and other per-program
                 constraints - without requiring engineering changes.'
-              excludedChannels:
-                - RESUME
               title: Time Tracking
-            - content:
+            - channels:
+                - LINKEDIN
+                - WEBSITE
+              content:
                 'New product surface for defining skill taxonomies, attaching them to activities,
                 and tracking learner progress. Led end-to-end from discovery through rollout:
                 authored the taxonomy and progress-aggregation data model, and drew the
                 platform/per-customer boundary so the feature could be reused across future products
                 on the monorepo. Organized and planned the work based on dependencies to maximize
                 parallel efforts across multiple engineers.'
-              excludedChannels:
-                - RESUME
               title: Skills Tracking
           content:
             Led a cross-functional pod from the ground up, starting as a 2-engineer team alongside a
@@ -119,12 +122,13 @@ roles:
                 steered the company's expansion from a single-product codebase toward a scalable,
                 multi-product mesh."
               title: Monorepo &amp; Microfrontend Decoupling
-            - content:
+            - channels:
+                - LINKEDIN
+                - WEBSITE
+              content:
                 Designed and rolled out a unified, namespaced structured-logging architecture
                 spanning every service - replacing scattered ad-hoc logging with a single queryable
                 observability surface wired into Datadog.
-              excludedChannels:
-                - RESUME
               title: Structured Logging &amp; Observability
           title: Architecture
           type: NUMBERED_LIST
@@ -140,14 +144,15 @@ roles:
             measurably better user experiences. Spearheaded integration of Deque axe-core
             accessibility checks into CI/CD pipelines for automated WCAG enforcement.
           title: Design &amp; UX Coordination
-        - content:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
             Established a monorepo-wide TypeScript and ESLint quality program, systematically
             adopting 20+ rules via a grandfathering strategy that kept new code clean while enabling
             incremental migration. Enforced type-checking across test files in CI, fixed long-broken
             IDE ESLint integration, and created an internal documentation app covering contributing
             guides, React patterns, and architectural decisions.
-          excludedChannels:
-            - RESUME
           title: Developer Experience &amp; Code Quality
       summary:
         - content:
@@ -178,8 +183,43 @@ roles:
     slug: craft
     startDate: 2024-10-01
     title: Senior Software Engineer
+  - company: uslege-ai
+    content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      competencies:
+        - eslint
+        - observability
+        - zod
+        - tanstack-query
+        - pino
+        - prettier
+        - framer-motion
+        - mui-material-ui
+        - systems-architecture
+        - next-js
+        - design-ux-partnership
+        - css
+        - component-architecture
+        - turborepo
+      isVisible: false
+      summary:
+        - content:
+            Developing software tools that leverage Artificial Intelligence (LLMs) that allow
+            customers to gain more meaningful insights from large amounts of political data.
+    isRemote: true
+    shortTitle: Founding S. Software Eng.
+    slug: uslege
+    startDate: 2024-06-03
+    title: Founding Senior Software Engineer
   - company: northbeam
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - react
         - typescript
@@ -192,6 +232,36 @@ roles:
         - component-architecture
         - responsive-design
         - lerna
+        - eslint
+        - observability
+        - zod
+        - prettier
+        - mantine
+        - systems-architecture
+        - ci-cd-pipeline-design
+        - express-js
+        - pnpm-workspaces
+        - unit-integration-e2e
+        - design-ux-partnership
+        - node-js
+        - javascript
+        - postgresql
+        - docker
+        - engineering-leadership
+        - jest
+        - npm
+        - framer-motion
+        - floating-ui
+        - bash
+        - application-security
+        - amplitude
+        - html
+        - css
+        - bugsnag
+        - git
+        - nvm
+        - authentication-authorization
+        - relational-databases
       content:
         - content:
             Designed and implemented a currency localization system enabling all marketing analytics
@@ -217,6 +287,10 @@ roles:
   - city: Washington
     company: shelfcycle
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - next-js
         - trpc
@@ -225,6 +299,35 @@ roles:
         - vercel
         - typescript
         - ssr-rsc
+        - eslint
+        - zod
+        - prettier
+        - mantine
+        - ci-cd-pipeline-design
+        - unit-integration-e2e
+        - design-ux-partnership
+        - sass
+        - responsive-design
+        - javascript
+        - aws
+        - component-architecture
+        - observability
+        - postgresql
+        - aws-s3
+        - rest-api-design
+        - jest
+        - npm
+        - tanstack-query
+        - pino
+        - bash
+        - application-security
+        - html
+        - css
+        - git
+        - nvm
+        - authentication-authorization
+        - clerk
+        - relational-databases
       summary:
         - content:
             Contributed to early MVP development of a web-based inventory management, order
@@ -240,6 +343,10 @@ roles:
   - city: Vienna
     company: corsha
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - next-js
         - typescript
@@ -255,6 +362,56 @@ roles:
         - storybook
         - accessibility
         - ci-cd-pipeline-design
+        - eslint
+        - zod
+        - prettier
+        - mui-material-ui
+        - express-js
+        - unit-integration-e2e
+        - design-ux-partnership
+        - responsive-design
+        - javascript
+        - component-architecture
+        - observability
+        - poetry
+        - black
+        - codecov
+        - ssr-rsc
+        - tox
+        - microservices
+        - engineering-leadership
+        - rest-api-design
+        - npm
+        - pino
+        - antd-ant-design
+        - bash
+        - application-security
+        - html
+        - css
+        - git
+        - nvm
+        - pyenv
+        - pip
+        - authentication-authorization
+        - swr
+        - relational-databases
+      content:
+        - children:
+            - content:
+                Led the development of an internal component library and established patterns
+                associated with reusable components, component documentation and component testing.
+              title: Component Library
+            - content:
+                Established protocols for communicating errors between the client and the server and
+                incorporated these methods into UI components responsible for making server
+                requests, communicating feedback to users and making decisions based on error
+                control flow.
+              title: Error Communication Protocols
+          channels:
+            - LINKEDIN
+            - WEBSITE
+          title: Notable Technical Contributions
+          type: BULLETED_LIST
       summary:
         - content:
             'Team lead for the "Corsha Console," a modern customer-facing web platform enabling
@@ -272,6 +429,10 @@ roles:
     title: Software Engineer
   - company: greenbudget
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - django-rest-framework
@@ -288,6 +449,47 @@ roles:
         - pytest
         - websockets
         - django-channels
+        - eslint
+        - django
+        - aws-elastic-beanstalk
+        - observability
+        - aws
+        - prettier
+        - ci-cd-pipeline-design
+        - unit-integration-e2e
+        - design-ux-partnership
+        - sass
+        - responsive-design
+        - javascript
+        - component-architecture
+        - poetry
+        - codecov
+        - react-redux
+        - tox
+        - next-js
+        - pylint
+        - flake8
+        - microservices
+        - engineering-leadership
+        - rest-api-design
+        - npm
+        - aws-rds
+        - vue
+        - antd-ant-design
+        - aws-ecs
+        - aws-iam
+        - aws-elasticache
+        - bash
+        - authentication-authorization
+        - application-security
+        - html
+        - css
+        - git
+        - nvm
+        - pyenv
+        - pip
+        - sentry
+        - relational-databases
       content:
         - content:
             Spearheaded a comprehensive automated testing suite and CI/CD integration that increased
@@ -310,6 +512,10 @@ roles:
     title: Co-Founder & Creator
   - company: nirveda-cognition
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - django-rest-framework
@@ -322,6 +528,59 @@ roles:
         - aws
         - docker
         - jenkins
+        - eslint
+        - django
+        - observability
+        - prettier
+        - styled-components
+        - pytest
+        - ci-cd-pipeline-design
+        - redis
+        - django-channels
+        - unit-integration-e2e
+        - design-ux-partnership
+        - aws-ec2
+        - sass
+        - responsive-design
+        - javascript
+        - poetry
+        - codecov
+        - react-redux
+        - tox
+        - pylint
+        - flake8
+        - websockets
+        - engineering-leadership
+        - aws-s3
+        - rest-api-design
+        - npm
+        - aws-rds
+        - antd-ant-design
+        - aws-iam
+        - bash
+        - authentication-authorization
+        - application-security
+        - html
+        - css
+        - aws-cloudwatch
+        - git
+        - nvm
+        - pyenv
+        - pip
+        - sentry
+        - relational-databases
+      content:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            I was brought on at Nirveda at a time when significant parts of the code application(s)
+            had to be re-designed to support the size and scale of current and future customers. I
+            led the architecture re-design and implementation, addressing scalability and
+            maintainability concerns while simultaneously onboarding new customers. As a direct
+            result of my contributions, the sales team was able to onboard several new top-tier
+            Enterprise level customers.
+          title: Rebuild
       summary:
         - content:
             'Responsible for the full consumer-facing product: infrastructure architecture, feature
@@ -338,6 +597,10 @@ roles:
   - city: Arlington
     company: saracen-energy
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - flask
@@ -352,6 +615,46 @@ roles:
         - rabbitmq
         - elasticsearch
         - sqlalchemy
+        - eslint
+        - prettier
+        - styled-components
+        - ci-cd-pipeline-design
+        - unit-integration-e2e
+        - design-ux-partnership
+        - sass
+        - responsive-design
+        - javascript
+        - aws
+        - yarn-workspaces
+        - event-driven-architecture
+        - flake8
+        - websockets
+        - rest-api-design
+        - mysql
+        - npm
+        - antd-ant-design
+        - data-scraping
+        - bash
+        - authentication-authorization
+        - application-security
+        - html
+        - css
+        - git
+        - nvm
+        - pyenv
+        - pip
+        - rundeck
+        - relational-databases
+      content:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            Created a sub-application used daily by traders that allowed them to analyze the
+            differences, modifications and frequencies of changes between electricity grid data at
+            different points in time. With this application, traders were able to more efficiently
+            track outages and other important events in different electrical grids.
+          title: Diff Reporting
       summary:
         - content:
             Developed front-end and back-end analytical tooling used by the trading desk to inform
@@ -366,6 +669,10 @@ roles:
   - city: Washington
     company: the-atlantic
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - django
@@ -381,6 +688,52 @@ roles:
         - docker
         - jenkins
         - pytest
+        - eslint
+        - observability
+        - prettier
+        - systems-architecture
+        - ci-cd-pipeline-design
+        - express-js
+        - unit-integration-e2e
+        - aws-ec2
+        - responsive-design
+        - javascript
+        - aws
+        - react
+        - mongodb
+        - poetry
+        - codecov
+        - tox
+        - pylint
+        - flake8
+        - microservices
+        - jest
+        - mysql
+        - npm
+        - bash
+        - authentication-authorization
+        - asyncio
+        - application-security
+        - html
+        - css
+        - git
+        - pyenv
+        - pip
+        - jquery
+        - package-development
+        - handlebars
+        - jinja
+        - sentry
+        - relational-databases
+      content:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            Spent a year overhauling the entire revenue/subscription model and its applicable
+            services as a decoupled REST API using django-rest-framework that could independently
+            support subscriptions and memberships at The Atlantic.
+          title: Accounts API
       summary:
         - content:
             Backend Python developer supporting The Atlantic's CMS, subscriptions, and digital
@@ -396,6 +749,10 @@ roles:
   - city: Washington
     company: the-rock-creek-group
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - django-rest-framework
@@ -410,6 +767,60 @@ roles:
         - aws-lambda
         - aws-s3
         - pandas
+        - styled-components
+        - design-ux-partnership
+        - aws-ec2
+        - javascript
+        - aws
+        - postgresql
+        - react-native
+        - pylint
+        - websockets
+        - nosql-databases
+        - rest-api-design
+        - npm
+        - aws-dynamodb
+        - aws-iam
+        - data-scraping
+        - bash
+        - application-security
+        - meteorjs
+        - html
+        - css
+        - git
+        - pip
+        - r
+        - authentication-authorization
+        - jquery
+        - scipy
+        - numpy
+        - scikit-learn
+        - handlebars
+        - relational-databases
+      content:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical
+            tool using a react/Redux front-end consuming an API built using django-rest-framework.
+          title: Transparency
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to
+            provide client risk reporting, monitor risk and compare performances of managed pension
+            funds.
+          title: Rock Creek Insights
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          content:
+            Created a custom, flexible and proprietary charting package using D3.js that the firm
+            now uses in a variety of applications to visualize data in more than 2 dimensions and
+            animate the visualization over time.
+          title: Asset Visualizations
       summary:
         - content:
             Built internal analytical tooling and data infrastructure supporting investment
@@ -426,6 +837,10 @@ roles:
   - city: Olney
     company: pi-analytics
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
       competencies:
         - python
         - javascript
@@ -434,6 +849,18 @@ roles:
         - credit-default-risk-modeling
         - numerical-computation
         - monte-carlo-methods
+        - pandas
+        - html
+        - css
+        - git
+        - pip
+        - r
+        - jquery
+        - scipy
+        - numpy
+        - scikit-learn
+        - handlebars
+        - relational-databases
       summary:
         - content:
             Researched and implemented complex models for credit default risk across exotic

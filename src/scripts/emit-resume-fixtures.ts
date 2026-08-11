@@ -19,19 +19,25 @@ import { stringify } from 'yaml';
 
 import * as CompanyRecords from '~/documents/resume/data/companies';
 import * as CompetencyRecords from '~/documents/resume/data/competencies';
+import { Courses } from '~/documents/resume/data/courses';
 import { Degrees } from '~/documents/resume/data/degrees';
 import { Sheets } from '~/documents/resume/data/pages';
 import { NickFlorin } from '~/documents/resume/data/profile';
+import { Projects } from '~/documents/resume/data/projects';
+import { Repositories } from '~/documents/resume/data/repositories';
 import { Roles } from '~/documents/resume/data/roles';
 import * as SchoolRecords from '~/documents/resume/data/schools';
 import {
   type Company,
   type Competency,
   type ContentInput,
+  type Course,
   type DegreeInput,
   type NestedNodeInput,
   type NodeInput,
   type Profile,
+  type Project,
+  type Repository,
   type ResumeSheetInput,
   type RoleInput,
   type School,
@@ -39,11 +45,6 @@ import {
 } from '~/documents/resume/data/types';
 
 const FixturesDir = path.join(process.cwd(), 'src', 'documents', 'resume', 'fixtures');
-
-const FileBanner =
-  '# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.\n' +
-  '# Until the fixture <-> database sync tooling lands, those modules are the operative source:\n' +
-  '# edit them and regenerate rather than editing this file directly.\n';
 
 type YamlRecord = Record<string, unknown>;
 
@@ -65,7 +66,7 @@ const flag = (value: boolean | undefined): true | undefined => (value === true ?
 const visibility = (value: boolean | undefined): false | undefined =>
   value === false ? false : undefined;
 
-const channels = (
+const channelList = (
   value: readonly SyndicationChannel[] | undefined,
 ): SyndicationChannel[] | undefined =>
   value !== undefined && value.length > 0 ? [...value] : undefined;
@@ -81,9 +82,9 @@ const prose = (value: string | undefined): string | undefined =>
 
 const emitNestedNode = (node: NestedNodeInput): YamlRecord =>
   compact({
+    channels: channelList(node.channels),
     competencies: competencySlugs(node.competencies),
     content: prose(node.content),
-    excludedChannels: channels(node.excludedChannels),
     isVisible: visibility(node.isVisible),
     title: prose(node.title),
     titleLayout: node.titleLayout,
@@ -91,13 +92,13 @@ const emitNestedNode = (node: NestedNodeInput): YamlRecord =>
 
 const emitNode = (node: NodeInput): YamlRecord =>
   compact({
+    channels: channelList(node.channels),
     children:
       node.children !== undefined && node.children.length > 0
         ? node.children.map(emitNestedNode)
         : undefined,
     competencies: competencySlugs(node.competencies),
     content: prose(node.content),
-    excludedChannels: channels(node.excludedChannels),
     isVisible: visibility(node.isVisible),
     title: prose(node.title),
     titleLayout: node.titleLayout,
@@ -106,9 +107,9 @@ const emitNode = (node: NodeInput): YamlRecord =>
 
 const emitContent = (content: ContentInput): YamlRecord =>
   compact({
+    channels: channelList(content.channels),
     competencies: competencySlugs(content.competencies),
     content: content.content?.map(emitNode),
-    excludedChannels: channels(content.excludedChannels),
     isVisible: visibility(content.isVisible),
     summary: content.summary?.map(emitNode),
   });
@@ -116,8 +117,8 @@ const emitContent = (content: ContentInput): YamlRecord =>
 const emitCompetency = (competency: Competency): YamlRecord =>
   compact({
     calculatedExperience: orNothing(competency.calculatedExperience),
+    channels: channelList(competency.channels),
     description: orNothing(competency.description),
-    excludedChannels: channels(competency.excludedChannels),
     experience: orNothing(competency.experience),
     isHighlighted: flag(competency.isHighlighted),
     isPrioritized: flag(competency.isPrioritized),
@@ -197,8 +198,8 @@ const emitProfile = (profile: Profile): YamlRecord =>
   compact({
     about: profile.about.map(paragraph =>
       compact({
+        channels: channelList(paragraph.channels),
         content: collapse(paragraph.content),
-        excludedChannels: channels(paragraph.excludedChannels),
         isVisible: visibility(paragraph.isVisible),
         shortContent: orNothing(paragraph.shortContent),
         slug: paragraph.slug,
@@ -206,7 +207,7 @@ const emitProfile = (profile: Profile): YamlRecord =>
     ),
     contacts: profile.contacts.map(entry =>
       compact({
-        excludedChannels: channels(entry.excludedChannels),
+        channels: channelList(entry.channels),
         icon: entry.icon,
         isVisible: visibility(entry.isVisible),
         shortText: orNothing(entry.shortText),
@@ -221,7 +222,7 @@ const emitProfile = (profile: Profile): YamlRecord =>
     handle: orNothing(profile.handle),
     highlights: profile.highlights.map(highlight =>
       compact({
-        excludedChannels: channels(highlight.excludedChannels),
+        channels: channelList(highlight.channels),
         isVisible: visibility(highlight.isVisible),
         shortText: orNothing(highlight.shortText),
         slug: highlight.slug,
@@ -256,9 +257,48 @@ const emitSheet = (sheet: ResumeSheetInput): YamlRecord =>
     slug: sheet.slug,
   });
 
+const emitRepository = (repository: Repository): YamlRecord =>
+  compact({
+    channels: channelList(repository.channels),
+    competencies: competencySlugs(repository.competencies),
+    description: orNothing(repository.description),
+    highlighted: flag(repository.highlighted),
+    npmPackageName: orNothing(repository.npmPackageName),
+    slug: repository.slug,
+    startDate: isoDate(repository.startDate),
+    /* The legacy default is hidden, so only an affirmative `visible` is authored. */
+    visible: flag(repository.visible),
+  });
+
+const emitProject = (project: Project): YamlRecord =>
+  compact({
+    channels: channelList(project.channels),
+    competencies: competencySlugs(project.competencies),
+    description: project.description,
+    highlighted: flag(project.highlighted),
+    name: project.name,
+    repositories: project.repositories.map(repository => repository.slug),
+    shortName: orNothing(project.shortName),
+    slug: project.slug,
+    startDate: isoDate(project.startDate),
+    visible: flag(project.visible),
+  });
+
+const emitCourse = (course: Course): YamlRecord =>
+  compact({
+    channels: channelList(course.channels),
+    competencies: competencySlugs(course.competencies),
+    degree: course.degree,
+    description: orNothing(course.description),
+    name: course.name,
+    shortName: orNothing(course.shortName),
+    slug: course.slug,
+    visible: visibility(course.visible),
+  });
+
 const writeFixture = async (filename: string, key: string, value: unknown): Promise<void> => {
   const document = stringify({ [key]: value }, { lineWidth: 100 });
-  await fs.writeFile(path.join(FixturesDir, filename), `${FileBanner}${document}`, 'utf-8');
+  await fs.writeFile(path.join(FixturesDir, filename), document, 'utf-8');
 };
 
 const bySlug = <T extends { readonly slug: string }>(records: T[]): T[] =>
@@ -277,12 +317,21 @@ const main = async (): Promise<void> => {
   await writeFixture('roles.yaml', 'roles', Roles.map(emitRole));
   await writeFixture('degrees.yaml', 'degrees', Degrees.map(emitDegree));
   await writeFixture('resume-sheets.yaml', 'sheets', Sheets.map(emitSheet));
+  await writeFixture(
+    'repositories.yaml',
+    'repositories',
+    bySlug([...Repositories]).map(emitRepository),
+  );
+  await writeFixture('projects.yaml', 'projects', bySlug([...Projects]).map(emitProject));
+  await writeFixture('courses.yaml', 'courses', bySlug([...Courses]).map(emitCourse));
 
   /* eslint-disable-next-line no-console -- Standalone CLI tooling; the logger is not in context. */
   console.info(
     `Emitted ${Roles.length} roles, ${Degrees.length} degrees, ` +
       `${competencies.length} competencies, ${companies.length} companies, ${schools.length} ` +
-      `schools, ${Sheets.length} sheets and the profile to '${FixturesDir}'.`,
+      `schools, ${Sheets.length} sheets, ${Repositories.length} repositories, ` +
+      `${Projects.length} projects, ${Courses.length} courses and the profile to ` +
+      `'${FixturesDir}'.`,
   );
 };
 

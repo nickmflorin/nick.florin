@@ -50,7 +50,7 @@ export const Sheets: ResumeSheetInput[] = [
     degrees: [],
     isIntroVisible: false,
     order: 1,
-    roles: rolesBySlug(['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda', 'saracen']),
+    roles: rolesBySlug(['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda']),
     slug: 'page-2',
   },
   {
@@ -61,7 +61,7 @@ export const Sheets: ResumeSheetInput[] = [
     degrees: degreesBySlug(['jhu-computational', 'jhu-financial', 'rpi']),
     isIntroVisible: false,
     order: 2,
-    roles: rolesBySlug(['atlantic', 'rockcreek', 'pianalytics']),
+    roles: rolesBySlug(['saracen', 'atlantic', 'rockcreek', 'pianalytics']),
     slug: 'page-3',
   },
 ];

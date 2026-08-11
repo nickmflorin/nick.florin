@@ -1,0 +1,322 @@
+repositories:
+  - slug: app-router-guide
+    startDate: 2026-07-18
+  - slug: casepilot-fe-test
+    startDate: 2024-08-23
+  - description: Coin Score Landing Repository
+    slug: coinscore
+    startDate: 2017-10-13
+  - description: Diff Engine for Analysis Between 2 Datasets
+    slug: diff
+    startDate: 2020-09-02
+  - channels:
+      - WEBSITE
+    competencies:
+      - django
+      - python
+      - django-rest-framework
+    description: Experimental Code for Bulk Create Behavior with Polymorphic Models
+    highlighted: true
+    slug: django-polymorphic-bulk-create
+    startDate: 2021-07-03
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - prettier
+      - ci-cd-pipeline-design
+      - nvm
+      - typescript
+      - codecov
+      - unit-integration-e2e
+      - package-development
+      - jest
+    description: A utility for managing enumerated, string literal constants in TypeScript
+    highlighted: true
+    npmPackageName: enumerated-literals
+    slug: enumerated-literals
+    startDate: 2024-05-31
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - pyenv
+      - pip
+    description: Tool for Performing Blame & Contribution Analysis per Line on Entire Project
+    highlighted: true
+    slug: git-blame-project
+    startDate: 2022-07-09
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - observability
+      - aws
+      - prettier
+      - antd-ant-design
+      - mantine
+      - aws-ecs
+      - aws-iam
+      - application-security
+      - design-ux-partnership
+      - css
+      - component-architecture
+    description: HappyBudget Cloud Based Budgeting (Original Work)
+    highlighted: true
+    slug: happybudget
+    startDate: 2022-05-11
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - django
+      - aws-elastic-beanstalk
+      - observability
+      - python
+      - aws-rds
+      - pytest
+      - ci-cd-pipeline-design
+      - aws-elasticache
+      - authentication-authorization
+      - application-security
+      - django-rest-framework
+      - aws-ec2
+      - aws
+      - postgresql
+      - pyenv
+      - pip
+      - poetry
+      - circleci
+      - tox
+      - unit-integration-e2e
+      - pylint
+      - flake8
+      - aws-s3
+      - rest-api-design
+      - sentry
+      - relational-databases
+    description: Backend API for Happy Budget Application & Framework
+    highlighted: true
+    slug: happybudget-api
+    startDate: 2022-05-09
+    visible: true
+  - description: Hippo Scribe Interview
+    slug: hippo-scribe-interview
+    startDate: 2024-05-20
+  - channels:
+      - WEBSITE
+    competencies:
+      - python
+      - asyncio
+    description:
+      CLI Application Based on Python3's Asyncio for Systematically Guessing Instagram Passwords
+    slug: instagram-attack
+    startDate: 2019-03-25
+    visible: true
+  - competencies:
+      - eslint
+      - prettier
+    description: A bells & whistles starter template for NextJS projects
+    slug: nextjs-starter-template
+    startDate: 2023-04-23
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - observability
+      - zod
+      - pino
+      - prettier
+      - framer-motion
+      - mantine
+      - ci-cd-pipeline-design
+      - floating-ui
+      - next-js
+      - application-security
+      - pnpm-workspaces
+      - design-ux-partnership
+      - html
+      - prisma
+      - sass
+      - responsive-design
+      - css
+      - javascript
+      - nvm
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - ssr-rsc
+      - vercel
+      - tailwindcss
+      - unit-integration-e2e
+      - clerk
+      - rest-api-design
+      - jest
+      - swr
+      - relational-databases
+    description: Personal Website, Resume & Portfolio
+    highlighted: true
+    slug: nick.florin
+    startDate: 2024-01-09
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - observability
+      - design-ux-partnership
+      - swift
+      - application-security
+      - firebase
+    description: iOS Dating Application Based on Event/Date Based Matching
+    highlighted: true
+    slug: pebl
+    startDate: 2017-12-09
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - python
+      - pyenv
+      - pip
+      - flake8
+    description: Options/Settings Framework for Python Packages
+    slug: pickyoptions
+    startDate: 2020-09-02
+    visible: true
+  - description: Configurable settings for your Python packages and projects.
+    slug: pickysettings
+    startDate: 2019-07-07
+  - channels:
+      - WEBSITE
+    competencies:
+      - django
+      - python
+      - django-rest-framework
+      - pyenv
+      - pip
+      - flake8
+      - rest-api-design
+      - relational-databases
+    description: Personal Portfolio API w Django REST Framework (Old)
+    slug: portfolio-drf
+    startDate: 2020-03-14
+    visible: true
+  - channels:
+      - WEBSITE
+    competencies:
+      - npm
+      - aws
+      - css
+      - javascript
+      - react
+      - application-security
+    description: React Application for Personal Portfolio (Old)
+    slug: portfolio-frontend
+    startDate: 2024-04-16
+    visible: true
+  - description:
+      A temporary repository that holds a small Astro app that is used to modify and customize an
+      HTML and PDF form of my resume, geared towards agentic code generation.
+    slug: resume-gen
+    startDate: 2026-08-01
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - observability
+      - zod
+      - pino
+      - prettier
+      - framer-motion
+      - mantine
+      - floating-ui
+      - next-js
+      - application-security
+      - pnpm-workspaces
+      - design-ux-partnership
+      - html
+      - prisma
+      - sass
+      - responsive-design
+      - css
+      - javascript
+      - nvm
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - ssr-rsc
+      - tailwindcss
+      - unit-integration-e2e
+      - clerk
+      - rest-api-design
+      - jest
+      - swr
+      - relational-databases
+    description: Pick Up & Social Sports League Management
+    highlighted: true
+    slug: sportbook
+    startDate: 2023-06-30
+    visible: true
+  - description: Advanced Terminal Utilities
+    slug: termx
+    startDate: 2019-06-13
+  - channels:
+      - WEBSITE
+    competencies:
+      - eslint
+      - npm
+      - observability
+      - zod
+      - pino
+      - prettier
+      - framer-motion
+      - mantine
+      - ci-cd-pipeline-design
+      - floating-ui
+      - next-js
+      - data-scraping
+      - application-security
+      - pnpm-workspaces
+      - design-ux-partnership
+      - html
+      - prisma
+      - sass
+      - node-js
+      - responsive-design
+      - css
+      - javascript
+      - nvm
+      - component-architecture
+      - postgresql
+      - react
+      - typescript
+      - ssr-rsc
+      - tailwindcss
+      - unit-integration-e2e
+      - clerk
+      - rest-api-design
+      - jest
+      - swr
+      - relational-databases
+    description:
+      An application that allows users to monitor, manage and configure notifications and alerts
+      that they will receive as it relates to inventory & price changes that occur for products
+      offered by the woodworking hand tool manufacturer, Lie Nielsen.
+    highlighted: true
+    slug: tooltrack
+    startDate: 2024-05-11
+    visible: true
+  - description: USLege Assignment
+    slug: uslege-assign
+    startDate: 2024-05-29
+  - description: A collection of random TS utilities that I have used in the past.
+    slug: util
+    startDate: 2024-01-13

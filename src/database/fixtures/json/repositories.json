@@ -1,6 +1,17 @@
 {
   "repositories": [
     {
+      "slug": "app-router-guide",
+      "description": null,
+      "createdAt": "2026-08-07T21:06:15.599Z",
+      "updatedAt": "2026-08-07T21:06:15.599Z",
+      "visible": false,
+      "highlighted": false,
+      "startDate": "2026-07-18T00:11:30.000Z",
+      "npmPackageName": null,
+      "skills": []
+    },
+    {
       "slug": "coinscore",
       "description": "Coin Score Landing Repository",
       "createdAt": "2024-09-23T23:14:33.428Z",
@@ -21,6 +32,29 @@
       "startDate": "2021-07-03T16:37:16.000Z",
       "npmPackageName": null,
       "skills": ["django", "python", "django-rest-framework"]
+    },
+    {
+      "slug": "enumerated-literals",
+      "description": "A utility for managing enumerated, string literal constants in TypeScript",
+      "createdAt": "2024-09-23T23:14:33.428Z",
+      "updatedAt": "2024-09-26T15:31:29.820Z",
+      "visible": true,
+      "highlighted": true,
+      "startDate": "2024-05-31T18:03:51.000Z",
+      "npmPackageName": "enumerated-literals",
+      "skills": [
+        "eslint",
+        "npm",
+        "prettier",
+        "ci-cd",
+        "nvm",
+        "typescript",
+        "codecov",
+        "unit-testing",
+        "package-development",
+        "jest",
+        "package-dependency-management"
+      ]
     },
     {
       "slug": "git-blame-project",
@@ -276,6 +310,17 @@
       ]
     },
     {
+      "slug": "resume-gen",
+      "description": "A temporary repository that holds a small Astro app that is used to modify and customize an HTML and PDF form of my resume, geared towards agentic code generation.",
+      "createdAt": "2026-08-07T21:06:24.348Z",
+      "updatedAt": "2026-08-07T21:06:24.348Z",
+      "visible": false,
+      "highlighted": false,
+      "startDate": "2026-08-01T19:23:33.000Z",
+      "npmPackageName": null,
+      "skills": []
+    },
+    {
       "slug": "sportbook",
       "description": "Pick Up & Social Sports League Management",
       "createdAt": "2024-09-23T23:14:33.428Z",
@@ -431,29 +476,6 @@
       "startDate": "2020-09-02T19:54:59.000Z",
       "npmPackageName": null,
       "skills": []
-    },
-    {
-      "slug": "enumerated-literals",
-      "description": "A utility for managing enumerated, string literal constants in TypeScript",
-      "createdAt": "2024-09-23T23:14:33.428Z",
-      "updatedAt": "2024-09-26T15:31:29.820Z",
-      "visible": true,
-      "highlighted": true,
-      "startDate": "2024-05-31T18:03:51.000Z",
-      "npmPackageName": "enumerated-literals",
-      "skills": [
-        "eslint",
-        "npm",
-        "prettier",
-        "ci-cd",
-        "nvm",
-        "typescript",
-        "codecov",
-        "unit-testing",
-        "package-development",
-        "jest",
-        "package-dependency-management"
-      ]
     }
   ]
 }

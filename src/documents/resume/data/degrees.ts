@@ -1,5 +1,19 @@
+import {
+  CPlusPlus,
+  DataVisualization,
+  Django,
+  Matlab,
+  NumericalComputation,
+  Numpy,
+  OptimizationMethods,
+  Pandas,
+  Python,
+  R,
+  ScikitLearn,
+  Scipy,
+} from './competencies';
 import { RensselaerPolytechnicInstitute, TheJohnsHopkinsUniversity } from './schools';
-import { type DegreeInput, DegreeType } from './types';
+import { AllSyndicationChannels, type DegreeInput, DegreeType } from './types';
 
 /**
  * Every degree. A degree's prose is one summary node — the same content tree a role has, used at
@@ -9,6 +23,19 @@ export const Degrees: DegreeInput[] = [
   {
     concentration: null,
     content: {
+      channels: AllSyndicationChannels,
+      competencies: [
+        Django,
+        NumericalComputation,
+        Python,
+        Pandas,
+        DataVisualization,
+        Matlab,
+        OptimizationMethods,
+        Scipy,
+        Numpy,
+        ScikitLearn,
+      ],
       summary: [
         { content: 'Ongoing coursework toward an additional degree, temporarily postponed.' },
       ],
@@ -21,7 +48,9 @@ export const Degrees: DegreeInput[] = [
     isPostponed: true,
     major: 'Computational Mathematics',
     minor: null,
-    note: null,
+    note:
+      'Ongoing coursework temporarily postponed after completing approximately 50% of ' +
+      'coursework.',
     school: TheJohnsHopkinsUniversity,
     shortConcentration: null,
     shortMajor: null,
@@ -33,6 +62,20 @@ export const Degrees: DegreeInput[] = [
   {
     concentration: null,
     content: {
+      channels: AllSyndicationChannels,
+      competencies: [
+        Django,
+        NumericalComputation,
+        Python,
+        Pandas,
+        DataVisualization,
+        Matlab,
+        OptimizationMethods,
+        R,
+        Scipy,
+        Numpy,
+        ScikitLearn,
+      ],
       summary: [
         {
           content:
@@ -60,6 +103,8 @@ export const Degrees: DegreeInput[] = [
   {
     concentration: 'Robotics & Control Systems',
     content: {
+      channels: AllSyndicationChannels,
+      competencies: [NumericalComputation, Python, CPlusPlus, Matlab],
       summary: [
         { content: 'Minor in Economics; Concentration in Robotics &amp; Control Systems.' },
       ],

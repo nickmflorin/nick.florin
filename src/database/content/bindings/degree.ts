@@ -24,6 +24,7 @@ import {
   contentTreeReferences,
   createContentNodes,
   readContentTrees,
+  stampContentTreeChannels,
   stampContentTreeSlugs,
   validateContentTree,
 } from './content-tree';
@@ -64,11 +65,11 @@ class DegreePrismaCodec extends PrismaCodec<CanonicalDegree> {
     const created = await tx.degree.create({
       data: {
         ...omitBookkeeping(record, ['content', 'school']),
+        channels: record.content.channels,
         competencies: {
           connect: record.content.competencies.map(slug => ({ slug })),
         },
         createdBy: { connect: { id: context.userId } },
-        excludedChannels: record.content.excludedChannels,
         isVisible: record.content.isVisible,
         school: { connect: { slug: record.school } },
         updatedBy: { connect: { id: context.userId } },
@@ -92,23 +93,15 @@ class DegreePrismaCodec extends PrismaCodec<CanonicalDegree> {
             'the fixture reference.',
         );
       }
-      const {
-        competencies,
-        createdAt,
-        excludedChannels,
-        id,
-        isVisible,
-        school,
-        updatedAt,
-        ...degree
-      } = row;
+      const { channels, competencies, createdAt, id, isVisible, school, updatedAt, ...degree } =
+        row;
       const tree = trees.get(id) ?? { content: [], summary: [] };
       return {
         ...omitBookkeeping(degree),
         content: {
+          channels,
           competencies: competencies.map(competency => competency.slug),
           content: tree.content,
-          excludedChannels,
           isVisible,
           meta: null,
           summary: tree.summary,
@@ -136,7 +129,7 @@ export class DegreeBinding extends ContentBinding<typeof DegreeFields> {
   protected override finalize(
     record: CanonicalRecord<typeof DegreeFields>,
   ): CanonicalRecord<typeof DegreeFields> {
-    return { ...record, content: stampContentTreeSlugs(record.content) };
+    return { ...record, content: stampContentTreeChannels(stampContentTreeSlugs(record.content)) };
   }
 
   protected override validate(record: CanonicalDegree, issues: IssueCollector): void {

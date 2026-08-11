@@ -1,8 +1,20 @@
-# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
-# Until the fixture <-> database sync tooling lands, those modules are the operative source:
-# edit them and regenerate rather than editing this file directly.
 degrees:
   - content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      competencies:
+        - django
+        - numerical-computation
+        - python
+        - pandas
+        - data-visualization
+        - matlab
+        - optimization-methods
+        - scipy
+        - numpy
+        - scikit-learn
       summary:
         - content: Ongoing coursework toward an additional degree, temporarily postponed.
     degree: MASTERS_OF_SCIENCE
@@ -10,10 +22,27 @@ degrees:
     isHighlighted: true
     isPostponed: true
     major: Computational Mathematics
+    note: Ongoing coursework temporarily postponed after completing approximately 50% of coursework.
     school: the-johns-hopkins-university
     slug: jhu-computational
     startDate: 2016-01-01
   - content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      competencies:
+        - django
+        - numerical-computation
+        - python
+        - pandas
+        - data-visualization
+        - matlab
+        - optimization-methods
+        - r
+        - scipy
+        - numpy
+        - scikit-learn
       summary:
         - content:
             Advanced coursework in Applied Mathematics, Statistics &amp; Numerical Computation.
@@ -27,6 +56,15 @@ degrees:
     startDate: 2014-08-01
   - concentration: Robotics & Control Systems
     content:
+      channels:
+        - LINKEDIN
+        - RESUME
+        - WEBSITE
+      competencies:
+        - numerical-computation
+        - python
+        - c
+        - matlab
       summary:
         - content: Minor in Economics; Concentration in Robotics &amp; Control Systems.
     degree: BACHELORS_OF_SCIENCE

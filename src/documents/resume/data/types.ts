@@ -77,6 +77,17 @@ export enum SyndicationChannel {
 }
 
 /**
+ * Every syndication channel, for records that publish everywhere. Authored channel lists are
+ * explicit — the model default is the empty array, meaning a record syndicates nowhere until
+ * channels are granted — so "everywhere" is spelled with this constant rather than implied.
+ */
+export const AllSyndicationChannels: readonly SyndicationChannel[] = [
+  SyndicationChannel.LinkedIn,
+  SyndicationChannel.Resume,
+  SyndicationChannel.Website,
+];
+
+/**
  * What a top-level content node hangs off. This is the polymorphic discriminator, and it lives on
  * the CHILD pointing up, never as a `type` column on a merged parent table: roles and degrees stay
  * separate models with their own relations and unique keys, and share one content tree between
@@ -257,6 +268,71 @@ export interface School {
 }
 
 /**
+ * A GitHub repository, reused from the legacy schema (carried over intact, decided 2026-08-11).
+ *
+ * The shape mirrors what the GitHub sync integration writes; the new-model membership is the
+ * `channels` allowlist and the competency associations. The legacy booleans keep their names, per
+ * the reused-model convention.
+ *
+ * Prisma Additional Fields: the standard audit set, plus the legacy `skills` and `projects`
+ * relations, which remain operative for the site until adoption.
+ */
+export interface Repository {
+  readonly channels: readonly SyndicationChannel[];
+  readonly competencies: readonly Competency[];
+  readonly description: null | string;
+  readonly highlighted: boolean;
+  readonly npmPackageName: null | string;
+  readonly slug: string;
+  readonly startDate: Date;
+  readonly visible: boolean;
+}
+
+/**
+ * A portfolio project, reused from the legacy schema (carried over intact, decided 2026-08-11).
+ *
+ * Prisma Additional Fields: the standard audit set, plus the legacy `skills`, `details` and
+ * `nestedDetails` relations (unused in prod), which remain until adoption.
+ */
+export interface Project {
+  readonly channels: readonly SyndicationChannel[];
+  readonly competencies: readonly Competency[];
+  readonly description: string;
+  readonly highlighted: boolean;
+  readonly name: string;
+  readonly repositories: readonly Repository[];
+  readonly shortName: null | string;
+  readonly slug: string;
+  readonly startDate: Date;
+  readonly visible: boolean;
+}
+
+/**
+ * A university course, reused from the legacy schema (carried over intact, decided 2026-08-11).
+ *
+ * The parent is referenced by DEGREE slug — the additive `degreeId` re-parent — rather than by the
+ * legacy `educationId`, which stays populated in the legacy schema until adoption. The reference
+ * is a slug string rather than an object because degrees are authored as an array, not as named
+ * constants.
+ *
+ * Prisma Additional Fields: the standard audit set, plus the legacy `education` relation and
+ * `skills` m2m, which remain operative until adoption.
+ */
+export interface Course {
+  readonly channels: readonly SyndicationChannel[];
+  readonly competencies: readonly Competency[];
+  /**
+   * The slug of the {@link Degree} this course belongs to.
+   */
+  readonly degree: string;
+  readonly description: null | string;
+  readonly name: string;
+  readonly shortName: null | string;
+  readonly slug: string;
+  readonly visible: boolean;
+}
+
+/**
  * The person the resume is about, reused from the legacy schema.
  *
  * The prose that surrounds the profile on the printed page is not stored here. It lives in
@@ -319,14 +395,14 @@ export interface Profile {
  */
 export interface Syndicated {
   /**
-   * Channels this record is withheld from. Empty means "published everywhere", which is why the
-   * exclusion list is modeled positively rather than as an inclusion list: `@default([])` is then
-   * the permissive default and new records need no syndication decision at all.
+   * The channels this record syndicates to — an allowlist. Empty means "published nowhere":
+   * `@default([])` makes silence the safe default, and a record reaches a channel only by an
+   * explicit grant.
    *
-   * A descendant can only ever ADD exclusions in effect. Listing a channel here that an ancestor
-   * already excludes is redundant but harmless.
+   * A descendant can only ever NARROW the set in effect. Listing a channel here that an ancestor
+   * does not grant is a useless grant and is rejected by normalization.
    */
-  readonly excludedChannels: readonly SyndicationChannel[];
+  readonly channels: readonly SyndicationChannel[];
   /**
    * Master switch. `false` removes the subtree from every channel and no descendant can re-enable
    * it.
@@ -457,6 +533,11 @@ export interface ContentOwner extends Syndicated {
  * configuration than the legacy model does. The proficiency tier below is the primary metric going
  * forward; the year counts are carried across so that nothing is lost, but nothing renders from
  * them.
+ *
+ * The full set is a global, exhaustive catalog of everything used, learned, and worked with across
+ * the career. Membership is deliberately independent of syndication: whether a competency appears
+ * on the resume, the website, or LinkedIn is per-channel presentation, and a competency that
+ * renders nowhere still belongs — the catalog is the history the channels select from.
  *
  * Prisma Additional Fields: the standard audit set, plus:
  *
@@ -699,26 +780,20 @@ export interface ResumeSheet {
  * tree by accident and quietly publish content that was meant to be withheld.
  * -------------------------------------------------------------------------------------------- */
 
-export interface ResolvedNestedNode extends Omit<
-  NestedContentNode,
-  'excludedChannels' | 'isVisible'
-> {
+export interface ResolvedNestedNode extends Omit<NestedContentNode, 'channels' | 'isVisible'> {
   readonly titleLayout: TitleLayout;
 }
 
 export interface ResolvedNode extends Omit<
   ContentNode,
-  'children' | 'excludedChannels' | 'isVisible' | 'type'
+  'channels' | 'children' | 'isVisible' | 'type'
 > {
   readonly children: readonly ResolvedNestedNode[];
   readonly titleLayout: TitleLayout;
   readonly type: NodeType;
 }
 
-export interface ResolvedOwner extends Omit<
-  ContentOwner,
-  'excludedChannels' | 'isVisible' | 'nodes'
-> {
+export interface ResolvedOwner extends Omit<ContentOwner, 'channels' | 'isVisible' | 'nodes'> {
   readonly content: readonly ResolvedNode[];
   readonly summary: readonly ResolvedNode[];
 }
@@ -739,9 +814,9 @@ export type ResolvedDegree = Resolved<DegreeInput>;
  * Authoring shapes
  *
  * What a human writes in a data file. The model types above mirror Prisma exactly, which means a
- * non-null `order`, `slug`, `isVisible` and `excludedChannels` on every node: correct for a
- * database, miserable to write by hand. These make the mechanical fields optional and let position
- * in an array stand in for `order`.
+ * non-null `order`, `slug`, `isVisible` and `channels` on every node: correct for a database,
+ * miserable to write by hand. These make the mechanical fields optional and let position in an
+ * array stand in for `order`.
  *
  * `../lib/normalize.ts` is the boundary between the two. It generates slugs, stamps order indices,
  * applies the defaults, and collapses the whitespace of copy authored as indented template
@@ -756,12 +831,13 @@ export type ResolvedDegree = Resolved<DegreeInput>;
  * structure.
  */
 interface NodeInputBase {
+  /**
+   * Omit to inherit the parent's channels; author a value only to NARROW the set. Granting a
+   * channel the parent does not carry is rejected by normalization.
+   */
+  readonly channels?: readonly SyndicationChannel[];
   readonly competencies?: readonly Competency[];
   readonly content?: string;
-  /**
-   * Omit for "published everywhere".
-   */
-  readonly excludedChannels?: readonly SyndicationChannel[];
   /**
    * Omit for the `true` default.
    */
@@ -786,9 +862,13 @@ export interface NodeInput extends NodeInputBase {
  * collection, stamping `kind` from which collection they came out of.
  */
 export interface ContentInput {
+  /**
+   * Required, unlike on nodes: the owner is the root of the inheritance chain, so its grants must
+   * be stated explicitly. Spell "everywhere" with {@link AllSyndicationChannels}.
+   */
+  readonly channels: readonly SyndicationChannel[];
   readonly competencies?: readonly Competency[];
   readonly content?: readonly NodeInput[];
-  readonly excludedChannels?: readonly SyndicationChannel[];
   readonly isVisible?: boolean;
   readonly summary?: readonly NodeInput[];
 }
@@ -809,13 +889,13 @@ export interface ContentOwnerInput {
  * fills in, plus the content tree in its authoring form.
  */
 export type RoleInput = ContentOwnerInput &
-  Omit<Role, 'competencies' | 'excludedChannels' | 'isVisible' | 'nodes' | 'ownerType' | 'slug'>;
+  Omit<Role, 'channels' | 'competencies' | 'isVisible' | 'nodes' | 'ownerType' | 'slug'>;
 
 /**
  * A degree as authored; see {@link RoleInput}.
  */
 export type DegreeInput = ContentOwnerInput &
-  Omit<Degree, 'competencies' | 'excludedChannels' | 'isVisible' | 'nodes' | 'ownerType' | 'slug'>;
+  Omit<Degree, 'channels' | 'competencies' | 'isVisible' | 'nodes' | 'ownerType' | 'slug'>;
 
 /**
  * A sheet as authored, holding its roles and degrees in their authoring form.

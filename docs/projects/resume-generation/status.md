@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-08-04_
+_Last updated: 2026-08-11_
 
 ## Phase
 
@@ -118,7 +118,74 @@ entry in [decisions.md](./decisions.md).
 
 ## In Progress
 
-- Nothing actively in progress.
+- **Legacy prod data port (JSON → YAML), decided 2026-08-09 via an eight-flag walkthrough** (all
+  outcomes in [decisions.md](./decisions.md)): the legacy JSON seed fixtures (confirmed current with
+  production) port additively into the YAML fixtures — scope limited to aggregates with successor
+  bindings (`Project`/`Repository`/`Course` deferred, their successor design is the next task after
+  the port); taxonomy fields held out for the skills audit to redesign; legacy prose merged by
+  compare-then-selectively-add with `RESUME`-excluded nodes; `visible: false` → `isVisible: false`
+  (one record: the USLege.ai role); no timestamps authored — the sync push gains a requirement to
+  seed `createdAt` from legacy counterparts. `Detail.highlighted` / `Detail.shortDescription`
+  verified empty across all prod details (nothing ports). Sequencing: **skills audit first**, then
+  the port, then byte-equivalence verification of the generated documents. The audit is **done**
+  (2026-08-09, eight-stop grouped walkthrough — see decisions.md): the full 158-skill translation
+  table lives in [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md) (67 direct, 31
+  folds, 44 new competencies, 13 confirmed drops — as amended 2026-08-10, nine drops reinstated).
+  The successor categorization scheme is **still undesigned** — the audit settled membership only.
+
+  **Port execution is underway (2026-08-10).** The route is JSON → TS data modules →
+  `pnpm resume:fixtures` → YAML, because the data modules remain the operative source: they retire
+  only when the resume can be generated from the Prisma models populated from the YAML fixtures.
+  Landed so far, each verified by regenerating the fixtures and diffing the emitted HTML against a
+  pre-change baseline (byte-identical both times): the full competency port (133 → 177 records — the
+  44 audit additions plus legacy `description`/`experience`/`isHighlighted`/`isPrioritized`
+  enrichment on existing records; fold merges OR flags and take the largest experience, and the
+  legacy `experience: 0` sentinel is treated as unset), and the USLege.ai company + hidden role
+  (`content.isVisible: false`, 14 mapped competency refs, legacy description as its summary). The
+  generated-from-data-modules banner was removed from the emitted YAML (emitter no longer writes
+  it). The profile field-gap check landed the one additive value (`middleName`); the remaining
+  profile conflicts (`intro` vs the authored about paragraphs, legacy `displayName`) belong to the
+  prose pass.
+
+  **The association merge also landed (2026-08-10, superseding the same-day deferral — see
+  decisions.md):** the syndication cascade now filters every competencies list through `permits()`
+  (so chips render only on channels the competency allows), the 44 resume-invisible catalog records
+  carry `excludedChannels: [RESUME]`, and all eleven legacy experience + three education skill lists
+  are merged into their owners' competencies lists via the mapping table. Verified: the only
+  generated-output change is chips (page 1 unchanged, page 2 +117, page 3 +33 — the accepted
+  temporary difference; zero non-chip diffs).
+
+  **The prose-comparison pass is complete (2026-08-10, see decisions.md):** ten descriptions and the
+  Craft/Northbeam trees proved verbatim-identical to authored content; seven divergent legacy items
+  ported as `RESUME`-excluded website nodes (Corsha technical contributions, Nirveda Rebuild,
+  Saracen Diff Reporting, Atlantic Accounts API, Rock Creek's three applications); seven superseded
+  items were confirmed skipped; `profile.intro` and the JHU `note` ported as unrendered scalars;
+  authored `displayName` retained. Generated output verified byte-identical after the prose port.
+
+  **The port is COMPLETE (2026-08-10).** Final chip policy settled by amendment (see decisions.md:
+  associations are sacred, chips are expendable — eleven old non-sidebar competencies globally
+  `RESUME`-excluded, 55 exclusions total, `django` exempt via its "Django / DRF" sidebar
+  representation), and the accepted chip growth forced one pagination rebalance: Saracen moved from
+  the page-2 sheet to the top of page-3 (`pages.ts`), restoring all eleven roles across the three
+  sheets. The regenerated PDF was reviewed and approved by Nick. Every piece of prod data with a
+  home in the new model has moved; the deliberate exceptions remain `Project`/`Repository`/`Course`
+  (awaiting model disposition), the skill taxonomy (awaiting the categorization design), and the
+  association merge's per-owner chip granularity (with the pill-display-controls backlog item).
+
+- **2026-08-11 sweep — channels inversion + carried-over model membership (see decisions.md):**
+  `excludedChannels` → `channels` allowlist (default `[]` = syndicates nowhere) across the schema
+  (data-preserving migration `20260811181344`, applied; client regenerated), the document layer
+  (explicit owner grants; nodes inherit and may only narrow), and the transfer layer
+  (`stampContentTreeChannels` resolves inheritance at parse). `Project`/`Repository`/`Course` are
+  now full members: `channels` + competency m2ms + `Course.degreeId` in the same migration, data
+  modules generated from the legacy prod JSON through the audit mapping (24 repositories, 4
+  projects, 24 courses; hidden records carry no channels), three new fixture files, three new
+  bindings in the registry with `Company`-style link-don't-fabricate push semantics. All ten
+  entities parse the fixture set with zero validation issues; the emitted resume HTML stayed
+  byte-identical through the whole sweep. Proficiency buckets also landed earlier the same day
+  (24 → 35 rated, estimated from experience years, signed off with adjustments). The
+  `Project`/`Repository`/`Course` exception noted above is thereby closed; the remaining
+  deliberate exceptions are the skill taxonomy and per-owner chip granularity.
 
 ## Next Up
 

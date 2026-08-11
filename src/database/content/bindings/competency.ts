@@ -21,8 +21,8 @@ import { ContentBinding, type ParsedRecord } from './content-binding';
 
 export const CompetencyFields = {
   calculatedExperience: nullableIntField(),
+  channels: channelsField(),
   description: nullableStringField(),
-  excludedChannels: channelsField(),
   experience: nullableIntField(),
   isHighlighted: flagField(),
   isPrioritized: flagField(),

@@ -117,3 +117,14 @@ export const PIAnalytics: Company = {
   state: 'MD',
   websiteUrl: null,
 };
+export const USLegeAI: Company = {
+  city: 'Austin',
+  description: null,
+  logoFileName: null,
+  logoImageUrl: '/experience/uslege.svg',
+  name: 'USLege.ai',
+  shortName: 'USLege',
+  slug: 'uslege-ai',
+  state: 'TX',
+  websiteUrl: 'https://uslege.ai/',
+};
