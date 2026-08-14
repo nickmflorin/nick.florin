@@ -11,7 +11,7 @@ export const getFileSize = (value: bigint | number): [FileSizeUnit, number] => {
   for (let i = 1; i < FILE_SIZE_UNITS.length - 1; i++) {
     const bytes = K_UNIT ** i;
     const nextBytes = K_UNIT ** (i + 1);
-    if (value > bytes && value < nextBytes) {
+    if (value >= bytes && value < nextBytes) {
       return [FILE_SIZE_UNITS[i], Number(value) / bytes];
     }
   }

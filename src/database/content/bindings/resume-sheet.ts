@@ -2,7 +2,13 @@ import { type Prisma, ResumeCompetenciesGroupDisplay } from '~/database/model';
 import { type Transaction } from '~/database/prisma';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import { type ChildCollectionAdapter, reconcileChildren } from '../codecs/child-collection';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec, recordListField } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -63,37 +69,52 @@ const fromGroupRow = ({
   meta: { createdAt, id, updatedAt },
 });
 
-class ResumeSheetPrismaCodec extends PrismaCodec<CanonicalResumeSheet> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalResumeSheet,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const existing = await tx.resumeSheet.count();
-    const created = await tx.resumeSheet.create({
+type CanonicalCompetencyGroup = CanonicalRecord<typeof CompetencyGroupFields>;
+
+const competencyGroupAdapter = (
+  resumeSheetId: string,
+): ChildCollectionAdapter<CanonicalCompetencyGroup> => ({
+  create: async (tx, group, order, context) => {
+    await tx.resumeCompetenciesGroup.create({
       data: {
-        ...omitBookkeeping(record, ['competencyGroups', 'degrees', 'roles']),
-        createdBy: { connect: { id: context.userId } },
-        degrees: { connect: record.degrees.map(slug => ({ slug })) },
-        order: existing,
-        roles: { connect: record.roles.map(slug => ({ slug })) },
-        updatedBy: { connect: { id: context.userId } },
+        ...omitBookkeeping(group, ['competencies']),
+        competencies: { connect: group.competencies.map(slug => ({ slug })) },
+        createdById: context.userId,
+        order,
+        resumeSheetId,
+        updatedById: context.userId,
       },
     });
-    for (const [order, group] of record.competencyGroups.entries()) {
-      /* eslint-disable-next-line no-await-in-loop -- Rows are created inside one interactive
-         transaction, which does not support concurrent operations. */
-      await tx.resumeCompetenciesGroup.create({
-        data: {
-          ...omitBookkeeping(group, ['competencies']),
-          competencies: { connect: group.competencies.map(slug => ({ slug })) },
-          createdBy: { connect: { id: context.userId } },
-          order,
-          resumeSheet: { connect: { id: created.id } },
-          updatedBy: { connect: { id: context.userId } },
-        },
-      });
-    }
+  },
+  existing: async tx => {
+    const rows = await tx.resumeCompetenciesGroup.findMany({
+      select: { id: true, slug: true },
+      where: { resumeSheetId },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.resumeCompetenciesGroup.delete({ where: { id } });
+  },
+  slugOf: group => group.slug,
+  update: async (tx, id, group, order, context) => {
+    await tx.resumeCompetenciesGroup.update({
+      data: {
+        ...omitBookkeeping(group, ['competencies']),
+        competencies: { set: group.competencies.map(slug => ({ slug })) },
+        order,
+        updatedById: context.userId,
+      },
+      where: { id },
+    });
+  },
+});
+
+class ResumeSheetPrismaCodec extends PrismaCodec<CanonicalResumeSheet> {
+  public override readonly deletionPolicy = 'delete';
+
+  public async delete(tx: Transaction, record: CanonicalResumeSheet): Promise<void> {
+    await tx.resumeSheet.delete({ where: { id: targetId('resume-sheet', record) } });
   }
 
   public async read(tx: Transaction): Promise<CanonicalResumeSheet[]> {
@@ -115,6 +136,51 @@ class ResumeSheetPrismaCodec extends PrismaCodec<CanonicalResumeSheet> {
       meta: { createdAt, id, updatedAt },
       roles: roles.map(role => role.slug),
     }));
+  }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalResumeSheet>,
+    context: PrismaWriteContext,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    const scalars = {
+      ...omitBookkeeping(record, ['competencyGroups', 'degrees', 'roles']),
+      order: plan.index,
+    };
+    const degrees = record.degrees.map(slug => ({ slug }));
+    const roles = record.roles.map(slug => ({ slug }));
+    /* The sheet's roles and degrees are a one-to-many owned through a foreign key on the referenced
+       row, so an update reassigns them wholesale with `set` — which is also why a role listed on
+       two sheets is rejected by the set-level validation before a write is ever planned. A create
+       has nothing to reassign, and `set` is not a legal operation there. */
+    const id =
+      existing === null
+        ? (
+            await tx.resumeSheet.create({
+              data: {
+                ...scalars,
+                createdById: context.userId,
+                degrees: { connect: degrees },
+                roles: { connect: roles },
+                updatedById: context.userId,
+              },
+            })
+          ).id
+        : targetId('resume-sheet', existing);
+
+    if (existing !== null) {
+      await tx.resumeSheet.update({
+        data: {
+          ...scalars,
+          degrees: { set: degrees },
+          roles: { set: roles },
+          updatedById: context.userId,
+        },
+        where: { id },
+      });
+    }
+    await reconcileChildren(tx, record.competencyGroups, competencyGroupAdapter(id), context);
   }
 }
 

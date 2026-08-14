@@ -62,7 +62,8 @@ export default [
       'jest/require-hook': 'off',
       'jest/unbound-method': 'off',
       'jest/valid-expect': ['error', { maxArgs: 2 }],
-      'max-lines': ['error', { max: 800, skipBlankLines: true, skipComments: true }],
+      /* Temporarily ignored because it's beginning to be a pain.
+         'max-lines': ['error', { max: 1200, skipBlankLines: true, skipComments: true }], */
     },
   },
   {

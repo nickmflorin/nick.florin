@@ -352,7 +352,8 @@ export const ResumeGen: Repository = {
   channels: [],
   competencies: [],
   description:
-    'A temporary repository that holds a small Astro app that is used to modify and customize an HTML and PDF form of my resume, geared towards agentic code generation.',
+    'A temporary repository that holds a small Astro app that is used to modify and customize an ' +
+    'HTML and PDF form of my resume, geared towards agentic code generation.',
   highlighted: false,
   npmPackageName: null,
   slug: 'resume-gen',
@@ -452,7 +453,9 @@ export const Tooltrack: Repository = {
     RelationalDatabases,
   ],
   description:
-    'An application that allows users to monitor, manage and configure notifications and alerts that they will receive as it relates to inventory & price changes that occur for products offered by the woodworking hand tool manufacturer, Lie Nielsen.',
+    'An application that allows users to monitor, manage and configure notifications and alerts ' +
+    'that they will receive as it relates to inventory & price changes that occur for products ' +
+    'offered by the woodworking hand tool manufacturer, Lie Nielsen.',
   highlighted: true,
   npmPackageName: null,
   slug: 'tooltrack',

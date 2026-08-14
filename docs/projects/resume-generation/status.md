@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-08-11_
+_Last updated: 2026-08-12_
 
 ## Phase
 
@@ -16,6 +16,9 @@ entry in [decisions.md](./decisions.md).
 
 ## Done
 
+- 2026-08-12: Fixture ⇄ database sync engine built and verified against the dev database; the
+  fixture emitter routed through the bindings; three pre-existing codec defects fixed. See the Sync
+  Engine section below.
 - 2026-08-02: Project context scaffolding created and moved to `docs/projects/resume-generation/`
   (`README.md`, `status.md`, `decisions.md`, `backlog.md`, `context/`).
 - 2026-08-02: Both repos explored and mapped: [context/current-app.md](./context/current-app.md) and
@@ -182,10 +185,50 @@ entry in [decisions.md](./decisions.md).
   projects, 24 courses; hidden records carry no channels), three new fixture files, three new
   bindings in the registry with `Company`-style link-don't-fabricate push semantics. All ten
   entities parse the fixture set with zero validation issues; the emitted resume HTML stayed
-  byte-identical through the whole sweep. Proficiency buckets also landed earlier the same day
-  (24 → 35 rated, estimated from experience years, signed off with adjustments). The
-  `Project`/`Repository`/`Course` exception noted above is thereby closed; the remaining
-  deliberate exceptions are the skill taxonomy and per-owner chip granularity.
+  byte-identical through the whole sweep. Proficiency buckets also landed earlier the same day (24 →
+  35 rated, estimated from experience years, signed off with adjustments). The
+  `Project`/`Repository`/`Course` exception noted above is thereby closed; the remaining deliberate
+  exceptions are the skill taxonomy and per-owner chip granularity.
+
+## Sync Engine (2026-08-12)
+
+**The transfer layer is complete and exercised against the dev database.** `pnpm content:push` and
+`pnpm content:pull` move content in either direction behind one itemized, confirmed diff; the full
+shape and the reasoning are in [decisions.md](./decisions.md). Landed on `resume/sync-engine`.
+
+What was verified, in order:
+
+- The fixture emitter now writes through the bindings, so the fixtures carry stamped content-node
+  slugs and the emitter cannot drift from the store. Emitted output is stable across runs and the
+  generated resume HTML stayed byte-identical throughout.
+- A first push against the dev database wrote all ten entities; an immediate re-plan reported
+  **nothing to write**, which is the round-trip proof that reading, encoding and decoding agree.
+- Editing one nested node's prose plans exactly one leaf change, addressed by slug path
+  (`content.content[leadership].children[rubrics].content`), and applying it leaves every sibling
+  row's `id` and `createdAt` untouched.
+- `createdAt` inheritance: 99 of 99 competencies that correlate to a legacy `Skill`, and 11 of 11
+  roles, carry their counterpart's original creation date. The 44 competencies with no counterpart
+  are reported as warnings rather than passing silently.
+- A dry-run pull reports only the legacy columns the database holds and the fixtures do not
+  (company/school prose, the profile), confirming everything else round-trips.
+
+Three pre-existing defects were fixed ahead of the engine because each would have made its first
+diff wrong: the inverted `visible` codec on repositories and projects, the course update that would
+have thrown on the metadata middleware, and Prisma's `$kind` discriminator leaking into canonical
+records. See [decisions.md](./decisions.md).
+
+**The script wrapped around the engine is deliberately thin.** It was built to prove the transfer
+layer, not to be lived with: no `--help`, flags that must be written `--flag=value`, 26 warnings
+printed ahead of every diff, one exit code for every failure, and a bare `readline` confirmation.
+The CLI Hardening section of [backlog.md](./backlog.md) enumerates them. The library half — which
+argument-parsing, prompt, colour and progress packages to adopt, given that the repository currently
+ships none and every script shares the same hand-rolled helpers — is a repo-wide decision tracked as
+[repo-cleanup open question #4](../repo-cleanup/open-questions.md).
+
+**Checker status:** `pnpm tsc`, `pnpm eslint` and `pnpm cspell` all pass on the branch. The new unit
+tests under `src/__tests__/unit/database/content/` have not been executed yet. Note that cspell had
+to be repaired first: its config passed `.prettierignore` comment lines through as ignore globs,
+which made every run check zero files and report success. It now checks 1429.
 
 ## Next Up
 

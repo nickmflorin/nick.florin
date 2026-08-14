@@ -3,7 +3,13 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  idOfSlug,
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec, recordField } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -19,10 +25,12 @@ import { type IssueCollector } from '../issues';
 
 import { ContentBinding, type ParsedRecord, type SlugReference } from './content-binding';
 import {
+  collapseContentTreeChannels,
   ContentTreeCodec,
   contentTreeReferences,
-  createContentNodes,
+  deleteContentNodes,
   readContentTrees,
+  reconcileContentNodes,
   stampContentTreeChannels,
   stampContentTreeSlugs,
   validateContentTree,
@@ -52,25 +60,12 @@ export type CanonicalRole = ParsedRecord<typeof RoleFields>;
  * `Role` row itself, not to rows of their own.
  */
 class RolePrismaCodec extends PrismaCodec<CanonicalRole> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalRole,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const created = await tx.role.create({
-      data: {
-        ...omitBookkeeping(record, ['company', 'content']),
-        channels: record.content.channels,
-        company: { connect: { slug: record.company } },
-        competencies: {
-          connect: record.content.competencies.map(slug => ({ slug })),
-        },
-        createdBy: { connect: { id: context.userId } },
-        isVisible: record.content.isVisible,
-        updatedBy: { connect: { id: context.userId } },
-      },
-    });
-    await createContentNodes(tx, created.id, ContentOwnerType.ROLE, record.content, context);
+  public override readonly deletionPolicy = 'delete';
+
+  public async delete(tx: Transaction, record: CanonicalRole): Promise<void> {
+    const id = targetId('role', record);
+    await deleteContentNodes(tx, id, ContentOwnerType.ROLE);
+    await tx.role.delete({ where: { id } });
   }
 
   public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalRole[]> {
@@ -104,6 +99,58 @@ class RolePrismaCodec extends PrismaCodec<CanonicalRole> {
         meta: { createdAt, id, updatedAt },
       };
     });
+  }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalRole>,
+    context: PrismaWriteContext,
+    issues: IssueCollector,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    const owned = {
+      channels: record.content.channels,
+      companyId: await idOfSlug(tx.company, record.company),
+      isVisible: record.content.isVisible,
+    };
+    const id =
+      existing === null
+        ? (
+            await tx.role.create({
+              data: {
+                ...omitBookkeeping(record, ['company', 'content']),
+                ...owned,
+                competencies: {
+                  connect: record.content.competencies.map(slug => ({ slug })),
+                },
+                createdAt: context.inheritedCreatedAt(
+                  {
+                    company: record.company,
+                    entity: 'role',
+                    slug: record.slug,
+                    title: record.title,
+                  },
+                  issues,
+                ),
+                createdById: context.userId,
+                updatedById: context.userId,
+              },
+            })
+          ).id
+        : targetId('role', existing);
+
+    if (existing !== null) {
+      await tx.role.update({
+        data: {
+          ...omitBookkeeping(record, ['company', 'content']),
+          ...owned,
+          competencies: { set: record.content.competencies.map(slug => ({ slug })) },
+          updatedById: context.userId,
+        },
+        where: { id },
+      });
+    }
+    await reconcileContentNodes(tx, id, ContentOwnerType.ROLE, record.content, context);
   }
 }
 
@@ -140,5 +187,14 @@ export class RoleBinding extends ContentBinding<typeof RoleFields> {
 
   public override references(record: CanonicalRole): SlugReference[] {
     return [...super.references(record), ...contentTreeReferences(record.content)];
+  }
+
+  /**
+   * Collapses the tree's inherited channel grants back to the authoring shape before encoding, so
+   * that a node states a grant only where it narrows its parent's. This is the encode half of the
+   * inheritance rule {@link RoleBinding.finalize} resolves on the way in.
+   */
+  public override serialize(record: CanonicalRole): Record<string, unknown> {
+    return super.serialize({ ...record, content: collapseContentTreeChannels(record.content) });
   }
 }

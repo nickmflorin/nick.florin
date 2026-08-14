@@ -32,7 +32,13 @@ const DefaultGlobs = [
  */
 const includePrettierIgnoreGlobPatterns = async patterns => {
   const file = await fs.promises.readFile('./.prettierignore', 'utf-8');
-  const prettierIgnoredPatterns = file.split('\n').filter(Boolean);
+  /* Comment and blank lines are dropped rather than passed through as patterns. A comment reaching
+     'ignorePaths' is not merely inert: cspell treats the list as gitignore-style, so a leading '#'
+     makes it discard the entries around it and the run silently checks zero files. */
+  const prettierIgnoredPatterns = file
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0 && !line.startsWith('#'));
 
   return prettierIgnoredPatterns.reduce((acc, path) => {
     const standardized = path.endsWith('/') ? `${path}**` : path;

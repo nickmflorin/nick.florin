@@ -30,6 +30,7 @@ roles:
                 landed on policy-based authorization with hierarchical permission scoping and
                 modeled cohort membership as a composable relationship graph - enabling nested
                 inheritance and cross-organizational sharing.'
+              slug: segmented-learner-cohorts
               title: Segmented Learner Cohorts
             - content:
                 Grading surface for instructors, evaluators, and admins to design, attach, and score
@@ -38,6 +39,7 @@ roles:
                 aligning product, design, and engineering on a four-mode provider pattern
                 (view/edit/attach/score) and a schema-driven form architecture unifying every
                 surface behind one rendering pipeline.
+              slug: rubrics
               title: Rubrics
             - channels:
                 - LINKEDIN
@@ -50,6 +52,7 @@ roles:
                 tailor how learners tracked time - daily vs. monthly entry cadence, minimum time per
                 activity, whether learners could log above the target, and other per-program
                 constraints - without requiring engineering changes.'
+              slug: time-tracking
               title: Time Tracking
             - channels:
                 - LINKEDIN
@@ -61,12 +64,14 @@ roles:
                 platform/per-customer boundary so the feature could be reused across future products
                 on the monorepo. Organized and planned the work based on dependencies to maximize
                 parallel efforts across multiple engineers.'
+              slug: skills-tracking
               title: Skills Tracking
           content:
             Led a cross-functional pod from the ground up, starting as a 2-engineer team alongside a
             PM and rotating designer, then expanding into a 5-engineer pod with a dedicated PM.
             Served as Engineering Lead throughout, owning feature scoping, technical planning,
             sprint execution, and delivery end-to-end.
+          slug: leadership
           title: Leadership
           type: NUMBERED_LIST
         - children:
@@ -77,6 +82,7 @@ roles:
                 session management on Auth0 v4, then landed Auth0 v4, Next.js 16, React 19, and
                 Turbopack as a coordinated three-stage rollout - a net deletion of code - with zero
                 customer-facing downtime.'
+              slug: auth0-v4-next-js-16-replatform
               title: Auth0 v4 &amp; Next.js 16 Replatform
             - content:
                 "Led a sustained, incremental migration - building team buy-in and driving a
@@ -89,6 +95,7 @@ roles:
                 fully pre-render, previously-visited pages return near-instantly from the restored
                 page cache, and the app's third-party browser exposure collapses to a single
                 first-party origin, eliminating a class of customer-firewall outages."
+              slug: server-oriented-frontend-migration
               title: Server-Oriented Frontend Migration
             - content:
                 Diagnosed the root causes behind a bloated shared bundle - barrel-export fan-out, a
@@ -97,6 +104,7 @@ roles:
                 authored the remediation roadmap and led its incremental delivery across the team
                 over successive releases, cutting the app-wide first-load JavaScript baseline 62%
                 (1.01 MB to 383 kB) and the shared app chunk 68% (921 kB to under 300 kB).
+              slug: bundle-size-first-load-performance
               title: Bundle Size &amp; First Load Performance
             - content:
                 Combined, the architectural unlock and bundle work improved FCP/LCP ~50% and TTI
@@ -104,6 +112,7 @@ roles:
                 corporate-throttled networks; non-critical client work (session replay, analytics
                 boot, background refreshes) now defers until the browser is idle, keeping the main
                 thread free for first paint.
+              slug: core-web-vitals-loading-performance
               title: Core Web Vitals &amp; Loading Performance
             - content:
                 "Co-architected the company's embedded-analytics integration (ThoughtSpot) around a
@@ -114,6 +123,7 @@ roles:
                 then designed and implemented the remedy - per-user liveboard preloading under the
                 shared account plus streamed, cached proxy assets - making report loads
                 near-instantaneous."
+              slug: embedded-analytics-proxy-report-performance
               title: Embedded Analytics Proxy &amp; Report Performance
             - content:
                 "Championed and led a long-term restructuring of the platform around scalable
@@ -121,6 +131,7 @@ roles:
                 decoupled, independently-owned modules with clean microfrontend boundaries, and
                 steered the company's expansion from a single-product codebase toward a scalable,
                 multi-product mesh."
+              slug: monorepo-microfrontend-decoupling
               title: Monorepo &amp; Microfrontend Decoupling
             - channels:
                 - LINKEDIN
@@ -129,7 +140,9 @@ roles:
                 Designed and rolled out a unified, namespaced structured-logging architecture
                 spanning every service - replacing scattered ad-hoc logging with a single queryable
                 observability surface wired into Datadog.
+              slug: structured-logging-observability
               title: Structured Logging &amp; Observability
+          slug: architecture
           title: Architecture
           type: NUMBERED_LIST
         - content:
@@ -137,12 +150,14 @@ roles:
             reviews, pair programming, and 1:1 mentoring focused on TypeScript, React, Next.js, and
             GraphQL. Acted as a consistent technical resource and escalation point for the broader
             engineering organization.
+          slug: mentoring
           title: Mentoring
         - content:
             Primary liaison between Design/UX and Engineering; established structured handoff and
             feedback processes that reduced ambiguity, shortened iteration cycles, and produced
             measurably better user experiences. Spearheaded integration of Deque axe-core
             accessibility checks into CI/CD pipelines for automated WCAG enforcement.
+          slug: design-ux-coordination
           title: Design &amp; UX Coordination
         - channels:
             - LINKEDIN
@@ -153,6 +168,7 @@ roles:
             incremental migration. Enforced type-checking across test files in CI, fixed long-broken
             IDE ESLint integration, and created an internal documentation app covering contributing
             guides, React patterns, and architectural decisions.
+          slug: developer-experience-code-quality
           title: Developer Experience &amp; Code Quality
       summary:
         - content:
@@ -164,19 +180,23 @@ roles:
             unified monorepo. Championed the underlying monorepo strategy and Nx adoption as the
             structural foundation for that transition, establishing shared tooling, independent
             product surfaces, and scalable team ownership within one cohesive engineering platform.
+          slug: summary-1
         - content:
             "Most recently, drove the platform's most consequential frontend effort since the
             monorepo: a coordinated Auth0 v4, Next.js 16, and React 19 replatform paired with a
             months-long performance program that unwound a client-bound rendering architecture and
             restored server-side rendering, page caching, and healthy Core Web Vitals across the
             product."
+          slug: summary-2
         - content:
             Operated consistently above title - writing code, authoring architectural specs,
             producing technical analyses, and unblocking teammates across the engineering
             organization.
+          slug: summary-3
         - content:
             The pod's output was directly instrumental in attracting and onboarding new enterprise
             accounts and qualifying the company for several public-sector grants.
+          slug: summary-4
     isCurrent: true
     isHighlighted: true
     isRemote: true
@@ -209,6 +229,7 @@ roles:
         - content:
             Developing software tools that leverage Artificial Intelligence (LLMs) that allow
             customers to gain more meaningful insights from large amounts of political data.
+          slug: summary-1
     isRemote: true
     shortTitle: Founding S. Software Eng.
     slug: uslege
@@ -267,17 +288,20 @@ roles:
             Designed and implemented a currency localization system enabling all marketing analytics
             to be denominated in a user-configurable currency, directly expanding the platform's
             addressable market to international customers.
+          slug: multi-currency-analytics
           title: Multi-Currency Analytics
         - content:
             Architected a well-tested, flexible internal component library built on React, SASS, and
             TailwindCSS. Enabled significantly faster feature development, reduced UI inconsistency
             across the product, and made design-scope changes far easier to absorb throughout the
             codebase.
+          slug: component-library
           title: Component Library
       summary:
         - content:
             Contributed to the ongoing development of Northbeam's flagship marketing analytics
             platform across web and mobile surfaces.
+          slug: summary-1
     endDate: 2024-06-01
     isHighlighted: true
     isRemote: true
@@ -334,6 +358,7 @@ roles:
             management, and accounting platform for the chemical supply chain industry. Organized
             Agile workflows, led team meetings, and mentored engineers less familiar with the stack
             built on Next.js, TRPC, Prisma, and Vercel.
+          slug: summary-1
     endDate: 2023-08-01
     isHighlighted: true
     slug: shelfcycle
@@ -396,20 +421,23 @@ roles:
         - swr
         - relational-databases
       content:
-        - children:
+        - channels:
+            - LINKEDIN
+            - WEBSITE
+          children:
             - content:
                 Led the development of an internal component library and established patterns
                 associated with reusable components, component documentation and component testing.
+              slug: component-library
               title: Component Library
             - content:
                 Established protocols for communicating errors between the client and the server and
                 incorporated these methods into UI components responsible for making server
                 requests, communicating feedback to users and making decisions based on error
                 control flow.
+              slug: error-communication-protocols
               title: Error Communication Protocols
-          channels:
-            - LINKEDIN
-            - WEBSITE
+          slug: notable-technical-contributions
           title: Notable Technical Contributions
           type: BULLETED_LIST
       summary:
@@ -421,6 +449,7 @@ roles:
             firm on the full UX and user flow, and led the engineering team through implementation.
             Maintained high code quality through rigorous PR review and active mentoring of less
             experienced engineers.'
+          slug: summary-1
     endDate: 2023-03-01
     isHighlighted: true
     slug: corsha
@@ -495,6 +524,7 @@ roles:
             Spearheaded a comprehensive automated testing suite and CI/CD integration that increased
             test coverage by approximately 70%, meaningfully improving platform stability and
             release confidence.
+          slug: testing-ci-cd
           title: Testing &amp; CI/CD
       summary:
         - content:
@@ -504,6 +534,7 @@ roles:
             by May 2022, the platform had grown to over 1,000 users with approximately 40-50% on
             paid subscriptions and had been adopted by several film studios for beta testing (now
             operating as Saturation at saturation.io).
+          slug: summary-1
     endDate: 2022-05-01
     isHighlighted: true
     isRemote: true
@@ -580,6 +611,7 @@ roles:
             maintainability concerns while simultaneously onboarding new customers. As a direct
             result of my contributions, the sales team was able to onboard several new top-tier
             Enterprise level customers.
+          slug: rebuild
           title: Rebuild
       summary:
         - content:
@@ -588,6 +620,7 @@ roles:
             allocation, conducted all code reviews, and led feature initiatives from planning
             through delivery. Spearheaded an automated testing and CI/CD initiative that increased
             test coverage by approximately 70%.'
+          slug: summary-1
     endDate: 2021-03-01
     isHighlighted: true
     isRemote: true
@@ -654,12 +687,14 @@ roles:
             differences, modifications and frequencies of changes between electricity grid data at
             different points in time. With this application, traders were able to more efficiently
             track outages and other important events in different electrical grids.
+          slug: diff-reporting
           title: Diff Reporting
       summary:
         - content:
             Developed front-end and back-end analytical tooling used by the trading desk to inform
             investment decisions, bridging the gap between quantitative analysis and software
             development teams.
+          slug: summary-1
     endDate: 2020-09-01
     isHighlighted: true
     slug: saracen
@@ -733,6 +768,7 @@ roles:
             Spent a year overhauling the entire revenue/subscription model and its applicable
             services as a decoupled REST API using django-rest-framework that could independently
             support subscriptions and memberships at The Atlantic.
+          slug: accounts-api
           title: Accounts API
       summary:
         - content:
@@ -740,6 +776,7 @@ roles:
             products. Designed and implemented the Apple News syndication pipeline, opening a new
             digital distribution channel and directly contributing an additional revenue stream for
             the company.
+          slug: summary-1
     endDate: 2020-04-01
     isHighlighted: true
     slug: atlantic
@@ -804,6 +841,7 @@ roles:
           content:
             Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical
             tool using a react/Redux front-end consuming an API built using django-rest-framework.
+          slug: transparency
           title: Transparency
         - channels:
             - LINKEDIN
@@ -812,6 +850,7 @@ roles:
             Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to
             provide client risk reporting, monitor risk and compare performances of managed pension
             funds.
+          slug: rock-creek-insights
           title: Rock Creek Insights
         - channels:
             - LINKEDIN
@@ -820,6 +859,7 @@ roles:
             Created a custom, flexible and proprietary charting package using D3.js that the firm
             now uses in a variety of applications to visualize data in more than 2 dimensions and
             animate the visualization over time.
+          slug: asset-visualizations
           title: Asset Visualizations
       summary:
         - content:
@@ -828,6 +868,7 @@ roles:
             quantitative analysis and software development teams, formalizing and automating
             previously manual analytical workflows through Python-based tooling. This role marks the
             foundation of my professional software engineering practice.
+          slug: summary-1
     endDate: 2018-04-01
     isHighlighted: true
     slug: rockcreek
@@ -866,6 +907,7 @@ roles:
             Researched and implemented complex models for credit default risk across exotic
             derivatives and structured products, using Python for numerical computation and Monte
             Carlo simulation.
+          slug: summary-1
     endDate: 2016-07-01
     isHighlighted: true
     slug: pianalytics

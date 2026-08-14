@@ -23,10 +23,12 @@ const createNextJestConfig = nextJest({
 });
 
 export enum TestModule {
+  rtl = 'rtl',
   unit = 'unit',
 }
 
 const TestModuleDisplayNames: Record<TestModule, string> = {
+  [TestModule.rtl]: 'rtl-tests',
   [TestModule.unit]: 'unit-tests',
 };
 

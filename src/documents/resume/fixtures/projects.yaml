@@ -13,7 +13,6 @@ projects:
       dimensions simultaneously.
     highlighted: true
     name: n-Dimensional Charting Library for Asset Management
-    repositories: []
     shortName: Asset Visualizations
     slug: asset-visualizations
     startDate: 2017-11-01

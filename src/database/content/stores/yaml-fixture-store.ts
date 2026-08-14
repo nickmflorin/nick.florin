@@ -12,7 +12,7 @@ import {
 } from '../bindings/content-binding';
 import { type IssueCollector } from '../issues';
 
-import { type ContentStore } from './content-store';
+import { type ContentStore, type EntityWritePlan } from './content-store';
 
 /**
  * The width fixture emission folds prose at, matching the repository's Prettier line length so a
@@ -87,12 +87,24 @@ export class YamlFixtureStore implements ContentStore {
     );
   }
 
+  /**
+   * Every field, because a pull rewrites the file wholesale rather than updating rows in place.
+   */
+  public writableFields(): null {
+    return null;
+  }
+
+  /**
+   * Rewrites the entity's fixture file from the planned records. The plan's deletions need no
+   * handling here: a record the source no longer describes is simply absent from the file this
+   * rewrites.
+   */
   public async write<TFields extends SluggedFieldCodecRecord>(
     binding: ContentBinding<TFields>,
-    records: readonly ParsedRecord<TFields>[],
+    plan: EntityWritePlan<TFields>,
     _issues: IssueCollector,
   ): Promise<void> {
-    const encoded = records.map(record => binding.serialize(record));
+    const encoded = plan.records.map(({ record }) => binding.serialize(record));
     const first = encoded.at(0);
     if (binding.fixtureShape === 'single' && first === undefined) {
       throw new TypeError(

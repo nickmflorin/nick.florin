@@ -2,7 +2,12 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -13,7 +18,6 @@ import {
   slugField,
   slugRefListField,
   stringField,
-  visibilityField,
 } from '../fields/primitives';
 import { type IssueCollector } from '../issues';
 
@@ -35,43 +39,14 @@ export const ProjectFields = {
   shortName: nullableStringField(),
   slug: slugField(),
   startDate: dateField(),
-  visible: visibilityField(),
+  /* The legacy column defaults to hidden, so only an affirmative `visible` is authored. */
+  visible: flagField(),
 } satisfies FieldCodecRecord;
 
 export type CanonicalProject = ParsedRecord<typeof ProjectFields>;
 
 class ProjectPrismaCodec extends PrismaCodec<CanonicalProject> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalProject,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const membership = {
-      channels: [...record.channels],
-      competencies: { set: record.competencies.map(slug => ({ slug })) },
-      repositories: { set: record.repositories.map(slug => ({ slug })) },
-    };
-    const existing = await tx.project.findFirst({
-      where: { OR: [{ slug: record.slug }, { name: record.name }] },
-    });
-    if (existing !== null) {
-      await tx.project.update({
-        data: { ...membership, updatedById: context.userId },
-        where: { id: existing.id },
-      });
-      return;
-    }
-    await tx.project.create({
-      data: {
-        ...omitBookkeeping(record, ['competencies', 'repositories']),
-        channels: [...record.channels],
-        competencies: { connect: record.competencies.map(slug => ({ slug })) },
-        createdById: context.userId,
-        repositories: { connect: record.repositories.map(slug => ({ slug })) },
-        updatedById: context.userId,
-      },
-    });
-  }
+  public override readonly writableFields = ['channels', 'competencies', 'repositories'];
 
   public async read(tx: Transaction, _issues: IssueCollector): Promise<CanonicalProject[]> {
     const rows = await tx.project.findMany({
@@ -91,6 +66,36 @@ class ProjectPrismaCodec extends PrismaCodec<CanonicalProject> {
       };
     });
   }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalProject>,
+    context: PrismaWriteContext,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing !== null) {
+      await tx.project.update({
+        data: {
+          channels: [...record.channels],
+          competencies: { set: record.competencies.map(slug => ({ slug })) },
+          repositories: { set: record.repositories.map(slug => ({ slug })) },
+          updatedById: context.userId,
+        },
+        where: { id: targetId('project', existing) },
+      });
+      return;
+    }
+    await tx.project.create({
+      data: {
+        ...omitBookkeeping(record, ['competencies', 'repositories']),
+        channels: [...record.channels],
+        competencies: { connect: record.competencies.map(slug => ({ slug })) },
+        createdById: context.userId,
+        repositories: { connect: record.repositories.map(slug => ({ slug })) },
+        updatedById: context.userId,
+      },
+    });
+  }
 }
 
 export class ProjectBinding extends ContentBinding<typeof ProjectFields> {
@@ -104,5 +109,9 @@ export class ProjectBinding extends ContentBinding<typeof ProjectFields> {
 
   protected override deriveSlug(record: CanonicalRecord<typeof ProjectFields>): string {
     return slugify(record.name);
+  }
+
+  public override alternateKeys(record: CanonicalProject): readonly string[] {
+    return [record.name];
   }
 }

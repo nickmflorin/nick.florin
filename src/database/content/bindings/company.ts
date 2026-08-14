@@ -4,7 +4,12 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import { nullableStringField, slugField, stringField } from '../fields/primitives';
@@ -33,22 +38,57 @@ export const CompanyFields = {
 export type CanonicalCompany = ParsedRecord<typeof CompanyFields>;
 
 class CompanyPrismaCodec extends PrismaCodec<CanonicalCompany> {
-  public async create(
+  public override readonly writableFields = ['logoFileName', 'slug'];
+
+  public override planIssues(
+    plan: RecordWritePlan<CanonicalCompany>,
+    issues: IssueCollector,
+  ): void {
+    const { record } = plan;
+    if (plan.action === 'create' && (record.city === null || record.state === null)) {
+      issues.error(
+        'company',
+        record.slug,
+        'A company that does not exist in the database yet cannot be created without a city and ' +
+          'state: both are required legacy columns, and inventing them would fabricate a fact.',
+      );
+    }
+  }
+
+  public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalCompany[]> {
+    const rows = await tx.company.findMany({ orderBy: { name: 'asc' } });
+    return rows.map(row => {
+      if (row.slug === null) {
+        issues.warning(
+          'company',
+          row.name,
+          'The company has no slug yet; one was derived from its name for the fixture. The next ' +
+            'push will persist it.',
+        );
+      }
+      const { createdAt, id, updatedAt, ...company } = row;
+      return {
+        ...omitBookkeeping(company),
+        meta: { createdAt, id, updatedAt },
+        slug: company.slug ?? slugify(company.name),
+      };
+    });
+  }
+
+  public async write(
     tx: Transaction,
-    record: CanonicalCompany,
+    plan: RecordWritePlan<CanonicalCompany>,
     context: PrismaWriteContext,
     issues: IssueCollector,
   ): Promise<void> {
-    const existing = await tx.company.findFirst({
-      where: { OR: [{ slug: record.slug }, { name: record.name }] },
-    });
+    const { existing, record } = plan;
     if (existing !== null) {
       await tx.company.update({
         data: {
           ...pick(record, ['logoFileName', 'slug']),
           updatedById: context.userId,
         },
-        where: { id: existing.id },
+        where: { id: targetId('company', existing) },
       });
       return;
     }
@@ -71,26 +111,6 @@ class CompanyPrismaCodec extends PrismaCodec<CanonicalCompany> {
       },
     });
   }
-
-  public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalCompany[]> {
-    const rows = await tx.company.findMany({ orderBy: { name: 'asc' } });
-    return rows.map(row => {
-      if (row.slug === null) {
-        issues.warning(
-          'company',
-          row.name,
-          'The company has no slug yet; one was derived from its name for the fixture. The next ' +
-            'push will persist it.',
-        );
-      }
-      const { createdAt, id, updatedAt, ...company } = row;
-      return {
-        ...omitBookkeeping(company),
-        meta: { createdAt, id, updatedAt },
-        slug: company.slug ?? slugify(company.name),
-      };
-    });
-  }
 }
 
 export class CompanyBinding extends ContentBinding<typeof CompanyFields> {
@@ -104,5 +124,9 @@ export class CompanyBinding extends ContentBinding<typeof CompanyFields> {
 
   protected override deriveSlug(record: CanonicalRecord<typeof CompanyFields>): string {
     return slugify(record.name);
+  }
+
+  public override alternateKeys(record: CanonicalCompany): readonly string[] {
+    return [record.name];
   }
 }

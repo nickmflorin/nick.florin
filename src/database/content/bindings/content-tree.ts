@@ -3,12 +3,14 @@ import {
   NodeKind,
   NodeType,
   type Prisma,
+  type SyndicationChannel,
   TitleLayout,
 } from '~/database/model';
 import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
+import { type ChildCollectionAdapter, reconcileChildren } from '../codecs/child-collection';
 import { type PrismaWriteContext } from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec, recordListField } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
@@ -139,6 +141,40 @@ export const stampContentTreeChannels = (tree: CanonicalContentTree): CanonicalC
       };
     });
   return { ...tree, content: resolve(tree.content), summary: resolve(tree.summary) };
+};
+
+const sameChannels = (
+  a: readonly SyndicationChannel[],
+  b: readonly SyndicationChannel[],
+): boolean => a.length === b.length && a.every(channel => b.includes(channel));
+
+/**
+ * The inverse of {@link stampContentTreeChannels}: clears a node's channel list when it holds
+ * exactly what the node would inherit anyway, so the fixture states a grant only where it narrows.
+ *
+ * The two are the decode and encode halves of one representation rule. The canonical form always
+ * carries every node's fully resolved allowlist — that is what the database rows hold, and what
+ * makes a fixture record and a database record comparable — while the fixture carries only the
+ * narrowings an author actually wrote. Without this half, serialization would write the resolved
+ * set onto every node and the authoring shape would be lost on the first round trip.
+ */
+export const collapseContentTreeChannels = (tree: CanonicalContentTree): CanonicalContentTree => {
+  const collapse = (nodes: CanonicalNode[]): CanonicalNode[] =>
+    nodes.map(node => {
+      const inherits = sameChannels(node.channels, tree.channels);
+      /* A child inherits from its parent's resolved set, which is the parent's own list whether or
+         not that list survives collapsing. */
+      const parentChannels = node.channels;
+      return {
+        ...node,
+        channels: inherits ? [] : node.channels,
+        children: node.children.map(child => ({
+          ...child,
+          channels: sameChannels(child.channels, parentChannels) ? [] : child.channels,
+        })),
+      };
+    });
+  return { ...tree, content: collapse(tree.content), summary: collapse(tree.summary) };
 };
 
 /**
@@ -273,52 +309,134 @@ const definedSlug = (slug: null | string, where: string): string => {
   return slug;
 };
 
+const nestedNodeAdapter = (parentId: string): ChildCollectionAdapter<CanonicalNestedNode> => ({
+  create: async (tx, child, order, context) => {
+    await tx.nestedContentNode.create({
+      data: {
+        ...omitBookkeeping(child, ['competencies', 'slug']),
+        competencies: { connect: child.competencies.map(slug => ({ slug })) },
+        createdById: context.userId,
+        order,
+        parentId,
+        slug: definedSlug(child.slug, `a nested node of '${parentId}'`),
+        updatedById: context.userId,
+      },
+    });
+  },
+  existing: async tx => {
+    const rows = await tx.nestedContentNode.findMany({
+      select: { id: true, slug: true },
+      where: { parentId },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.nestedContentNode.delete({ where: { id } });
+  },
+  slugOf: child => definedSlug(child.slug, `a nested node of '${parentId}'`),
+  update: async (tx, id, child, order, context) => {
+    await tx.nestedContentNode.update({
+      data: {
+        ...omitBookkeeping(child, ['competencies', 'slug']),
+        competencies: { set: child.competencies.map(slug => ({ slug })) },
+        order,
+        updatedById: context.userId,
+      },
+      where: { id },
+    });
+  },
+});
+
 /**
- * Creates the `ContentNode`/`NestedContentNode` rows of one owner's tree, stamping `kind` from
- * the collection a node came out of and `order` from its position.
+ * One top-level node paired with the collection it came out of, which is what the single
+ * `ContentNode` table stores as `kind`.
  */
-export const createContentNodes = async (
+interface PlannedNode {
+  readonly kind: NodeKind;
+  readonly node: CanonicalNode;
+}
+
+const contentNodeAdapter = (
+  ownerId: string,
+  ownerType: ContentOwnerType,
+): ChildCollectionAdapter<PlannedNode> => ({
+  create: async (tx, { kind, node }, order, context) => {
+    const created = await tx.contentNode.create({
+      data: {
+        ...omitBookkeeping(node, ['children', 'competencies', 'slug']),
+        competencies: { connect: node.competencies.map(slug => ({ slug })) },
+        createdById: context.userId,
+        kind,
+        order,
+        ownerId,
+        ownerType,
+        slug: definedSlug(node.slug, `a ${kind} node of owner '${ownerId}'`),
+        updatedById: context.userId,
+      },
+    });
+    await reconcileChildren(tx, node.children, nestedNodeAdapter(created.id), context);
+  },
+  existing: async tx => {
+    const rows = await tx.contentNode.findMany({
+      select: { id: true, slug: true },
+      where: { ownerId, ownerType },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.contentNode.delete({ where: { id } });
+  },
+  slugOf: ({ node }) => definedSlug(node.slug, `a node of owner '${ownerId}'`),
+  update: async (tx, id, { kind, node }, order, context) => {
+    await tx.contentNode.update({
+      data: {
+        ...omitBookkeeping(node, ['children', 'competencies', 'slug']),
+        competencies: { set: node.competencies.map(slug => ({ slug })) },
+        kind,
+        order,
+        updatedById: context.userId,
+      },
+      where: { id },
+    });
+    await reconcileChildren(tx, node.children, nestedNodeAdapter(id), context);
+  },
+});
+
+/**
+ * Brings one owner's `ContentNode`/`NestedContentNode` rows to the state the tree describes,
+ * correlating rows by their stamped slug so that a node surviving an edit keeps its row identity
+ * and creation date.
+ *
+ * The two collections are reconciled as one sequence because they share the table and the slug
+ * namespace: `kind` records which collection a node came out of, and `order` runs across the
+ * concatenation. Reading splits by kind and preserves relative order, so summaries ordered ahead of
+ * content is immaterial to how either renders.
+ */
+export const reconcileContentNodes = async (
   tx: Transaction,
   ownerId: string,
   ownerType: ContentOwnerType,
   tree: CanonicalContentTree,
   context: PrismaWriteContext,
 ): Promise<void> => {
-  const collections = [
-    { kind: NodeKind.SUMMARY, nodes: tree.summary },
-    { kind: NodeKind.CONTENT, nodes: tree.content },
+  const planned: PlannedNode[] = [
+    ...tree.summary.map(node => ({ kind: NodeKind.SUMMARY, node })),
+    ...tree.content.map(node => ({ kind: NodeKind.CONTENT, node })),
   ];
-  for (const { kind, nodes } of collections) {
-    for (const [index, node] of nodes.entries()) {
-      /* eslint-disable-next-line no-await-in-loop -- The rows are created inside one interactive
-         transaction, which does not support concurrent operations. */
-      const created = await tx.contentNode.create({
-        data: {
-          ...omitBookkeeping(node, ['children', 'competencies', 'slug']),
-          competencies: { connect: node.competencies.map(slug => ({ slug })) },
-          createdById: context.userId,
-          kind,
-          order: index,
-          ownerId,
-          ownerType,
-          slug: definedSlug(node.slug, `a ${kind} node of owner '${ownerId}'`),
-          updatedById: context.userId,
-        },
-      });
-      for (const [childIndex, child] of node.children.entries()) {
-        /* eslint-disable-next-line no-await-in-loop -- See above. */
-        await tx.nestedContentNode.create({
-          data: {
-            ...omitBookkeeping(child, ['competencies', 'slug']),
-            competencies: { connect: child.competencies.map(slug => ({ slug })) },
-            createdById: context.userId,
-            order: childIndex,
-            parentId: created.id,
-            slug: definedSlug(child.slug, `a nested node of '${node.slug ?? ownerId}'`),
-            updatedById: context.userId,
-          },
-        });
-      }
-    }
-  }
+  await reconcileChildren(tx, planned, contentNodeAdapter(ownerId, ownerType), context);
+};
+
+/**
+ * Removes every content node of one owner.
+ *
+ * Content nodes attach polymorphically, through an `ownerId`/`ownerType` pair rather than a foreign
+ * key, so deleting the owning role or degree does not cascade to them. Without this they would
+ * outlive their owner and reappear as orphans on the next read.
+ */
+export const deleteContentNodes = async (
+  tx: Transaction,
+  ownerId: string,
+  ownerType: ContentOwnerType,
+): Promise<void> => {
+  await tx.contentNode.deleteMany({ where: { ownerId, ownerType } });
 };

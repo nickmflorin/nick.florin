@@ -5,7 +5,13 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import { type ChildCollectionAdapter, reconcileChildren } from '../codecs/child-collection';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec, recordListField } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -75,96 +81,137 @@ export const ProfileFields = {
 
 export type CanonicalProfile = ParsedRecord<typeof ProfileFields>;
 
-/**
- * `Profile` is a reused legacy model carrying new prose-row relations. The push direction links
- * against the existing row (the most recently created profile, matching how the site resolves
- * one) and writes only the additive columns; the prose rows are created when none exist yet and
- * left untouched — with a warning — when some already do, since replacing rows is a destructive
- * operation that belongs to the diff-and-confirm flow of the sync engine.
- */
-class ProfilePrismaCodec extends PrismaCodec<CanonicalProfile> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalProfile,
-    context: PrismaWriteContext,
-    issues: IssueCollector,
-  ): Promise<void> {
-    const existing = await tx.profile.findFirst({
-      include: { about: true, contacts: true, highlights: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    if (existing === null) {
-      issues.error(
-        'profile',
-        record.slug,
-        'No profile row exists to link against, and creating one from the fixture is not ' +
-          'supported: the legacy `intro` column is required and the fixture cannot supply it.',
-      );
-      return;
-    }
-    await tx.profile.update({
+type CanonicalAboutParagraph = CanonicalRecord<typeof AboutParagraphFields>;
+type CanonicalHighlight = CanonicalRecord<typeof HighlightFields>;
+type CanonicalContact = CanonicalRecord<typeof ContactFields>;
+
+const aboutAdapter = (profileId: string): ChildCollectionAdapter<CanonicalAboutParagraph> => ({
+  create: async (tx, paragraph, order, context) => {
+    await tx.profileAboutParagraph.create({
       data: {
-        ...pick(record, ['handle', 'photoFileName', 'slug']),
+        ...omitBookkeeping(paragraph),
+        createdById: context.userId,
+        order,
+        profileId,
         updatedById: context.userId,
       },
-      where: { id: existing.id },
     });
-    const collections = [
-      { existing: existing.about.length, kind: 'about paragraphs' },
-      { existing: existing.highlights.length, kind: 'highlights' },
-      { existing: existing.contacts.length, kind: 'contact entries' },
-    ];
-    const populated = collections.filter(collection => collection.existing > 0);
-    if (populated.length > 0) {
-      issues.warning(
-        'profile',
-        record.slug,
-        `Existing ${populated.map(collection => collection.kind).join(', ')} were left ` +
-          'untouched: replacing rows is destructive and belongs to the sync diff flow.',
-      );
-    }
-    if (existing.about.length === 0) {
-      for (const [order, paragraph] of record.about.entries()) {
-        /* eslint-disable-next-line no-await-in-loop -- Rows are created inside one interactive
-           transaction, which does not support concurrent operations. */
-        await tx.profileAboutParagraph.create({
-          data: {
-            ...omitBookkeeping(paragraph),
-            createdById: context.userId,
-            order,
-            profileId: existing.id,
-            updatedById: context.userId,
-          },
-        });
-      }
-    }
-    if (existing.highlights.length === 0) {
-      for (const [order, highlight] of record.highlights.entries()) {
-        /* eslint-disable-next-line no-await-in-loop -- See above. */
-        await tx.profileHighlight.create({
-          data: {
-            ...omitBookkeeping(highlight),
-            createdById: context.userId,
-            order,
-            profileId: existing.id,
-            updatedById: context.userId,
-          },
-        });
-      }
-    }
-    if (existing.contacts.length === 0) {
-      for (const [order, contact] of record.contacts.entries()) {
-        /* eslint-disable-next-line no-await-in-loop -- See above. */
-        await tx.profileContactEntry.create({
-          data: {
-            ...omitBookkeeping(contact),
-            createdById: context.userId,
-            order,
-            profileId: existing.id,
-            updatedById: context.userId,
-          },
-        });
-      }
+  },
+  existing: async tx => {
+    const rows = await tx.profileAboutParagraph.findMany({
+      select: { id: true, slug: true },
+      where: { profileId },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.profileAboutParagraph.delete({ where: { id } });
+  },
+  slugOf: paragraph => paragraph.slug,
+  update: async (tx, id, paragraph, order, context) => {
+    await tx.profileAboutParagraph.update({
+      data: { ...omitBookkeeping(paragraph), order, updatedById: context.userId },
+      where: { id },
+    });
+  },
+});
+
+const highlightAdapter = (profileId: string): ChildCollectionAdapter<CanonicalHighlight> => ({
+  create: async (tx, highlight, order, context) => {
+    await tx.profileHighlight.create({
+      data: {
+        ...omitBookkeeping(highlight),
+        createdById: context.userId,
+        order,
+        profileId,
+        updatedById: context.userId,
+      },
+    });
+  },
+  existing: async tx => {
+    const rows = await tx.profileHighlight.findMany({
+      select: { id: true, slug: true },
+      where: { profileId },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.profileHighlight.delete({ where: { id } });
+  },
+  slugOf: highlight => highlight.slug,
+  update: async (tx, id, highlight, order, context) => {
+    await tx.profileHighlight.update({
+      data: { ...omitBookkeeping(highlight), order, updatedById: context.userId },
+      where: { id },
+    });
+  },
+});
+
+const contactAdapter = (profileId: string): ChildCollectionAdapter<CanonicalContact> => ({
+  create: async (tx, contact, order, context) => {
+    await tx.profileContactEntry.create({
+      data: {
+        ...omitBookkeeping(contact),
+        createdById: context.userId,
+        order,
+        profileId,
+        updatedById: context.userId,
+      },
+    });
+  },
+  existing: async tx => {
+    const rows = await tx.profileContactEntry.findMany({
+      select: { id: true, slug: true },
+      where: { profileId },
+    });
+    return new Map(rows.map(row => [row.slug, row.id]));
+  },
+  remove: async (tx, id) => {
+    await tx.profileContactEntry.delete({ where: { id } });
+  },
+  slugOf: contact => contact.slug,
+  update: async (tx, id, contact, order, context) => {
+    await tx.profileContactEntry.update({
+      data: { ...omitBookkeeping(contact), order, updatedById: context.userId },
+      where: { id },
+    });
+  },
+});
+
+/**
+ * Why the profile row cannot be created from the fixture: the legacy `intro` column is required and
+ * the fixture has no field that could supply it.
+ */
+const UncreatableProfileMessage =
+  'No profile row exists to link against, and creating one from the fixture is not supported: ' +
+  'the legacy `intro` column is required and the fixture cannot supply it.';
+
+/**
+ * `Profile` is a reused legacy model carrying new prose-row relations. The push links against the
+ * existing row — the most recently created profile, matching how the site resolves one — and writes
+ * only the additive columns, while the three prose collections are reconciled by slug so that a
+ * paragraph surviving an edit keeps its row.
+ */
+class ProfilePrismaCodec extends PrismaCodec<CanonicalProfile> {
+  public override readonly writableFields = [
+    'about',
+    'contacts',
+    'handle',
+    'highlights',
+    'photoFileName',
+    'slug',
+  ];
+
+  /**
+   * The absent profile row is refused while the change set is still being planned, so that the run
+   * fails before writing anything rather than partway through.
+   */
+  public override planIssues(
+    plan: RecordWritePlan<CanonicalProfile>,
+    issues: IssueCollector,
+  ): void {
+    if (plan.action === 'create') {
+      issues.error('profile', plan.record.slug, UncreatableProfileMessage);
     }
   }
 
@@ -214,6 +261,30 @@ class ProfilePrismaCodec extends PrismaCodec<CanonicalProfile> {
         slug: profile.slug ?? slugify(profile.displayName),
       },
     ];
+  }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalProfile>,
+    context: PrismaWriteContext,
+    issues: IssueCollector,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing === null) {
+      issues.error('profile', record.slug, UncreatableProfileMessage);
+      return;
+    }
+    const id = targetId('profile', existing);
+    await tx.profile.update({
+      data: {
+        ...pick(record, ['handle', 'photoFileName', 'slug']),
+        updatedById: context.userId,
+      },
+      where: { id },
+    });
+    await reconcileChildren(tx, record.about, aboutAdapter(id), context);
+    await reconcileChildren(tx, record.highlights, highlightAdapter(id), context);
+    await reconcileChildren(tx, record.contacts, contactAdapter(id), context);
   }
 }
 

@@ -86,7 +86,8 @@ export const AssetVisualizations: Project = {
   channels: [SyndicationChannel.Website],
   competencies: [DataVisualization, HTML, ResponsiveDesign, JavaScript, AWSLambda, D3Js],
   description:
-    'An animated JavaScript charting library that can be used to visualize data in up to 5 dimensions simultaneously.',
+    'An animated JavaScript charting library that can be used to visualize data in up to 5 ' +
+    'dimensions simultaneously.',
   highlighted: true,
   name: 'n-Dimensional Charting Library for Asset Management',
   repositories: [],
@@ -198,7 +199,9 @@ export const Tooltrack: Project = {
     RelationalDatabases,
   ],
   description:
-    'An application that allows users to monitor, manage and configure notifications and alerts that they will receive as it relates to inventory & price changes that occur for products offered by the woodworking hand tool manufacturer, Lie Nielsen.',
+    'An application that allows users to monitor, manage and configure notifications and alerts ' +
+    'that they will receive as it relates to inventory & price changes that occur for products ' +
+    'offered by the woodworking hand tool manufacturer, Lie Nielsen.',
   highlighted: true,
   name: 'ToolTrack',
   repositories: [TooltrackRepository],

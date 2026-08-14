@@ -7,4 +7,7 @@ import { withApplicationConfig } from './jest.config.base';
  * configurations.  These projects are associated with scoped configuration files, which are
  * denoted as either jest-*.config.ts or jest.config.ts.
  */
-export default withApplicationConfig(__dirname, ['<rootDir>/src/__tests__/unit/jest.config.ts']);
+export default withApplicationConfig(__dirname, [
+  '<rootDir>/src/__tests__/unit/jest.config.ts',
+  '<rootDir>/src/__tests__/rtl/jest.config.ts',
+]);

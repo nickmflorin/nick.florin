@@ -1,7 +1,12 @@
 import { type Transaction } from '~/database/prisma';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -11,7 +16,6 @@ import {
   nullableStringField,
   slugRefListField,
   stringField,
-  visibilityField,
 } from '../fields/primitives';
 import { type IssueCollector } from '../issues';
 
@@ -35,42 +39,14 @@ export const RepositoryFields = {
   npmPackageName: nullableStringField(),
   slug: stringField(),
   startDate: dateField(),
-  visible: visibilityField(),
+  /* The legacy column defaults to hidden, so only an affirmative `visible` is authored. */
+  visible: flagField(),
 } satisfies FieldCodecRecord;
 
 export type CanonicalRepository = ParsedRecord<typeof RepositoryFields>;
 
 class RepositoryPrismaCodec extends PrismaCodec<CanonicalRepository> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalRepository,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const membership = {
-      channels: [...record.channels],
-      competencies: { connect: record.competencies.map(slug => ({ slug })) },
-    };
-    const existing = await tx.repository.findUnique({ where: { slug: record.slug } });
-    if (existing !== null) {
-      await tx.repository.update({
-        data: {
-          ...membership,
-          competencies: { set: record.competencies.map(slug => ({ slug })) },
-          updatedById: context.userId,
-        },
-        where: { id: existing.id },
-      });
-      return;
-    }
-    await tx.repository.create({
-      data: {
-        ...omitBookkeeping(record, ['competencies']),
-        ...membership,
-        createdById: context.userId,
-        updatedById: context.userId,
-      },
-    });
-  }
+  public override readonly writableFields = ['channels', 'competencies'];
 
   public async read(tx: Transaction, _issues: IssueCollector): Promise<CanonicalRepository[]> {
     const rows = await tx.repository.findMany({
@@ -84,6 +60,34 @@ class RepositoryPrismaCodec extends PrismaCodec<CanonicalRepository> {
         competencies: competencies.map(competency => competency.slug),
         meta: { createdAt, id, updatedAt },
       };
+    });
+  }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalRepository>,
+    context: PrismaWriteContext,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing !== null) {
+      await tx.repository.update({
+        data: {
+          channels: [...record.channels],
+          competencies: { set: record.competencies.map(slug => ({ slug })) },
+          updatedById: context.userId,
+        },
+        where: { id: targetId('repository', existing) },
+      });
+      return;
+    }
+    await tx.repository.create({
+      data: {
+        ...omitBookkeeping(record, ['competencies']),
+        channels: [...record.channels],
+        competencies: { connect: record.competencies.map(slug => ({ slug })) },
+        createdById: context.userId,
+        updatedById: context.userId,
+      },
     });
   }
 }

@@ -64,6 +64,59 @@ const getStatusLabel = (status: Status): string => {
 This only works when the annotated return type excludes `undefined`. An annotation of
 `string | undefined` reintroduces the fallthrough it was meant to prevent.
 
+### Absence Is `| null`, Never `| undefined`
+
+Many exhaustive functions genuinely have nothing to return for some inputs — a lookup that finds no
+match, a variant that renders nothing. Model that absence as `| null`. `| undefined` is the one
+addition that silently disables the check, because falling off the end of a function produces
+exactly `undefined`, so an unhandled member becomes indistinguishable from a handled one that found
+nothing.
+
+This is not a stylistic preference between two null-ish values. It decides whether the compiler is
+still doing the work:
+
+```typescript
+// Disallowed: `| undefined` readmits the fallthrough, so the `default` clause is now load-bearing
+// — it is the only thing catching a new member of the union.
+const lookup = (correlation: LegacyCorrelation): Date | undefined => {
+  switch (correlation.entity) {
+    case 'competency':
+      return competencyBySlug.get(correlation.slug);
+    case 'role':
+      return roleByTitle.get(correlation.title);
+    default:
+      return assertNever(correlation);
+  }
+};
+
+// Correct: `| null` cannot be produced by falling off the end, so the annotation itself proves
+// exhaustiveness and the `default` clause comes out. Adding a member to `LegacyCorrelation` now
+// fails to compile here with "Function lacks ending return statement".
+const lookup = (correlation: LegacyCorrelation): Date | null => {
+  switch (correlation.entity) {
+    case 'competency':
+      return competencyBySlug.get(correlation.slug) ?? null;
+    case 'role':
+      return roleByTitle.get(correlation.title) ?? null;
+  }
+};
+```
+
+`src/database/content/legacy-created-at.ts` is the working example. Note the `?? null` on each
+branch: `Map.prototype.get` returns `V | undefined`, so a lookup has to be converted at the point it
+is returned rather than left to widen the signature.
+
+Prefer this to a `default: assertNever(...)` clause whenever the function returns a value. Both are
+correct, but the annotation needs no maintenance, adds no branch that has to be read and understood,
+and cannot be defeated later by someone giving the `default` a real value to return. Approach C's
+`assertNever` remains the right tool where the branches carry logic rather than produce a value, or
+where a genuinely out-of-band runtime value should throw.
+
+Where a function must interoperate with an API that reads `undefined` specifically — Prisma treats
+an undefined column as "not provided" and applies its default — keep `| null` on the exhaustive
+function and convert at the boundary, so the conversion is one visible line rather than a weakened
+signature.
+
 ### React: Annotate `JSX.Element`, Never `ReactNode`
 
 `ReactNode` includes `undefined`, `null`, and `boolean`. A render function annotated

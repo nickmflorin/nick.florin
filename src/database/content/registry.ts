@@ -51,9 +51,61 @@ export interface LoadedContent {
 }
 
 /**
+ * The entities a resume sheet claims outright rather than merely referencing, paired with the
+ * field that claims them.
+ *
+ * A sheet's roles and degrees are a one-to-many owned through a foreign key on the referenced row,
+ * not a join table, so a role listed on two sheets does not belong to both — it silently lands on
+ * whichever sheet is written last, and writing the other disconnects it. No sheet can detect that
+ * on its own, which is what makes it a set-level invariant.
+ */
+const ExclusiveSheetClaims = [
+  { entity: 'degree', field: 'degrees' },
+  { entity: 'role', field: 'roles' },
+] as const;
+
+const validateExclusiveSheetClaims = (
+  set: readonly LoadedContent[],
+  issues: IssueCollector,
+): void => {
+  const sheets = set.find(entry => entry.binding.key === 'resume-sheet');
+  if (sheets === undefined) {
+    return;
+  }
+  for (const { entity, field } of ExclusiveSheetClaims) {
+    const claimedBy = new Map<string, string>();
+    for (const sheet of sheets.records) {
+      /* The mapped record type cannot be indexed by a runtime key; the field is a slug reference
+         list on every resume sheet, which the runtime check below re-establishes. */
+      const claims = (sheet as Record<string, unknown>)[field];
+      if (!Array.isArray(claims)) {
+        continue;
+      }
+      for (const slug of claims) {
+        if (typeof slug !== 'string') {
+          continue;
+        }
+        const owner = claimedBy.get(slug);
+        if (owner !== undefined) {
+          issues.error(
+            'resume-sheet',
+            sheet.slug,
+            `The ${entity} '${slug}' is already claimed by the sheet '${owner}'. A ${entity} ` +
+              'belongs to exactly one sheet, so listing it on a second would silently detach it ' +
+              'from the first.',
+          );
+        }
+        claimedBy.set(slug, sheet.slug);
+      }
+    }
+  }
+};
+
+/**
  * The set-level validations that no single record can perform on itself: duplicate slugs within
- * an entity, and slug references that do not resolve to a loaded record. Runs before any write,
- * so an inconsistent set fails hard without committing anything.
+ * an entity, slug references that do not resolve to a loaded record, and the exclusive claims a
+ * resume sheet makes on its roles and degrees. Runs before any write, so an inconsistent set fails
+ * hard without committing anything.
  */
 export const validateContentSet = (set: readonly LoadedContent[], issues: IssueCollector): void => {
   const slugsByEntity = new Map<string, Set<string>>();
@@ -87,4 +139,5 @@ export const validateContentSet = (set: readonly LoadedContent[], issues: IssueC
       }
     }
   }
+  validateExclusiveSheetClaims(set, issues);
 };

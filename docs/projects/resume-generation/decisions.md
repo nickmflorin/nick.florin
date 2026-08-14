@@ -16,6 +16,93 @@ Format:
 
 ---
 
+## 2026-08-12 — Sync engine implemented: plan outside the transaction, write inside one
+
+**Decision (implementation record):** The fixture ⇄ database sync engine landed, completing the
+data-management phase's transfer layer. Its shape:
+
+- **`PrismaCodec.create` became `write(tx, plan, context, issues)`**, receiving a `RecordWritePlan`
+  that already states create-vs-update and carries the correlated target record. Six of the ten
+  codecs already did find-then-branch internally, so this shortened them. Refusals moved to a
+  `planIssues` hook so an unsatisfiable plan fails before the transaction opens, and `delete` plus a
+  `deletionPolicy` (`delete` only for competency/role/degree/resume-sheet; `retain` for the six
+  sharing a table with a superseded model) express what a sync may remove.
+- **Correlation is by slug, with binding-declared `alternateKeys`** (the unique name, for the reused
+  legacy models whose rows predate the slug column) and an unconditional match for singleton
+  entities. This replaced four per-codec `findFirst` fallbacks, and it is what lets planning see a
+  correlation the write would otherwise only discover mid-transaction.
+- **Owned child collections reconcile by slug** (`reconcileChildren`, six collections: the content
+  tree's two levels, the profile's three prose lists, a sheet's competency groups), removals before
+  writes so a released slug cannot collide. Verified: editing one nested node's prose leaves every
+  sibling row's `id` and `createdAt` untouched.
+- **The diff runs on encoded records** with `meta` skipped, object lists keyed by slug rather than
+  index (so an insertion is one addition and two moves, not a cascade), and scalar lists compared as
+  sets. It is masked to the fields the target store actually writes — without that, a push reported
+  clearing every legacy column the fixture does not carry, none of which it would touch.
+- **`createdAt` is inherited at create time** via a resolver on the write context, not backfilled by
+  an update: the client's metadata middleware prohibits `createdAt` on updates. Match keys are
+  slug/label for competencies and the unique `(title, company)` / `(major, school)` pairs for roles
+  and degrees, which have no legacy slug.
+
+**Why:** Planning and applying are separated because confirmation blocks on a human: holding an
+interactive transaction open across that wait would hold row locks indefinitely. Reconciling rather
+than replacing child rows preserves the creation dates the whole `createdAt` inheritance exists to
+protect — a delete-and-recreate would churn them on every run, including a no-op one.
+
+**Alternatives considered:** A parallel abstract `update` alongside `create` (rejected: two lists to
+keep in step, and forgetting one is silent); delete-and-recreate for child collections (rejected as
+above); a post-create `UPDATE` to backfill `createdAt` (rejected: the middleware forbids it, and
+evading it with raw SQL would be the only raw SQL in the layer).
+
+---
+
+## 2026-08-12 — Three defects the engine surfaced, fixed ahead of it
+
+**Decision (implementation record):** Three pre-existing defects were fixed before the engine,
+because each made its first diff either wrong or unreadable:
+
+1. `RepositoryFields.visible` and `ProjectFields.visible` used `visibilityField()` (elides `true`)
+   against `@default(false)` columns the emitter wrote with `flag()`. Every hidden repository and
+   project parsed as visible; the first push would have flipped 11 of them. Both are `flagField()`
+   now, and the parsed counts match the fixtures exactly (13/24, 4/4).
+2. `CoursePrismaCodec` passed `updatedBy: { connect }` to an update, but the metadata middleware
+   requires the scalar `updatedById`. Every course write would have thrown. The rule for the layer:
+   a create may use the relation form, an update never does — and where a model has required FK
+   relations, the update sets foreign keys as scalars too (`idOfSlug`), because mixing a nested
+   `connect` with scalar audit columns selects Prisma's checked input, which omits them.
+3. Prisma stamps a `$kind` discriminator on every row it returns, which rode through the
+   `omitBookkeeping` spreads into canonical records and produced 18 spurious "not canonical"
+   warnings per run. It is a bookkeeping key now.
+
+**Why:** Each is invisible until something re-reads what was written, which is exactly what a sync
+engine does. Recording them here because the first two would otherwise look like regressions
+introduced by the engine.
+
+---
+
+## 2026-08-12 — Content-node slugs are emitted, and the emitter writes through the bindings
+
+**Decision:** `emit-resume-fixtures.ts` no longer serializes YAML itself; it routes every record
+through the entity's `ContentBinding` and the `YamlFixtureStore`. The fixtures therefore carry
+stamped content-node slugs, and key ordering and default elision are the binding's rules rather than
+a second implementation of them. `RecordCodec.encode` sorts keys alphabetically after `meta`.
+
+The channel-inheritance rule gained its encode half (`collapseContentTreeChannels`): parsing
+resolves a node's allowlist from its parent, and serializing clears it again where it matches, so
+the authoring shape survives a round trip. Without it, emitting through the bindings wrote the
+resolved allowlist onto all 60-odd nodes.
+
+**Why:** Slug-keyed child reconciliation needs node slugs to exist in the file; deriving them on
+every parse makes them positional for untitled nodes, so an inserted paragraph would renumber every
+node below it and read as delete-and-recreate. Routing the emitter through the bindings also removes
+the class of drift where the emitter and the store disagree about key order or elision.
+
+**Limitation:** the slugs are deterministic but not yet sticky against a title edit, because the
+data modules — still the operative source — carry no slugs to preserve. Stickiness arrives when the
+fixtures become the source of truth and the authored slug simply persists.
+
+---
+
 ## 2026-08-10 — The competency registry is an exhaustive career catalog
 
 **Decision:** The competencies registry is a **global, exhaustive catalog** of everything Nick has

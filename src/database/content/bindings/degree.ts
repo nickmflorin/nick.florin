@@ -3,7 +3,13 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  idOfSlug,
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec, recordField } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -20,10 +26,12 @@ import { type IssueCollector } from '../issues';
 
 import { ContentBinding, type ParsedRecord, type SlugReference } from './content-binding';
 import {
+  collapseContentTreeChannels,
   ContentTreeCodec,
   contentTreeReferences,
-  createContentNodes,
+  deleteContentNodes,
   readContentTrees,
+  reconcileContentNodes,
   stampContentTreeChannels,
   stampContentTreeSlugs,
   validateContentTree,
@@ -57,25 +65,12 @@ export type CanonicalDegree = ParsedRecord<typeof DegreeFields>;
  * syndication fields map onto the owner's row.
  */
 class DegreePrismaCodec extends PrismaCodec<CanonicalDegree> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalDegree,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const created = await tx.degree.create({
-      data: {
-        ...omitBookkeeping(record, ['content', 'school']),
-        channels: record.content.channels,
-        competencies: {
-          connect: record.content.competencies.map(slug => ({ slug })),
-        },
-        createdBy: { connect: { id: context.userId } },
-        isVisible: record.content.isVisible,
-        school: { connect: { slug: record.school } },
-        updatedBy: { connect: { id: context.userId } },
-      },
-    });
-    await createContentNodes(tx, created.id, ContentOwnerType.DEGREE, record.content, context);
+  public override readonly deletionPolicy = 'delete';
+
+  public async delete(tx: Transaction, record: CanonicalDegree): Promise<void> {
+    const id = targetId('degree', record);
+    await deleteContentNodes(tx, id, ContentOwnerType.DEGREE);
+    await tx.degree.delete({ where: { id } });
   }
 
   public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalDegree[]> {
@@ -111,6 +106,59 @@ class DegreePrismaCodec extends PrismaCodec<CanonicalDegree> {
       };
     });
   }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalDegree>,
+    context: PrismaWriteContext,
+    issues: IssueCollector,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    const owned = {
+      channels: record.content.channels,
+      isVisible: record.content.isVisible,
+      schoolId: await idOfSlug(tx.school, record.school),
+    };
+    const id =
+      existing === null
+        ? (
+            await tx.degree.create({
+              data: {
+                ...omitBookkeeping(record, ['content', 'school']),
+                ...owned,
+                competencies: {
+                  connect: record.content.competencies.map(slug => ({ slug })),
+                },
+                createdAt: context.inheritedCreatedAt(
+                  {
+                    entity: 'degree',
+                    major: record.major,
+                    school: record.school,
+                    shortMajor: record.shortMajor,
+                    slug: record.slug,
+                  },
+                  issues,
+                ),
+                createdById: context.userId,
+                updatedById: context.userId,
+              },
+            })
+          ).id
+        : targetId('degree', existing);
+
+    if (existing !== null) {
+      await tx.degree.update({
+        data: {
+          ...omitBookkeeping(record, ['content', 'school']),
+          ...owned,
+          competencies: { set: record.content.competencies.map(slug => ({ slug })) },
+          updatedById: context.userId,
+        },
+        where: { id },
+      });
+    }
+    await reconcileContentNodes(tx, id, ContentOwnerType.DEGREE, record.content, context);
+  }
 }
 
 export class DegreeBinding extends ContentBinding<typeof DegreeFields> {
@@ -138,5 +186,14 @@ export class DegreeBinding extends ContentBinding<typeof DegreeFields> {
 
   public override references(record: CanonicalDegree): SlugReference[] {
     return [...super.references(record), ...contentTreeReferences(record.content)];
+  }
+
+  /**
+   * Collapses the tree's inherited channel grants back to the authoring shape before encoding, so
+   * that a node states a grant only where it narrows its parent's. This is the encode half of the
+   * inheritance rule {@link DegreeBinding.finalize} resolves on the way in.
+   */
+  public override serialize(record: CanonicalDegree): Record<string, unknown> {
+    return super.serialize({ ...record, content: collapseContentTreeChannels(record.content) });
   }
 }

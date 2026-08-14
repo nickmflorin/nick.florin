@@ -91,20 +91,19 @@ discuss together, then record the outcome in `decisions.md`.
 
 ## Data Modeling
 
-- [x] **(done 2026-08-11)** Invert syndication from an
-      exclusion list to an allowlist: `excludedChannels: SyndicationChannel[]` becomes
-      `channels: SyndicationChannel[]` on **every** syndicated model, defaulting to `[]` — a newly
-      created record syndicates **nowhere** until channels are explicitly granted. Reverses the
-      permissive-default shape the discovery notes recorded. Touches: the parallel Prisma models
-      (migration), the fixture codecs/bindings (`channelsField` semantics), the TS data modules and
-      emitter, the resolution cascade in `normalize.ts`/`syndication.ts` (exclusion inheritance
-      becomes allowlist intersection — the cascade rule needs a rethink), and a data migration of
-      all authored values (current implicit "everywhere" becomes explicit channel grants so nothing
-      visibly changes at flip time).
-- [x] **(done 2026-08-11)** Implement the carried-over models' membership (decided
-      2026-08-11, see decisions.md): additive migration giving `Project`/`Repository`/`Course` a
-      `Competency` m2m and `channels`, plus `Course.degreeId` (nullable, populated from the
-      education ↔ degree correspondence); bindings and one fixture file per model (`projects.yaml`,
+- [x] **(done 2026-08-11)** Invert syndication from an exclusion list to an allowlist:
+      `excludedChannels: SyndicationChannel[]` becomes `channels: SyndicationChannel[]` on **every**
+      syndicated model, defaulting to `[]` — a newly created record syndicates **nowhere** until
+      channels are explicitly granted. Reverses the permissive-default shape the discovery notes
+      recorded. Touches: the parallel Prisma models (migration), the fixture codecs/bindings
+      (`channelsField` semantics), the TS data modules and emitter, the resolution cascade in
+      `normalize.ts`/`syndication.ts` (exclusion inheritance becomes allowlist intersection — the
+      cascade rule needs a rethink), and a data migration of all authored values (current implicit
+      "everywhere" becomes explicit channel grants so nothing visibly changes at flip time).
+- [x] **(done 2026-08-11)** Implement the carried-over models' membership (decided 2026-08-11, see
+      decisions.md): additive migration giving `Project`/`Repository`/`Course` a `Competency` m2m
+      and `channels`, plus `Course.degreeId` (nullable, populated from the education ↔ degree
+      correspondence); bindings and one fixture file per model (`projects.yaml`,
       `repositories.yaml`, `courses.yaml`) with slug refs; then port the prod data (4 projects, 22
       repositories, ~24 courses) with skill links translated through
       [context/legacy-skill-mapping.md](./context/legacy-skill-mapping.md).
@@ -222,14 +221,68 @@ _Gated on the Research & Discussion items above — no schema work until those a
       codecs, duplicate-slug and cross-reference validation over the whole set, entity invariants
       (content-tree shape, remote-role location), verified by round-tripping all seven fixture
       files.
-- [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome, including the merge
-      strategy when both sides changed and the destructive-change confirmation flow with a flag to
-      bypass it for scripted runs. The structural layer exists (`ContentStore` port with YAML and
-      Prisma adapters, dependency-ordered registry, create-only writes); what remains is the sync
-      engine itself — diff canonical-vs-canonical, update writes, `meta:`/sticky-slug write-back to
-      fixtures after a push, and the script entry point. New requirement (2026-08-09, see
-      decisions.md): the push seeds `createdAt` from the legacy counterpart row (competency ↔ skill,
-      role ↔ experience, …) rather than `now()`, so derived website ordering survives adoption.
+- [x] Implement the bidirectional fixture ⇄ DB sync — **done 2026-08-12** (see decisions.md). The
+      engine plans outside any transaction, renders one itemized diff, confirms once (`--yes=true`
+      bypasses), and applies inside a single transaction. Both directions run through the same store
+      port: `pnpm content:push` and `pnpm content:pull`, dev-only for now. `createdAt` inheritance
+      from the legacy counterpart landed with it (99/99 correlating competencies, 11/11 roles).
+      Verified on the dev database: first push writes 10 entities, an immediate re-plan reports
+      nothing to write.
+- [ ] Wire the production variants of the sync scripts (`content:push:prod`/`content:pull:prod` via
+      `env:setup:prod`), deferred until the engine has been exercised against the dev database for a
+      while.
+- [ ] Retire the TS data modules once the fixtures become the source of truth, and with them the
+      `resume:fixtures` emitter. Until then a pull would silently desync the two, so pull is only
+      run deliberately — the emitter regenerates the fixtures from the data modules on every run.
+- [ ] Repository and project `startDate` columns hold a time component the fixture's calendar-date
+      form cannot express, so every plan reports 26 normalization warnings. Decide whether to
+      normalize the stored values to UTC midnight or widen the field codec.
+- [ ] Conflict detection: the engine has no last-sync baseline, so the direction chosen wins
+      whole-record. Add a baseline (and the atomic per-record conflict prompt decided 2026-08-04) if
+      real usage produces conflicts.
+- [ ] The navigable terminal viewer for the confirmation diff (arrow-key selection revealing each
+      change), layered on the plain printed diff that v1 ships. Depends on the CLI stack decision —
+      see the CLI Hardening section below.
+
+## CLI Hardening (`pnpm content:push` / `content:pull`)
+
+The engine is sound, but the script wrapped around it is thin: it was built to prove the transfer
+layer, not to be lived with. These items make it a tool worth running often. The library half of
+this — which argument-parsing, prompt, color and progress packages to adopt — is a repo-wide
+decision tracked in the repo-cleanup project ([open-questions.md](../repo-cleanup/open-questions.md)
+#4), because the same hand-rolled helpers back every other script. The items here are the
+sync-specific behavior that decision unlocks.
+
+- [ ] **No `--help` and no usage output.** The flags (`--direction`, `--entity`, `--dry-run`,
+      `--yes`) are discoverable only by reading the source, and an unrecognized flag is silently
+      ignored rather than reported.
+- [ ] **Flags require `--flag=value`.** `--dry-run` throws; only `--dry-run=true` works. Bare
+      booleans and short aliases come with the argument-parsing library.
+- [ ] **Warnings drown the output.** Every run prints all 26 `startDate` normalization warnings
+      ahead of the diff. Needs verbosity levels (`--quiet`/`--verbose`), grouping of repeated
+      warnings by kind with a count, and a default that summarizes rather than enumerates.
+- [ ] **`--entity=` does not validate dependency order.** Selecting `role` without `company` plans a
+      write whose `connect` may find nothing, failing inside the transaction rather than during
+      planning. Either expand a selection to its dependencies automatically or refuse it with an
+      explanation.
+- [ ] **Undifferentiated exit codes.** Everything fails as `1`. Validation failure, operator abort,
+      and an unexpected error should be distinguishable so the script can be used in a pipeline.
+- [ ] **No machine-readable output.** A `--json` mode emitting the change set would make the plan
+      consumable by CI or another tool, and would give the tests something to assert against that is
+      not terminal formatting.
+- [ ] **The confirmation prompt is a bare `readline` y/N.** It does not re-prompt on unrecognized
+      input, has no "show me more" affordance, and cannot page a long diff. This is the same item as
+      the navigable viewer above, and it is what a prompt library exists to provide.
+- [ ] **No progress indication.** The read-and-plan phase takes several seconds against a remote
+      database with no output at all, and the write transaction is silent until it commits.
+- [ ] **Colour is unconditional.** `src/support/terminal.ts` emits ANSI regardless of `NO_COLOR` or
+      whether stdout is a TTY, so piping the diff to a file embeds escape codes.
+- [ ] **No graceful `SIGINT` handling.** Interrupting during the write leaves the transaction to be
+      rolled back by the driver rather than aborting deliberately with a message saying so.
+- [ ] **Production runs need a stronger gate than `--yes`.** When the prod variants are wired (see
+      the Fixtures & DB Sync section above), the confirmation should name the target database
+      explicitly and refuse a plan containing deletions unless a separate flag is passed, so that a
+      `--yes` habit formed against the dev database cannot carry over.
 - [x] ~~Preserve authored competency ordering across the m2m relations~~ — resolved 2026-08-04 the
       other way (see decisions.md): competency order is derived, never stored. Website and resume
       body chips sort by `isPrioritized` then `createdAt`; the resume sidebar's pill order comes

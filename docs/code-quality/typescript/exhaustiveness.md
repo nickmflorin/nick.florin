@@ -98,6 +98,44 @@ const renderBadge = (variant: Variant): JSX.Element => {
 Where a member genuinely renders nothing, annotate `JSX.Element | null` and `return null` from that
 branch explicitly, so "renders nothing" is a written-down decision rather than a missing branch.
 
+The same choice appears whenever a function legitimately has nothing to return — a lookup that finds
+no match, most commonly. Model that absence as `| null`, never `| undefined`. The two are not
+interchangeable here: falling off the end of a function produces exactly `undefined`, so adding it
+to the annotation makes an unhandled member indistinguishable from a handled one that found nothing,
+and the check silently stops working.
+
+```typescript
+// Disallowed: `| undefined` readmits the fallthrough. The `default` clause is now the only thing
+// catching a new member of the union.
+const lookup = (correlation: LegacyCorrelation): Date | undefined => {
+  switch (correlation.entity) {
+    case 'competency':
+      return competencyBySlug.get(correlation.slug);
+    case 'role':
+      return roleByTitle.get(correlation.title);
+    default:
+      return assertNever(correlation);
+  }
+};
+
+// Correct: `| null` cannot arise from falling off the end, so the annotation proves exhaustiveness
+// on its own and the `default` clause is unnecessary.
+const lookup = (correlation: LegacyCorrelation): Date | null => {
+  switch (correlation.entity) {
+    case 'competency':
+      return competencyBySlug.get(correlation.slug) ?? null;
+    case 'role':
+      return roleByTitle.get(correlation.title) ?? null;
+  }
+};
+```
+
+`src/database/content/legacy-created-at.ts` is the working example, including the `?? null` each
+branch needs because `Map.prototype.get` returns `V | undefined`. Both forms are correct, but the
+annotation needs no maintenance and cannot be defeated later by someone giving the `default` a real
+value to return. When an API downstream wants `undefined` specifically — Prisma reads an undefined
+column as "not provided" — convert at the boundary rather than widening the signature.
+
 ### A Lookup Record Keyed by the Union
 
 When each member maps to a value rather than to logic, a record typed `Record<Union, T>` removes the

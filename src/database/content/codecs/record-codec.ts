@@ -65,19 +65,32 @@ export class RecordCodec<TFields extends FieldCodecRecord> {
     return result as CanonicalRecord<TFields>;
   }
 
+  /**
+   * Encodes a canonical record into its fixture form, eliding every field whose codec returns
+   * `undefined`.
+   *
+   * Keys are emitted in alphabetical order, after `meta`, rather than in field-declaration order.
+   * Declaration order is not a property of the content — a field record assembled by spreading
+   * another (`NodeFields` over `NestedNodeFields`) orders its own additions last — so emitting it
+   * would make a pull reorder keys inside every affected record and bury the real change in noise.
+   */
   public encode(record: CanonicalRecord<TFields>): Record<string, unknown> {
-    const result: Record<string, unknown> = {};
-    if (this.withMeta && record.meta !== null) {
-      result.meta = encodeMeta(record.meta);
-    }
+    const encoded: Record<string, unknown> = {};
     /* The loop erases the field-to-value pairing the mapped type carries, so the record access
        and the codec call both need the checker stood down; the pairing holds by construction. */
     const values = record as Record<string, unknown>;
     for (const [key, codec] of Object.entries<AnyFieldCodec>(this.fields)) {
-      const encoded = codec.encode(values[key] as never);
-      if (encoded !== undefined) {
-        result[key] = encoded;
+      const value = codec.encode(values[key] as never);
+      if (value !== undefined) {
+        encoded[key] = value;
       }
+    }
+    const result: Record<string, unknown> = {};
+    if (this.withMeta && record.meta !== null) {
+      result.meta = encodeMeta(record.meta);
+    }
+    for (const key of Object.keys(encoded).sort()) {
+      result[key] = encoded[key];
     }
     return result;
   }

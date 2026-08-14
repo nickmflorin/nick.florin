@@ -15,7 +15,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { stringify } from 'yaml';
+import { findBinding, IssueCollector, replaceAll, YamlFixtureStore } from '~/database/content';
 
 import * as CompanyRecords from '~/documents/resume/data/companies';
 import * as CompetencyRecords from '~/documents/resume/data/competencies';
@@ -296,9 +296,32 @@ const emitCourse = (course: Course): YamlRecord =>
     visible: visibility(course.visible),
   });
 
-const writeFixture = async (filename: string, key: string, value: unknown): Promise<void> => {
-  const document = stringify({ [key]: value }, { lineWidth: 100 });
-  await fs.writeFile(path.join(FixturesDir, filename), document, 'utf-8');
+const store = new YamlFixtureStore(FixturesDir);
+
+/**
+ * Writes one fixture file by routing its records through the entity's content binding rather than
+ * serializing them here.
+ *
+ * The binding is what parses these files everywhere else, so emitting through it is what keeps the
+ * two representations in step: the records are validated on the way out, derived content-node slugs
+ * are stamped into the file, and key ordering and default elision are the binding's rules rather
+ * than a second implementation of them that can drift.
+ *
+ * Node slugs are stamped deterministically from each node's title and position, so they are stable
+ * across runs but not yet sticky against a title edit. Stickiness arrives when the fixtures become
+ * the source of truth and the authored slug simply persists in the file.
+ */
+const emitFixture = async (
+  key: string,
+  records: readonly YamlRecord[],
+  issues: IssueCollector,
+): Promise<void> => {
+  const binding = findBinding(key);
+  await store.write(
+    binding,
+    replaceAll(records.map(record => binding.parse(record, issues))),
+    issues,
+  );
 };
 
 const bySlug = <T extends { readonly slug: string }>(records: T[]): T[] =>
@@ -309,21 +332,26 @@ const main = async (): Promise<void> => {
   const companies: Company[] = bySlug(Object.values(CompanyRecords));
   const schools: School[] = bySlug(Object.values(SchoolRecords));
 
+  const issues = new IssueCollector();
+
   await fs.mkdir(FixturesDir, { recursive: true });
-  await writeFixture('competencies.yaml', 'competencies', competencies.map(emitCompetency));
-  await writeFixture('companies.yaml', 'companies', companies.map(emitCompany));
-  await writeFixture('schools.yaml', 'schools', schools.map(emitSchool));
-  await writeFixture('profile.yaml', 'profile', emitProfile(NickFlorin));
-  await writeFixture('roles.yaml', 'roles', Roles.map(emitRole));
-  await writeFixture('degrees.yaml', 'degrees', Degrees.map(emitDegree));
-  await writeFixture('resume-sheets.yaml', 'sheets', Sheets.map(emitSheet));
-  await writeFixture(
-    'repositories.yaml',
-    'repositories',
-    bySlug([...Repositories]).map(emitRepository),
-  );
-  await writeFixture('projects.yaml', 'projects', bySlug([...Projects]).map(emitProject));
-  await writeFixture('courses.yaml', 'courses', bySlug([...Courses]).map(emitCourse));
+  await emitFixture('competency', competencies.map(emitCompetency), issues);
+  await emitFixture('company', companies.map(emitCompany), issues);
+  await emitFixture('school', schools.map(emitSchool), issues);
+  await emitFixture('profile', [emitProfile(NickFlorin)], issues);
+  await emitFixture('role', Roles.map(emitRole), issues);
+  await emitFixture('degree', Degrees.map(emitDegree), issues);
+  await emitFixture('resume-sheet', Sheets.map(emitSheet), issues);
+  await emitFixture('repository', bySlug([...Repositories]).map(emitRepository), issues);
+  await emitFixture('project', bySlug([...Projects]).map(emitProject), issues);
+  await emitFixture('course', bySlug([...Courses]).map(emitCourse), issues);
+
+  for (const issue of issues.warnings) {
+    /* eslint-disable-next-line no-console -- Standalone CLI tooling; the logger is not in
+       context. */
+    console.warn(`[${issue.entity}/${issue.slug ?? '-'}] ${issue.message}`);
+  }
+  issues.assertValid();
 
   /* eslint-disable-next-line no-console -- Standalone CLI tooling; the logger is not in context. */
   console.info(

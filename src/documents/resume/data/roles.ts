@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- This is temporary. */
 import {
   Corsha,
   CraftEducationSystem,

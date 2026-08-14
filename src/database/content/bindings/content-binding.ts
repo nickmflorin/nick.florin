@@ -84,6 +84,34 @@ export abstract class ContentBinding<TFields extends SluggedFieldCodecRecord> {
   }
 
   /**
+   * Additional keys the record may be correlated by when its slug matches nothing on the other
+   * side, tried in order after the slug.
+   *
+   * Slugs are the correlation key of the transfer system, but rows of the reused legacy models
+   * predate the slug column: a record whose slug matches nothing may still be the very row the
+   * target already holds, under a name that is unique there. Declaring the alternate here rather
+   * than querying for it inside a codec is what lets the planning phase see the correlation, so a
+   * record that will in fact link to an existing row is never mistaken for a creation.
+   */
+  public alternateKeys(_record: ParsedRecord<TFields>): readonly string[] {
+    return [];
+  }
+
+  /**
+   * Re-establishes on a record assembled outside the fixture path the canonical invariants that
+   * decoding guarantees — collapsed prose, calendar dates at UTC midnight, resolved channel
+   * inheritance, stamped slugs.
+   *
+   * The database codecs build canonical records straight from rows and never run a field codec's
+   * `decode`, so without this the two sides of a sync are canonical in different senses and compare
+   * unequal on values that are in fact the same. Passing a record out through its own encoding and
+   * back in applies every rule exactly once, so it is idempotent by construction.
+   */
+  public normalize(record: ParsedRecord<TFields>, issues: IssueCollector): ParsedRecord<TFields> {
+    return this.parse(this.serialize(record), issues);
+  }
+
+  /**
    * Parses one raw fixture record into its canonical form: schema validation and field decoding
    * (via the record codec), then the binding's finalization pass, then the slug guarantee
    * (authored, or derived via {@link ContentBinding.deriveSlug}), then its invariants.

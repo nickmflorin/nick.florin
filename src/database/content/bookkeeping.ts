@@ -2,12 +2,14 @@
  * The keys the transfer machinery itself owns and re-derives, and that therefore never funnel
  * through a mapping between representations: audit authorship scalars, position columns stamped
  * from array order, the foreign-key scalars of structural relations, the polymorphic owner pair,
- * and the fixture-side `meta` identity block.
+ * the model discriminator the Prisma client stamps on every row it returns, and the fixture-side
+ * `meta` identity block.
  *
  * Membership here means "always dropped when present" — a key applies to whichever shapes carry
  * it and is ignored on the rest.
  */
 export const TransferBookkeepingKeys = [
+  '$kind',
   'createdById',
   'kind',
   'meta',

@@ -17,6 +17,7 @@ degrees:
         - scikit-learn
       summary:
         - content: Ongoing coursework toward an additional degree, temporarily postponed.
+          slug: summary-1
     degree: MASTERS_OF_SCIENCE
     gpa: 3.70 / 4.00
     isHighlighted: true
@@ -46,6 +47,7 @@ degrees:
       summary:
         - content:
             Advanced coursework in Applied Mathematics, Statistics &amp; Numerical Computation.
+          slug: summary-1
     degree: MASTERS_OF_SCIENCE_IN_ENGINEERING
     endDate: 2016-01-01
     gpa: 3.85 / 4.00
@@ -67,6 +69,7 @@ degrees:
         - matlab
       summary:
         - content: Minor in Economics; Concentration in Robotics &amp; Control Systems.
+          slug: summary-1
     degree: BACHELORS_OF_SCIENCE
     endDate: 2014-05-01
     gpa: 3.50 / 4.00

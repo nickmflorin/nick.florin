@@ -3,7 +3,12 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -16,6 +21,7 @@ import {
   stringField,
   visibilityField,
 } from '../fields/primitives';
+import { type IssueCollector } from '../issues';
 
 import { ContentBinding, type ParsedRecord } from './content-binding';
 
@@ -37,18 +43,10 @@ export const CompetencyFields = {
 export type CanonicalCompetency = ParsedRecord<typeof CompetencyFields>;
 
 class CompetencyPrismaCodec extends PrismaCodec<CanonicalCompetency> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalCompetency,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    await tx.competency.create({
-      data: {
-        ...omitBookkeeping(record),
-        createdById: context.userId,
-        updatedById: context.userId,
-      },
-    });
+  public override readonly deletionPolicy = 'delete';
+
+  public async delete(tx: Transaction, record: CanonicalCompetency): Promise<void> {
+    await tx.competency.delete({ where: { id: targetId('competency', record) } });
   }
 
   public async read(tx: Transaction): Promise<CanonicalCompetency[]> {
@@ -57,6 +55,33 @@ class CompetencyPrismaCodec extends PrismaCodec<CanonicalCompetency> {
       ...omitBookkeeping(row),
       meta: { createdAt, id, updatedAt },
     }));
+  }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalCompetency>,
+    context: PrismaWriteContext,
+    issues: IssueCollector,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing !== null) {
+      await tx.competency.update({
+        data: { ...omitBookkeeping(record), updatedById: context.userId },
+        where: { id: targetId('competency', existing) },
+      });
+      return;
+    }
+    await tx.competency.create({
+      data: {
+        ...omitBookkeeping(record),
+        createdAt: context.inheritedCreatedAt(
+          { entity: 'competency', label: record.label, slug: record.slug },
+          issues,
+        ),
+        createdById: context.userId,
+        updatedById: context.userId,
+      },
+    });
   }
 }
 

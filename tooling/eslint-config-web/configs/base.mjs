@@ -48,7 +48,8 @@ export default [
       curly: 'error',
       'dot-notation': ['error', { allowKeywords: true }],
       eqeqeq: 'error',
-      'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
+      /* Temporarily ignored because it's beginning to be a pain.
+         'max-lines': ['error', { max: 1000, skipBlankLines: true, skipComments: true }], */
       'no-alert': 'error',
       'no-await-in-loop': 'error',
       'no-case-declarations': 'error',

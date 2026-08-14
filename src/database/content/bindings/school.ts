@@ -4,7 +4,12 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import { nullableStringField, slugField, stringField } from '../fields/primitives';
@@ -32,32 +37,7 @@ export const SchoolFields = {
 export type CanonicalSchool = ParsedRecord<typeof SchoolFields>;
 
 class SchoolPrismaCodec extends PrismaCodec<CanonicalSchool> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalSchool,
-    context: PrismaWriteContext,
-  ): Promise<void> {
-    const existing = await tx.school.findFirst({
-      where: { OR: [{ slug: record.slug }, { name: record.name }] },
-    });
-    if (existing !== null) {
-      await tx.school.update({
-        data: {
-          ...pick(record, ['logoFileName', 'slug']),
-          updatedById: context.userId,
-        },
-        where: { id: existing.id },
-      });
-      return;
-    }
-    await tx.school.create({
-      data: {
-        ...omitBookkeeping(record),
-        createdById: context.userId,
-        updatedById: context.userId,
-      },
-    });
-  }
+  public override readonly writableFields = ['logoFileName', 'slug'];
 
   public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalSchool[]> {
     const rows = await tx.school.findMany({ orderBy: { name: 'asc' } });
@@ -78,6 +58,31 @@ class SchoolPrismaCodec extends PrismaCodec<CanonicalSchool> {
       };
     });
   }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalSchool>,
+    context: PrismaWriteContext,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing !== null) {
+      await tx.school.update({
+        data: {
+          ...pick(record, ['logoFileName', 'slug']),
+          updatedById: context.userId,
+        },
+        where: { id: targetId('school', existing) },
+      });
+      return;
+    }
+    await tx.school.create({
+      data: {
+        ...omitBookkeeping(record),
+        createdById: context.userId,
+        updatedById: context.userId,
+      },
+    });
+  }
 }
 
 export class SchoolBinding extends ContentBinding<typeof SchoolFields> {
@@ -91,5 +96,9 @@ export class SchoolBinding extends ContentBinding<typeof SchoolFields> {
 
   protected override deriveSlug(record: CanonicalRecord<typeof SchoolFields>): string {
     return slugify(record.name);
+  }
+
+  public override alternateKeys(record: CanonicalSchool): readonly string[] {
+    return [record.name];
   }
 }

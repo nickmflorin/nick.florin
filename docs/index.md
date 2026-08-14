@@ -68,6 +68,9 @@ Long-running project working context (status, decisions, codebase maps) lives un
 - [Rebrand](./projects/rebrand/README.md) - A new style guide and visual identity for the site, and
   the infrastructure to support it — starting with light/dark/system theme support built on
   cookie-persisted preference and CSS custom-property color tokens
+- [Test Coverage](./projects/test-coverage/README.md) - Building out a real Jest setup for unit and
+  React Testing Library component tests, then actually using it — starting from seven test files and
+  zero React tests
 
 ## AI Instructions vs Human Documentation
 

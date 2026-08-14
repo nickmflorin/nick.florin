@@ -2,7 +2,13 @@ import { type Transaction } from '~/database/prisma';
 import { slugify } from '~/lib/formatters/slugify';
 
 import { omitBookkeeping } from '../bookkeeping';
-import { PrismaCodec, type PrismaWriteContext } from '../codecs/prisma-codec';
+import {
+  idOfSlug,
+  PrismaCodec,
+  type PrismaWriteContext,
+  type RecordWritePlan,
+  targetId,
+} from '../codecs/prisma-codec';
 import { type CanonicalRecord, RecordCodec } from '../codecs/record-codec';
 import { type FieldCodecRecord } from '../fields/field-codec';
 import {
@@ -38,35 +44,27 @@ export const CourseFields = {
 
 export type CanonicalCourse = ParsedRecord<typeof CourseFields>;
 
+/**
+ * Why a course absent from the database cannot be created by a push: `Course.educationId` is a
+ * required legacy column that the fixture deliberately does not carry, because the education a
+ * course belongs to is the legacy side of a relation the new model expresses through its degree.
+ */
+const UncreatableCourseMessage =
+  'A course that does not exist in the database yet cannot be created by the push: the legacy ' +
+  '`educationId` column is required and the fixture deliberately does not carry it. Create the ' +
+  'course through the legacy path first.';
+
 class CoursePrismaCodec extends PrismaCodec<CanonicalCourse> {
-  public async create(
-    tx: Transaction,
-    record: CanonicalCourse,
-    context: PrismaWriteContext,
-    issues: IssueCollector,
-  ): Promise<void> {
-    const existing = await tx.course.findFirst({
-      where: { OR: [{ slug: record.slug }, { name: record.name }] },
-    });
-    if (existing === null) {
-      issues.error(
-        'course',
-        record.slug,
-        'A course that does not exist in the database yet cannot be created by the push: the ' +
-          'legacy `educationId` column is required and the fixture deliberately does not carry ' +
-          'it. Create the course through the legacy path first.',
-      );
-      return;
+  public override readonly writableFields = ['channels', 'competencies', 'degree'];
+
+  /**
+   * A course with no counterpart row is refused while the change set is still being planned, so
+   * that the run fails before writing anything rather than partway through.
+   */
+  public override planIssues(plan: RecordWritePlan<CanonicalCourse>, issues: IssueCollector): void {
+    if (plan.action === 'create') {
+      issues.error('course', plan.record.slug, UncreatableCourseMessage);
     }
-    await tx.course.update({
-      data: {
-        channels: [...record.channels],
-        competencies: { set: record.competencies.map(slug => ({ slug })) },
-        degree: { connect: { slug: record.degree } },
-        updatedBy: { connect: { id: context.userId } },
-      },
-      where: { id: existing.id },
-    });
   }
 
   public async read(tx: Transaction, issues: IssueCollector): Promise<CanonicalCourse[]> {
@@ -101,6 +99,28 @@ class CoursePrismaCodec extends PrismaCodec<CanonicalCourse> {
       };
     });
   }
+
+  public async write(
+    tx: Transaction,
+    plan: RecordWritePlan<CanonicalCourse>,
+    context: PrismaWriteContext,
+    issues: IssueCollector,
+  ): Promise<void> {
+    const { existing, record } = plan;
+    if (existing === null) {
+      issues.error('course', record.slug, UncreatableCourseMessage);
+      return;
+    }
+    await tx.course.update({
+      data: {
+        channels: [...record.channels],
+        competencies: { set: record.competencies.map(slug => ({ slug })) },
+        degreeId: await idOfSlug(tx.degree, record.degree),
+        updatedById: context.userId,
+      },
+      where: { id: targetId('course', existing) },
+    });
+  }
 }
 
 export class CourseBinding extends ContentBinding<typeof CourseFields> {
@@ -114,5 +134,9 @@ export class CourseBinding extends ContentBinding<typeof CourseFields> {
 
   protected override deriveSlug(record: CanonicalRecord<typeof CourseFields>): string {
     return slugify(record.name);
+  }
+
+  public override alternateKeys(record: CanonicalCourse): readonly string[] {
+    return [record.name];
   }
 }

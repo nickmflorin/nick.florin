@@ -5,5 +5,6 @@ export default withModuleConfig(__dirname, {
   moduleNameMapper: {
     '^lodash-es$': 'lodash',
   },
-  testMatch: [`${__dirname}/**/*.test.ts`],
+  setupFilesAfterEnv: [`${__dirname}/jest.unit.setup.ts`],
+  testMatch: [`${__dirname}/**/*.unit.test.ts`],
 });
