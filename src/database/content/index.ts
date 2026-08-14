@@ -26,4 +26,3 @@ export * from './stores/yaml-fixture-store';
 export * from './sync/diff';
 export * from './sync/engine';
 export * from './sync/plan';
-export * from './sync/render';

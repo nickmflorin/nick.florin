@@ -9,7 +9,10 @@ bunx
 chromium
 cicd
 citty
+clack
+clipanion
 codecov
+coercions
 commitlint
 corsha
 cplusplus
@@ -129,6 +132,7 @@ toastify
 trpc
 truthiness
 turborepo
+typanion
 unbuilt
 uncollapsed
 uncreatable

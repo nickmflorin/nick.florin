@@ -19,13 +19,12 @@ import {
   NoLegacyCreatedAt,
   planSync,
   PrismaContentStore,
-  renderChangeSets,
-  renderIssues,
   type SyncDirection,
   YamlFixtureStore,
 } from '~/database/content';
 import { db } from '~/database/prisma';
 import { cli } from '~/scripts';
+import { renderChangeSets, renderIssues } from '~/scripts/cli-v2/sync/render';
 import { stdout } from '~/support';
 
 import { confirm } from './confirm';

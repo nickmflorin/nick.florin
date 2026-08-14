@@ -1,9 +1,12 @@
-import { terminal } from '~/support';
+/* The concrete modules are imported rather than the `~/database/content` barrel: the barrel
+   re-exports the bindings, which reach the Prisma client and through it the logger and the
+   environment configuration. A renderer that turns records into strings would then refuse to load
+   without a fully populated environment. */
+import { type ContentIssue } from '~/database/content/issues';
+import { type ChangeClass, type LeafChange } from '~/database/content/sync/diff';
+import { type AnyEntityChangeSet, hasChanges } from '~/database/content/sync/plan';
 
-import { type ContentIssue } from '../issues';
-
-import { type ChangeClass, type LeafChange } from './diff';
-import { type AnyEntityChangeSet, hasChanges } from './plan';
+import { styled, type StyleRole } from '../output/styles';
 
 /**
  * How wide a value may be rendered before it is elided. Prose fields run to several hundred
@@ -11,11 +14,11 @@ import { type AnyEntityChangeSet, hasChanges } from './plan';
  */
 const ValueWidth = 96;
 
-const ClassColors = {
-  additive: 'green',
-  destructive: 'red',
-  reorder: 'yellow',
-} as const satisfies Record<ChangeClass, terminal.TerminalColor>;
+const ClassRoles = {
+  additive: 'added',
+  destructive: 'removed',
+  reorder: 'reordered',
+} as const satisfies Record<ChangeClass, StyleRole>;
 
 const ClassMarkers = {
   additive: '+',
@@ -35,21 +38,18 @@ const render = (value: unknown): string => {
 };
 
 const renderChange = (change: LeafChange): string[] => {
-  const marker = terminal.applyStyles(
-    ClassMarkers[change.classification],
-    ClassColors[change.classification],
-  );
-  const path = terminal.applyStyles(change.path, { effect: 'bright' });
+  const marker = styled(ClassRoles[change.classification], ClassMarkers[change.classification]);
+  const path = styled('emphasis', change.path);
   if (change.classification === 'reorder') {
     return [`      ${marker} ${path}  position ${render(change.before)} → ${render(change.after)}`];
   }
   if (change.before === undefined) {
-    return [`      ${marker} ${path}  ${terminal.applyStyles(render(change.after), 'green')}`];
+    return [`      ${marker} ${path}  ${styled('added', render(change.after))}`];
   }
   return [
     `      ${marker} ${path}`,
-    `        ${terminal.applyStyles(`- ${render(change.before)}`, 'red')}`,
-    `        ${terminal.applyStyles(`+ ${render(change.after)}`, 'green')}`,
+    `        ${styled('removed', `- ${render(change.before)}`)}`,
+    `        ${styled('added', `+ ${render(change.after)}`)}`,
   ];
 };
 
@@ -76,29 +76,27 @@ const renderEntity = (changeSet: AnyEntityChangeSet): string[] => {
   const unchanged = changeSet.records.length - creations.length - updates.length;
 
   const summary = [
-    creations.length > 0 ? terminal.applyStyles(`${creations.length} new`, 'green') : null,
-    updates.length > 0 ? terminal.applyStyles(`${updates.length} changed`, 'yellow') : null,
+    creations.length > 0 ? styled('added', `${creations.length} new`) : null,
+    updates.length > 0 ? styled('changed', `${updates.length} changed`) : null,
     changeSet.deletions.length > 0
-      ? terminal.applyStyles(`${changeSet.deletions.length} removed`, 'red')
+      ? styled('removed', `${changeSet.deletions.length} removed`)
       : null,
-    changeSet.orphans.length > 0
-      ? terminal.applyStyles(`${changeSet.orphans.length} retained`, 'gray')
-      : null,
-    unchanged > 0 ? terminal.applyStyles(`${unchanged} unchanged`, 'gray') : null,
+    changeSet.orphans.length > 0 ? styled('muted', `${changeSet.orphans.length} retained`) : null,
+    unchanged > 0 ? styled('muted', `${unchanged} unchanged`) : null,
     changeSet.unwritable > 0
-      ? terminal.applyStyles(`${changeSet.unwritable} not written by this direction`, 'gray')
+      ? styled('muted', `${changeSet.unwritable} not written by this direction`)
       : null,
   ].filter(part => part !== null);
 
   return [
-    `  ${terminal.applyStyles(changeSet.binding.key, { effect: 'bright' })}  ${summary.join(', ')}`,
-    ...creations.map(record => `    ${terminal.applyStyles(`+ ${record.slug}`, 'green')}`),
+    `  ${styled('emphasis', changeSet.binding.key)}  ${summary.join(', ')}`,
+    ...creations.map(record => `    ${styled('added', `+ ${record.slug}`)}`),
     ...updates.flatMap(record => [
-      `    ${terminal.applyStyles(`~ ${record.slug}`, 'yellow')}`,
+      `    ${styled('changed', `~ ${record.slug}`)}`,
       ...record.changes.flatMap(renderChange),
     ]),
     ...changeSet.deletions.map(
-      record => `    ${terminal.applyStyles(`- ${changeSet.binding.slugOf(record)}`, 'red')}`,
+      record => `    ${styled('removed', `- ${changeSet.binding.slugOf(record)}`)}`,
     ),
   ];
 };
@@ -114,7 +112,7 @@ const renderEntity = (changeSet: AnyEntityChangeSet): string[] => {
 export const renderChangeSets = (changeSets: readonly AnyEntityChangeSet[]): string => {
   const changed = changeSets.filter(hasChanges);
   if (changed.length === 0) {
-    return terminal.applyStyles('Both sides already agree; there is nothing to write.', 'green');
+    return styled('added', 'Both sides already agree; there is nothing to write.');
   }
   const destructive = countByClass(changed, 'destructive');
   const reordered = countByClass(changed, 'reorder');
@@ -124,11 +122,11 @@ export const renderChangeSets = (changeSets: readonly AnyEntityChangeSet[]): str
     ...changed.flatMap(renderEntity),
     '',
     destructive + removals + reordered === 0
-      ? terminal.applyStyles('Every change is additive.', 'green')
-      : terminal.applyStyles(
+      ? styled('added', 'Every change is additive.')
+      : styled(
+          'removed',
           `${destructive} value(s) overwritten or cleared, ${removals} record(s) removed, ` +
             `${reordered} reordered.`,
-          'red',
         ),
   ].join('\n');
 };
@@ -141,9 +139,9 @@ export const renderIssues = (issues: readonly ContentIssue[]): string =>
   issues
     .map(
       issue =>
-        `  ${terminal.applyStyles(
+        `  ${styled(
+          issue.severity === 'error' ? 'removed' : 'warning',
           `${issue.severity} [${issue.entity}${issue.slug === null ? '' : `/${issue.slug}`}]`,
-          issue.severity === 'error' ? 'red' : 'yellow',
         )} ${issue.message}`,
     )
     .join('\n');
