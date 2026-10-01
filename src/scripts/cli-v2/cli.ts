@@ -1,5 +1,7 @@
 import { Builtins, Cli, type CommandClass } from 'clipanion';
 
+import { ContentSyncCommand } from './commands/content-sync-command';
+
 /**
  * Every command the CLI exposes.
  *
@@ -7,7 +9,7 @@ import { Builtins, Cli, type CommandClass } from 'clipanion';
  * knowable by reading one file, and so that adding a command is a compile-time change rather than
  * a filesystem convention that fails silently when it is not followed.
  */
-const Commands: readonly CommandClass[] = [];
+const Commands: readonly CommandClass[] = [ContentSyncCommand];
 
 export const buildCli = (): Cli => {
   const cli = new Cli({

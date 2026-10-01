@@ -39,6 +39,15 @@ Setup, local development, database and deployment instructions live in the
 - [React: Component Definitions](./code-quality/react/component-definitions.md) - `FC`-typed `const`
   arrow functions, interface props named after the component, and generic components
 
+### 🛠️ CLI & Scripts
+
+How the repository's tooling is run, in [cli/](./cli/):
+
+- [The CLI](./cli/index.md) - The consolidated `pnpm cli` application: available commands, how it is
+  built, and the conventions it follows
+- [Script Inventory](./cli/scripts.md) - Every task script, what it does, how to run it, and whether
+  it has been absorbed into the CLI yet
+
 ### ✍️ Documentation
 
 - [Overview](./documentation/index.md) - Quick navigation for the documentation-authoring
