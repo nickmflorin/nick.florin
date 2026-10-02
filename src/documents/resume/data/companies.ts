@@ -7,6 +7,17 @@
  */
 import { type Company } from './types';
 
+export const ProdigyLabs: Company = {
+  city: null,
+  description: null,
+  logoFileName: 'ProdigyLabs.svg',
+  logoImageUrl: null,
+  name: 'Prodigy Labs',
+  shortName: null,
+  slug: 'prodigy-labs',
+  state: null,
+  websiteUrl: null,
+};
 export const CraftEducationSystem: Company = {
   city: null,
   description: null,

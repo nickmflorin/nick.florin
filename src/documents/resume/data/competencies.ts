@@ -354,6 +354,9 @@ export const HTML = competency('HTML', {
 export const Husky = competency('Husky', {
   channels: AllSyndicationChannels,
 });
+export const IBMGranite = competency('IBM Granite', {
+  channels: AllSyndicationChannels,
+});
 export const JavaScript = competency('JavaScript', {
   channels: AllSyndicationChannels,
   experience: 10,
@@ -374,10 +377,19 @@ export const Jinja = competency('Jinja', {
 export const JQuery = competency('jQuery', {
   channels: [SyndicationChannel.LinkedIn, SyndicationChannel.Website],
 });
+export const Keycloak = competency('Keycloak', {
+  channels: AllSyndicationChannels,
+});
 export const Lerna = competency('Lerna', {
   channels: AllSyndicationChannels,
 });
 export const LintStaged = competency('lint-staged', {
+  channels: AllSyndicationChannels,
+});
+export const LiveKit = competency('LiveKit', {
+  channels: AllSyndicationChannels,
+});
+export const LLMEvaluation = competency('LLM Evaluation', {
   channels: AllSyndicationChannels,
 });
 export const Mantine = competency('Mantine', {
@@ -427,6 +439,10 @@ export const Mypy = competency('mypy', {
 export const MySql = competency('mySQL', {
   channels: [SyndicationChannel.LinkedIn, SyndicationChannel.Website],
 });
+export const NestJS = competency('NestJS', {
+  channels: AllSyndicationChannels,
+  proficiency: Proficiency.Advanced,
+});
 export const NextJs = competency('Next.js', {
   channels: AllSyndicationChannels,
   experience: 5,
@@ -462,6 +478,9 @@ export const Observability = competency('Observability', {
   isHighlighted: true,
   isPrioritized: true,
 });
+export const Ollama = competency('Ollama', {
+  channels: AllSyndicationChannels,
+});
 export const OptimizationMethods = competency('Optimization Methods', {
   channels: [SyndicationChannel.LinkedIn, SyndicationChannel.Website],
 });
@@ -472,6 +491,9 @@ export const Pandas = competency('pandas', {
   channels: [SyndicationChannel.LinkedIn, SyndicationChannel.Website],
 });
 export const PerformanceEngineering = competency('Performance Engineering', {
+  channels: AllSyndicationChannels,
+});
+export const Pgvector = competency('pgvector', {
   channels: AllSyndicationChannels,
 });
 export const Pino = competency('pino', {
@@ -536,6 +558,9 @@ export const RabbitMQ = competency('RabbitMQ', {
 export const RadixUI = competency('Radix UI', {
   channels: AllSyndicationChannels,
 });
+export const RAG = competency('RAG', {
+  channels: AllSyndicationChannels,
+});
 export const React = competency('React', {
   channels: AllSyndicationChannels,
   experience: 8,
@@ -553,6 +578,10 @@ export const ReactRedux = competency('React-Redux', {
   channels: [SyndicationChannel.LinkedIn, SyndicationChannel.Website],
   isHighlighted: true,
   isPrioritized: true,
+});
+export const ReactRouter = competency('React Router v8', {
+  channels: AllSyndicationChannels,
+  proficiency: Proficiency.Advanced,
 });
 export const ReactTestingLibrary = competency('React Testing Library', {
   channels: AllSyndicationChannels,
@@ -641,6 +670,9 @@ export const Storybook = competency('Storybook', {
   channels: AllSyndicationChannels,
   isPrioritized: true,
 });
+export const Stripe = competency('Stripe', {
+  channels: AllSyndicationChannels,
+});
 export const StructuredLogging = competency('Structured Logging', {
   channels: AllSyndicationChannels,
 });
@@ -717,6 +749,9 @@ export const VisualRegression = competency('Visual Regression', {
   channels: AllSyndicationChannels,
 });
 export const Vitest = competency('vitest', {
+  channels: AllSyndicationChannels,
+});
+export const VLLM = competency('vLLM', {
   channels: AllSyndicationChannels,
 });
 export const Vue = competency('Vue', {

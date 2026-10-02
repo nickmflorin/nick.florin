@@ -1,4 +1,5 @@
 import {
+  AiLlmStack,
   AiToolingAndAutomation,
   ArchitecturalPatterns,
   CicdAndAutomation,
@@ -8,7 +9,6 @@ import {
   LanguagesAndFrameworks,
   MonorepoAndBuild,
   Testing,
-  TopSkills,
   UiAndComponentLibraries,
 } from './competency-groups';
 import { degreesBySlug } from './degrees';
@@ -30,16 +30,16 @@ import { type ResumeSheetInput } from './types';
  */
 export const Sheets: ResumeSheetInput[] = [
   {
-    competencyGroups: [LanguagesAndFrameworks, TopSkills, KeyStrengths],
+    competencyGroups: [LanguagesAndFrameworks, AiToolingAndAutomation, KeyStrengths],
     degrees: [],
     isIntroVisible: true,
     order: 0,
-    roles: rolesBySlug(['craft']),
+    roles: rolesBySlug(['prodigy', 'craft']),
     slug: 'page-1',
   },
   {
     competencyGroups: [
-      AiToolingAndAutomation,
+      AiLlmStack,
       CloudAndDatabases,
       ArchitecturalPatterns,
       UiAndComponentLibraries,
@@ -50,7 +50,7 @@ export const Sheets: ResumeSheetInput[] = [
     degrees: [],
     isIntroVisible: false,
     order: 1,
-    roles: rolesBySlug(['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda']),
+    roles: rolesBySlug(['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda', 'saracen']),
     slug: 'page-2',
   },
   {
@@ -61,7 +61,7 @@ export const Sheets: ResumeSheetInput[] = [
     degrees: degreesBySlug(['jhu-computational', 'jhu-financial', 'rpi']),
     isIntroVisible: false,
     order: 2,
-    roles: rolesBySlug(['saracen', 'atlantic', 'rockcreek', 'pianalytics']),
+    roles: rolesBySlug(['atlantic', 'rockcreek', 'pianalytics']),
     slug: 'page-3',
   },
 ];
