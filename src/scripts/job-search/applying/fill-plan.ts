@@ -38,6 +38,11 @@ export interface FillPlan {
    */
   readonly kept: UnplannedField[];
   /**
+   * Fields that ask for a cover letter when no approved letter is staged: required ones keep the
+   * application from being submitted until Nick approves a drafted letter.
+   */
+  readonly coverLetters: Pick<ReadField, 'key' | 'label' | 'required'>[];
+  /**
    * Comboboxes whose options are not yet known: each is opened and probed, and the form read
    * again, before it can be planned.
    */
@@ -50,12 +55,13 @@ export interface FillPlan {
 }
 
 type Decision =
+  | { readonly file: string; readonly kind: 'upload' }
   | { readonly fill: PlannedFill; readonly kind: 'fill' }
+  | { readonly kind: 'cover-letter' }
   | { readonly kind: 'keep' }
   | { readonly kind: 'needs-options' }
   | { readonly kind: 'skip' }
-  | { readonly kind: 'unanswered' }
-  | { readonly kind: 'upload' };
+  | { readonly kind: 'unanswered' };
 
 /**
  * A phone-number field's companion that sets the country calling code separately — Easy Apply's
@@ -67,6 +73,17 @@ const CountryCodeLabel = /country code|^country$/i;
 const PhoneLabel = /phone|mobile/i;
 
 const ResumeLabel = /resume|\bcv\b|curriculum/i;
+
+const CoverLetterLabel = /cover letter/i;
+
+/**
+ * An approved cover letter staged for an application: the PDF for an upload field, and the text
+ * for a field that takes it typed in.
+ */
+export interface StagedCoverLetter {
+  readonly file: string;
+  readonly text: string;
+}
 
 /**
  * An option naming a document file — one of the resumes Easy Apply lists for choosing among Nick's
@@ -124,17 +141,28 @@ const decideCheckbox = (field: ReadField, context: AnswerContext): Decision => {
   return 'unanswered' in answer ? unansweredOrKept(field) : fill(field, answer.value === 'Yes');
 };
 
+const decideCoverLetter = (field: ReadField, coverLetter: null | StagedCoverLetter): Decision => {
+  if (coverLetter === null) {
+    return field.required ? { kind: 'cover-letter' } : { kind: 'skip' };
+  }
+  return field.type === 'file'
+    ? { file: coverLetter.file, kind: 'upload' }
+    : fill(field, coverLetter.text);
+};
+
 const decide = (
   field: ReadField,
   reading: FormReading,
   context: AnswerContext,
-  resumeFile: null | string,
+  { coverLetter, resumeFile }: StagedDocuments,
 ): Decision => {
-  if (field.type === 'file') {
+  if (CoverLetterLabel.test(field.label) && ['file', 'text', 'textarea'].includes(field.type)) {
+    return decideCoverLetter(field, coverLetter);
+  } else if (field.type === 'file') {
     if (/autofill/i.test(field.label)) {
       return { kind: 'skip' };
     } else if (ResumeLabel.test(field.label)) {
-      return resumeFile === null ? { kind: 'unanswered' } : { kind: 'upload' };
+      return resumeFile === null ? { kind: 'unanswered' } : { file: resumeFile, kind: 'upload' };
     }
     return field.required ? { kind: 'unanswered' } : { kind: 'skip' };
   } else if (isDocumentPicker(field)) {
@@ -159,6 +187,15 @@ const decide = (
   return fill(field, separateCode ? nationalNumber(answer.value) : answer.value);
 };
 
+/**
+ * The documents staged for an application: the approved resume, and the approved cover letter when
+ * there is one.
+ */
+export interface StagedDocuments {
+  readonly coverLetter: null | StagedCoverLetter;
+  readonly resumeFile: null | string;
+}
+
 const unplanned = ({ key, label, required, value }: ReadField): UnplannedField => ({
   current: value,
   key,
@@ -172,24 +209,25 @@ const unplanned = ({ key, label, required, value }: ReadField): UnplannedField =
  * Every field the data answers is planned, with its value fitted to the field's options; a phone
  * number beside a separate country-code field loses its code. The approved resume is planned into
  * the resume upload, and a picker among earlier uploads is left alone, since the approved resume is
- * uploaded and then checked as selected. LinkedIn's follow and top-choice checkboxes take Nick's
+ * uploaded and then checked as selected. A cover-letter field takes the approved letter, and without
+ * one is left alone when optional and reported when required. LinkedIn's follow and top-choice checkboxes take Nick's
  * settings rather than the form's defaults. A required field the data does not answer is left for
  * Nick, even when the form remembers a value for it; an optional one is left as it is. A combobox
  * whose options are not yet known is reported for probing rather than guessed at.
  *
  * @param {FormReading} reading The form reader's reading of the form or step in view.
  * @param {AnswerContext} context The answers, preferences, profile and competencies.
- * @param {string | null} resumeFile The staged approved resume, or `null` when none is staged.
+ * @param {StagedDocuments} staged The approved resume and cover letter staged for upload.
  *
  * @returns {FillPlan} The plan for this reading.
  */
 export const planFill = (
   reading: FormReading,
   context: AnswerContext,
-  resumeFile: null | string,
+  staged: StagedDocuments,
 ): FillPlan => {
   const decided = reading.fields.map(field => ({
-    decision: decide(field, reading, context, resumeFile),
+    decision: decide(field, reading, context, staged),
     field,
   }));
   const planned = decided.flatMap(({ decision }) =>
@@ -198,14 +236,18 @@ export const planFill = (
   const fieldsWhere = (kind: Decision['kind']): ReadField[] =>
     decided.filter(({ decision }) => decision.kind === kind).map(({ field }) => field);
   return {
+    coverLetters: fieldsWhere('cover-letter').map(({ key, label, required }) => ({
+      key,
+      label,
+      required,
+    })),
     fills: planned.filter(({ widget }) => widget === 'native'),
     interactive: planned.filter(({ widget }) => widget === 'combobox' || widget === 'typeahead'),
     kept: fieldsWhere('keep').map(unplanned),
     needsOptions: fieldsWhere('needs-options').map(({ key, label }) => ({ key, label })),
     unanswered: fieldsWhere('unanswered').map(unplanned),
-    uploads:
-      resumeFile === null
-        ? []
-        : fieldsWhere('upload').map(({ key, label }) => ({ file: resumeFile, key, label })),
+    uploads: decided.flatMap(({ decision, field: { key, label } }) =>
+      decision.kind === 'upload' ? [{ file: decision.file, key, label }] : [],
+    ),
   };
 };

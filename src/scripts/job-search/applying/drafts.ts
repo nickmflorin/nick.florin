@@ -11,6 +11,7 @@ import { stageApprovedResume, unstageResume } from '../resume/staging';
 import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas';
 import { type SessionContext } from '../session';
 
+import { stageCoverLetter } from './cover-letters';
 import { type FillPlan, isDocumentPicker } from './fill-plan';
 import { PacketDirectoryName, packetFileFor } from './packets';
 import {
@@ -43,12 +44,13 @@ const DraftEntrySchema = z
 type DraftEntry = z.infer<typeof DraftEntrySchema>;
 
 /**
- * Why the agent may not submit an application until Nick acts on it: a required question the data
- * does not answer, a combobox whose options were never probed, a control the tooling cannot fill, a
+ * Why the agent may not submit an application until Nick acts on it: a cover letter the form
+ * requires and he has not approved, a required question the data does not answer, a combobox whose options were never probed, a control the tooling cannot fill, a
  * value the form remembered from an earlier application rather than took from Nick's data, or a
  * required field no plan covered.
  */
 export const BlockerKinds = [
+  'cover-letter',
   'kept',
   'needs-options',
   'unanswered',
@@ -79,6 +81,11 @@ export type Blocker = z.infer<typeof BlockerSchema>;
 export const ApplicationDraftSchema = z
   .object({
     blockers: z.array(BlockerSchema).default([]),
+    coverLetter: z
+      .object({ fileName: z.string(), stagedFile: z.string(), text: z.string() })
+      .strict()
+      .nullable()
+      .default(null),
     deferral: z
       .object({ deferredAt: TimestampSchema, reason: TextSchema })
       .strict()
@@ -186,15 +193,17 @@ export const startApplication = async (
   if (previous !== null) {
     await unstageResume(previous.resume.stagedFile);
   }
+  const stagedResume = await stageApprovedResume(resume, { id, temporaryDirectory });
   const draft: ApplicationDraft = {
     blockers: [],
+    coverLetter: await stageCoverLetter(context, id, path.dirname(stagedResume)),
     deferral: null,
     entries: [],
     id,
     resume: {
       fileName: resume.manifest.fileName,
       sha256: resume.manifest.sha256,
-      stagedFile: await stageApprovedResume(resume, { id, temporaryDirectory }),
+      stagedFile: stagedResume,
       verified: false,
     },
     startedAt: context.clock.now().toISOString(),
@@ -236,6 +245,7 @@ export const recordPlan = async (
   const draft = await requireDraft(dataDirectory, id);
   const step = stepOf(reading);
   const blockers: Blocker[] = [
+    ...plan.coverLetters.map(({ label }) => ({ kind: 'cover-letter' as const, label, step })),
     ...plan.unanswered.map(({ label }) => ({ kind: 'unanswered' as const, label, step })),
     ...plan.needsOptions.map(({ label }) => ({ kind: 'needs-options' as const, label, step })),
     ...plan.kept.map(({ label }) => ({ kind: 'kept' as const, label, step })),
@@ -243,11 +253,11 @@ export const recordPlan = async (
   ];
   const planned: DraftEntry[] = [
     ...[...plan.fills, ...plan.interactive].map(fill => ({ ...fill, verified: false })),
-    ...plan.uploads.map(({ key, label }) => ({
+    ...plan.uploads.map(({ file, key, label }) => ({
       key,
       label,
       type: 'file' as const,
-      value: draft.resume.fileName,
+      value: path.basename(file),
       verified: false,
       widget: 'file' as const,
     })),
@@ -344,7 +354,11 @@ export const checkReading = async (
   const checked = draft.entries.map(entry => {
     const field = fields.get(entry.key);
     if (entry.type === 'file') {
-      return { entry: { ...entry, verified: entry.verified || resumeShown }, mismatch: null };
+      const attached =
+        typeof entry.value === 'string' &&
+        ((Array.isArray(field?.value) && field.value.includes(entry.value)) ||
+          (entry.value === draft.resume.fileName && resumeShown));
+      return { entry: { ...entry, verified: entry.verified || attached }, mismatch: null };
     } else if (field === undefined) {
       return { entry, mismatch: null };
     }

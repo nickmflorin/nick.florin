@@ -84,6 +84,7 @@ const reading = (fields: ReadField[]): FormReading => ({
 });
 
 const Plan: FillPlan = {
+  coverLetters: [],
   fills: [{ key: 'f0', label: 'Email', type: 'text', value: 'jane@example.com', widget: 'native' }],
   interactive: [
     {
@@ -321,6 +322,7 @@ describe('application drafts', () => {
         context(),
         Id,
         {
+          coverLetters: [],
           fills: [],
           interactive: [],
           kept: [{ current: 'Green', key: 'f5', label: 'Color', required: false }],

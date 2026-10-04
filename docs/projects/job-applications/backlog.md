@@ -204,11 +204,16 @@ its own branch/PR.
 
 ## Cover Letters
 
-- [ ] **Draft cover letters** where the form requires one, or offers one and the posting scored 80
+- [x] **Draft cover letters** where the form requires one, or offers one and the posting scored 80
       or above, from the description, profile digest, fit rationale and `voice.md`; cite the role or
-      project behind each claim; save as Markdown in the posting's packet. (v1)
-- [ ] **Render cover letters to PDF** for upload fields, reusing the headless-Chrome approach of
-      `pnpm resume:generate`. (v1)
+      project behind each claim. (v1) Landed 2026-10-04: the `cover-letter-writer` agent saves each
+      draft, with its citations, through `jobs cover-letter save`; Nick approves it with
+      `jobs cover-letter approve`, which agents are denied, before it is attached anywhere.
+- [x] **Render cover letters to PDF** for upload fields, reusing the headless-Chrome approach of
+      `pnpm resume:generate`. (v1) Landed 2026-10-04: `jobs apply start` renders an approved letter
+      beside the staged resume.
+- [ ] **Add `voice.md`**, samples of Nick's own writing, to the data directory, so that drafts sound
+      like him rather than like a plain default.
 
 ## Future Improvements
 

@@ -49,6 +49,13 @@ const reading = (fields: ReadField[]): FormReading => ({
 
 const Resume = '/tmp/job-search-resume/4012345678/Jane-Doe-Resume.pdf';
 
+const Staged = { coverLetter: null, resumeFile: Resume };
+
+const Letter = {
+  file: '/tmp/job-search-resume/4012345678/Jane-Doe-Cover-Letter.pdf',
+  text: 'Dear…',
+};
+
 describe('planFill()', () => {
   it('plans the native fields the data answers', () => {
     expect(
@@ -58,7 +65,7 @@ describe('planFill()', () => {
           field({ key: 'f1', label: 'Email', required: true }),
         ]),
         Context,
-        Resume,
+        Staged,
       ).fills,
     ).toStrictEqual([
       { key: 'f0', label: 'First Name', type: 'text', value: 'Jane', widget: 'native' },
@@ -78,7 +85,7 @@ describe('planFill()', () => {
         field({ key: 'f1', label: 'Mobile phone number', required: true }),
       ]),
       Context,
-      Resume,
+      Staged,
     );
     expect(plan.fills.map(({ value }) => value)).toStrictEqual([
       'United States (+1)',
@@ -88,7 +95,7 @@ describe('planFill()', () => {
 
   it('keeps the code of a phone number with no country-code field beside it', () => {
     expect(
-      planFill(reading([field({ key: 'f0', label: 'Phone' })]), Context, Resume).fills,
+      planFill(reading([field({ key: 'f0', label: 'Phone' })]), Context, Staged).fills,
     ).toMatchObject([{ value: '+1 555-555-0100' }]);
   });
 
@@ -99,7 +106,7 @@ describe('planFill()', () => {
         field({ key: 'f1', label: 'Follow Hooli', type: 'checkbox', value: true }),
       ]),
       Context,
-      Resume,
+      Staged,
     );
     expect(plan.fills.map(({ value }) => value)).toStrictEqual([false, false]);
   });
@@ -117,7 +124,7 @@ describe('planFill()', () => {
         field({ key: 'f1', label: 'Resume/CV', required: true, type: 'file', widget: 'file' }),
       ]),
       Context,
-      Resume,
+      Staged,
     );
     expect(plan.uploads).toStrictEqual([{ file: Resume, key: 'f1', label: 'Resume/CV' }]);
   });
@@ -134,9 +141,40 @@ describe('planFill()', () => {
         }),
       ]),
       Context,
-      Resume,
+      Staged,
     );
     expect([plan.fills, plan.kept, plan.unanswered]).toStrictEqual([[], [], []]);
+  });
+
+  it('uploads the approved cover letter, and types it into a text field', () => {
+    const plan = planFill(
+      reading([
+        field({ key: 'f0', label: 'Cover Letter', type: 'file', widget: 'file' }),
+        field({ key: 'f1', label: 'Cover letter (optional)', type: 'textarea' }),
+      ]),
+      Context,
+      { coverLetter: Letter, resumeFile: Resume },
+    );
+    expect([plan.uploads, plan.fills.map(({ value }) => value)]).toStrictEqual([
+      [{ file: Letter.file, key: 'f0', label: 'Cover Letter' }],
+      ['Dear…'],
+    ]);
+  });
+
+  it('reports a required cover letter with none approved, and skips an optional one', () => {
+    const plan = planFill(
+      reading([
+        field({ key: 'f0', label: 'Cover Letter', required: true, type: 'file', widget: 'file' }),
+        field({ key: 'f1', label: 'Cover letter', type: 'textarea' }),
+      ]),
+      Context,
+      Staged,
+    );
+    expect([plan.coverLetters, plan.fills, plan.uploads]).toStrictEqual([
+      [{ key: 'f0', label: 'Cover Letter', required: true }],
+      [],
+      [],
+    ]);
   });
 
   it('separates comboboxes and typeaheads from the native fills', () => {
@@ -152,7 +190,7 @@ describe('planFill()', () => {
         field({ key: 'f1', label: 'Location (City)', widget: 'typeahead' }),
       ]),
       Context,
-      Resume,
+      Staged,
     );
     expect(plan.fills).toStrictEqual([]);
     expect(plan.interactive).toMatchObject([
@@ -166,7 +204,7 @@ describe('planFill()', () => {
       planFill(
         reading([field({ key: 'f0', label: 'Veteran Status', options: null, widget: 'combobox' })]),
         Context,
-        Resume,
+        Staged,
       ).needsOptions,
     ).toStrictEqual([{ key: 'f0', label: 'Veteran Status' }]);
   });
@@ -178,7 +216,7 @@ describe('planFill()', () => {
           field({ key: 'f0', label: 'Describe a hard bug', required: true, value: 'Remembered' }),
         ]),
         Context,
-        Resume,
+        Staged,
       ).unanswered,
     ).toStrictEqual([
       { current: 'Remembered', key: 'f0', label: 'Describe a hard bug', required: true },
@@ -187,11 +225,10 @@ describe('planFill()', () => {
 
   it('keeps an optional prefilled value the data does not answer', () => {
     expect(
-      planFill(
-        reading([field({ key: 'f0', label: 'Favorite color', value: 'Green' })]),
-        Context,
-        null,
-      ).kept,
+      planFill(reading([field({ key: 'f0', label: 'Favorite color', value: 'Green' })]), Context, {
+        coverLetter: null,
+        resumeFile: null,
+      }).kept,
     ).toStrictEqual([{ current: 'Green', key: 'f0', label: 'Favorite color', required: false }]);
   });
 });

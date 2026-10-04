@@ -7,7 +7,13 @@
       "Bash(pnpm --silent cli jobs resume approve:*)",
       "Bash(pnpm jobs resume approve:*)",
       "Bash(pnpm run jobs resume approve:*)",
-      "Bash(pnpm --silent jobs resume approve:*)"
+      "Bash(pnpm --silent jobs resume approve:*)",
+      "Bash(pnpm cli jobs cover-letter approve:*)",
+      "Bash(pnpm run cli jobs cover-letter approve:*)",
+      "Bash(pnpm --silent cli jobs cover-letter approve:*)",
+      "Bash(pnpm jobs cover-letter approve:*)",
+      "Bash(pnpm run jobs cover-letter approve:*)",
+      "Bash(pnpm --silent jobs cover-letter approve:*)"
     ]
   },
   "enabledPlugins": {

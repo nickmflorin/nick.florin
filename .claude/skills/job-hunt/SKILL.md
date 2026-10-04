@@ -18,9 +18,8 @@ other than `0` or `2`, as an error: argument errors are printed by the CLI frame
 command runs. Exit code `2` with `"status": "refused"` is a correct, negative outcome — stop and
 report its `reason`, never retry around it.
 
-This skill performs **setup**, **discovery**, **scoring**, **review** and **applying**. Cover
-letters land in a later stage of the project; when a form requires one, leave that application for
-Nick.
+This skill performs **setup**, **discovery**, **scoring**, **review** and **applying**, drafting
+cover letters for Nick to approve where a form asks for one.
 
 ## Ground Rules
 
@@ -333,9 +332,19 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    label, click it with `mcp__job-search-browser__click`, and run the `combobox-options` script,
    which records its options and closes it — then read and plan again.
 
-3. **Defer what only Nick can resolve.** A plan with `unanswered`, `kept` or `unsupported` entries
-   cannot be finished unattended: the plan has recorded them as blockers. Defer the posting and move
-   on; never fill an unanswered question yourself.
+3. **Defer what only Nick can resolve.** A plan with `unanswered`, `kept`, `unsupported` or
+   `coverLetters` entries cannot be finished unattended: the plan has recorded them as blockers.
+   Defer the posting and move on; never fill an unanswered question yourself.
+
+   A `coverLetters` entry is a form that requires a cover letter Nick has not approved. Unless
+   `jobs cover-letter show <id>` already holds a draft, launch the `cover-letter-writer` agent with
+   the posting id to draft one, then defer the posting with the reason "Cover letter drafted;
+   awaiting approval". Once he approves it, the next run's `jobs apply start` stages it and the plan
+   attaches it.
+
+   An optional cover-letter field is left empty unless a letter was approved; when the posting's
+   score is at or above `coverLetters.optionalAt`, launch the agent to draft one for next time, and
+   carry on with the application.
 
    ```bash
    pnpm --silent jobs apply defer <id> --reason "Questions only Nick can answer"
@@ -410,6 +419,9 @@ At the end of the run, give Nick one report:
 - `jobs apply held` — each deferred application, with its blockers (the questions to answer, the
   remembered values to confirm or clear) and reasons, and each posting handed to him to apply to by
   hand, with the path of its answer packet;
+- each cover letter drafted this run, for him to read with
+  `pnpm --silent jobs cover-letter show <id>` — the letter and the role or project behind each claim
+  — and approve with `pnpm --silent jobs cover-letter approve <id>`, a command agents are denied;
 - the maybe list awaiting his review.
 
 He answers questions with `jobs answers add`; a deferred posting is then started afresh on the next

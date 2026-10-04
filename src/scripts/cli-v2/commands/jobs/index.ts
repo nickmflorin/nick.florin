@@ -11,6 +11,12 @@ export {
 } from './apply';
 export { JobsBrowserLaunchCommand, JobsBrowserStatusCommand } from './browser';
 export { JobsBudgetTakeCommand } from './budget';
+export {
+  JobsCoverLetterApproveCommand,
+  JobsCoverLetterContextCommand,
+  JobsCoverLetterSaveCommand,
+  JobsCoverLetterShowCommand,
+} from './cover-letter';
 export { JobsConfigShowCommand, JobsConfigStatusCommand, JobsConfigWriteCommand } from './config';
 export { JobsPacketBuildCommand } from './packet';
 export { JobsPageScriptCommand } from './page-script';

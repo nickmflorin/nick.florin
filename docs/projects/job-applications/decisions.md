@@ -16,6 +16,32 @@ Format:
 
 ---
 
+## 2026-10-04 — Cover letters are drafted unattended and attached only once Nick approves them
+
+**Decision:** Revises "Cover letters only where the form asks" (2026-10-03), whose review of each
+letter rode on the human submit that unattended applying removed. The `cover-letter-writer` agent
+drafts a letter, with the role or project behind each claim, when a form requires one or offers one
+to a posting scored at or above `coverLetters.optionalAt`. The draft is saved unapproved; Nick reads
+it with `jobs cover-letter show` and approves it with `jobs cover-letter approve`, which is denied
+to agents like `jobs resume approve`. An application whose form requires a letter is deferred until
+he approves it; an optional field is left empty until then. `jobs apply start` renders an approved
+letter to PDF beside the staged resume, and the plan uploads it, or types it into a text field.
+
+```bash
+pnpm --silent jobs cover-letter show 4012345678      # the draft and its citations
+pnpm --silent jobs cover-letter approve 4012345678   # Nick only; denied to agents
+```
+
+**Why:** A letter is the one part of an application written fresh rather than drawn from Nick's
+data, so it is the one place an unattended run could put words in his mouth. Keeping approval human
+keeps the rule that no letter reaches an employer unseen, at the cost of one deferral per posting
+that requires a letter.
+
+**Alternatives considered:** Attaching drafts unreviewed (the only unverified content an application
+would carry). Never drafting (required fields would stay blockers until Nick wrote letters himself).
+
+---
+
 ## 2026-10-04 — The job-search Chrome is launched normally, and the browser server attaches to it
 
 **Decision:** The `job-search-browser` server no longer launches its own Chrome.
