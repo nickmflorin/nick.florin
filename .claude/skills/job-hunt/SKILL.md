@@ -358,6 +358,11 @@ Repeat for each Easy Apply step — the review step included — or once for a s
 A reading whose `challenge` is `true` is refused by the plan. On LinkedIn, stop at once and finish
 the run with `--ended-by challenge`. On an employer's site, defer the posting and continue.
 
+A reading whose `signIn` is `true` is refused too. On LinkedIn the session has lapsed: finish the
+run with `--ended-by logged-out` and tell Nick to sign in again in the job-search window. On an
+employer's site the board wants an account: discard the draft, build the posting's answer packet,
+and continue — it is handed to Nick like any posting that needs an account.
+
 ### 4. Submit
 
 On Easy Apply's review step, or once a single-page form is filled, the final check must show nothing

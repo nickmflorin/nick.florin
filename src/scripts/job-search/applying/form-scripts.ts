@@ -39,14 +39,16 @@ export type ReadField = z.infer<typeof ReadFieldSchema>;
 /**
  * What the form reader returns: the fields of the form or Easy Apply step in view, with their
  * labels, options and current values; the controls it does not know how to fill; the step's
- * progress and buttons; whether a CAPTCHA challenge is showing; and the visible text, which on a
- * review step is the whole of what will be submitted.
+ * progress and buttons; whether a CAPTCHA challenge is showing; whether the page asks to sign in
+ * instead — a lapsed LinkedIn session, or an employer's board that wants an account; and the
+ * visible text, which on a review step is the whole of what will be submitted.
  */
 export const FormReadingSchema = z.object({
   buttons: z.array(z.string()),
   challenge: z.boolean(),
   fields: z.array(ReadFieldSchema),
   progress: z.string().nullable(),
+  signIn: z.boolean().default(false),
   text: z.string(),
   unsupported: z.array(z.string()),
   url: z.string(),
@@ -292,6 +294,10 @@ const FormReadScript = `() => {${FormHelpers}
     [...challengeFrames].some((frame) =>
       visible(frame) && frame.getBoundingClientRect().height > 100) ||
     /verify you are (a )?human|unusual activity|security check/i.test(document.body.innerText);
+  const SignInPath = /\\/(?:login|signin|sign-in|authwall|checkpoint|uas\\/login)\\b/i;
+  const signIn =
+    SignInPath.test(window.location.pathname) ||
+    [...document.querySelectorAll('input[type="password"]')].some(visible);
   return {
     buttons: [...new Set([...root.querySelectorAll('button')]
       .map((button) => clean(button.innerText || button.getAttribute('aria-label')))
@@ -299,6 +305,7 @@ const FormReadScript = `() => {${FormHelpers}
     challenge,
     fields,
     progress: progress ? progress[1] : null,
+    signIn,
     text: root.innerText.slice(0, 8000),
     unsupported,
     url: window.location.href,

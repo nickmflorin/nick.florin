@@ -102,7 +102,8 @@ export class JobsApplyPlanCommand extends JsonCommand {
       through the browser server, each with the \`chooseFunction\` to run once its menu is open,
       and a typeahead with the \`typeText\` that opens it; the uploads; the comboboxes whose options
       must be probed first; and the required questions only Nick can answer — and records the
-      planned values in the draft. Refuses a reading that shows a CAPTCHA challenge.
+      planned values in the draft. Refuses a reading that shows a CAPTCHA challenge, or a page that
+      asks to sign in.
 
       \`--preview\` plans without a started application and records nothing, to see what a form
       asks before applying; the resume upload is then reported unanswered.
@@ -121,6 +122,13 @@ export class JobsApplyPlanCommand extends JsonCommand {
     const reading = await readFormReading(this.context.stdin);
     if (reading.challenge) {
       return { reason: 'The page is showing a CAPTCHA challenge.', status: 'refused' };
+    } else if (reading.signIn) {
+      return {
+        reason:
+          'The page asks to sign in: on LinkedIn the session has lapsed; elsewhere the board ' +
+          'wants an account.',
+        status: 'refused',
+      };
     }
     const context = await resolveSessionContext();
     const [answerContext, draft] = await Promise.all([

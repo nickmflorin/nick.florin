@@ -17,6 +17,12 @@ describe('form scripts', () => {
     expect(compile(script)).toBeInstanceOf(Script);
   });
 
+  it('emits the sign-in path pattern with its escapes intact', () => {
+    expect(FormScripts['form-read']).toContain(
+      String.raw`/\/(?:login|signin|sign-in|authwall|checkpoint|uas\/login)\b/i`,
+    );
+  });
+
   it('compiles the choose-option script with quotes and hints in the value', () => {
     expect(
       compile(chooseOptionScript('O\'Hare, "IL"', ['Illinois', 'United States'])),
