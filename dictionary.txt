@@ -232,7 +232,6 @@ listboxes
 recaptcha
 hcaptcha
 prefilled
-cresta
 labelledby
 autofill
 unstage

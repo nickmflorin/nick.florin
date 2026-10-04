@@ -60,6 +60,14 @@ typeahead is given the place's leading name and picks the suggestion that best m
 draft check exists because a form can silently drop a value — the failure the Location field showed
 — and the human submitting should never be the first to notice.
 
+The first end-to-end Easy Apply fill, the same day, confirmed the design and added four details: the
+review step carries the pre-checked "Follow {company}" checkbox and so is planned and filled like
+any other step; LinkedIn's checkboxes, like its radios, answer only to a click on their
+`role="checkbox"` wrapper; a re-render replaces the selected radio's input, so the filler finds a
+group's members by name as well as by key; and LinkedIn labels its location typeahead with plain
+text, which the reader takes from the field's container when no label element exists. The staged
+resume uploaded from the temporary directory as designed.
+
 **Alternatives considered:** A script per application system (three copies of the same label and
 option logic, and none for the next board). Trusting the fill results without re-reading the form (a
 dropped value would reach the review step unnoticed). Selecting a previously uploaded resume by its

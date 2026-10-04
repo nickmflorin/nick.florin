@@ -96,11 +96,11 @@ export class JobsApplyPlanCommand extends JsonCommand {
     description: "Plan how to fill a form reading from Nick's data, and print the fill script.",
     details: `
       Reads the \`form-read\` page script's result from standard input. Prints the plan — the
-      native fills and the \`fillFunction\` that sets them, the comboboxes and typeaheads to choose
-      through the browser server — each with the \`chooseFunction\` to run once its menu is open,
-      and a typeahead with the \`typeText\` that opens it — the uploads, the comboboxes whose options must be probed first,
-      and the required questions only Nick can answer — and records the planned values in the
-      draft. Refuses a reading that shows a CAPTCHA challenge.
+      native fills and the \`fillFunction\` that sets them; the comboboxes and typeaheads to choose
+      through the browser server, each with the \`chooseFunction\` to run once its menu is open,
+      and a typeahead with the \`typeText\` that opens it; the uploads; the comboboxes whose options
+      must be probed first; and the required questions only Nick can answer — and records the
+      planned values in the draft. Refuses a reading that shows a CAPTCHA challenge.
 
       \`--preview\` plans without a started application and records nothing, to see what a form
       asks before applying; the resume upload is then reported unanswered.

@@ -154,7 +154,8 @@ its own branch/PR.
       location typeahead filled live.
 - [ ] **Fill the first approved applications end to end:** one Easy Apply, one Ashby and one
       Greenhouse posting, each left on its final step for him to submit, to confirm the resume
-      upload and the review-step check against live forms. (v1)
+      upload and the review-step check against live forms. (v1) Easy Apply done 2026-10-04; Ashby
+      and Greenhouse remain.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
       then a form with one is stopped and reported.

@@ -66,7 +66,10 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      `jobs application filled`, per-application resume staging, and
      `jobs apply start|plan|check|pause|discard`. The reader and planner were run against live Ashby
      and Greenhouse forms, and Greenhouse's comboboxes and location typeahead were filled live;
-     nothing was submitted. Not yet run end to end.
-   - Next: the first real fills, one each of Easy Apply, Ashby and Greenhouse, for him to submit;
-     then 5c, cover letters. 15 approved postings wait.
+     nothing was submitted. The same day, the first Easy Apply application was filled end to end
+     under run `2026-10-04-1` — every step planned, filled and verified, the approved resume
+     uploaded and seen selected, the follow checkbox cleared — and left on its review step for Nick
+     to submit.
+   - Next: the first Ashby and Greenhouse fills, then the remaining approved postings one at a time,
+     each submitted by Nick; then 5c, cover letters.
 6. **Learning** — search yield tracking, review reasons and proposed preference edits.

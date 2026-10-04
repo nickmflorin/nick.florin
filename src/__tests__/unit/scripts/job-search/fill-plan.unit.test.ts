@@ -122,6 +122,23 @@ describe('planFill()', () => {
     expect(plan.uploads).toStrictEqual([{ file: Resume, key: 'f1', label: 'Resume/CV' }]);
   });
 
+  it('leaves a picker among earlier uploaded resumes alone', () => {
+    const plan = planFill(
+      reading([
+        field({
+          key: 'f0',
+          label: 'Resume-Oct-01-2026.pdf',
+          options: ['PDF Resume-Oct-01-2026.pdf 10/2/2026', 'PDF Resume.docx 4/28/2026'],
+          type: 'radio',
+          value: 'PDF Resume-Oct-01-2026.pdf 10/2/2026',
+        }),
+      ]),
+      Context,
+      Resume,
+    );
+    expect([plan.fills, plan.kept, plan.unanswered]).toStrictEqual([[], [], []]);
+  });
+
   it('separates comboboxes and typeaheads from the native fills', () => {
     const plan = planFill(
       reading([

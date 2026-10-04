@@ -121,8 +121,10 @@ const FormHelpers = String.raw`
  * `aria-labelledby`, its `label[for]` (unless that only says "Attach" or "Upload"), its wrapping
  * label, its fieldset's legend, and finally the nearest label-like element before it that belongs
  * to no other control, which is how Ashby's radio questions and Greenhouse's file inputs are
- * labelled. A field is required when it is marked so, or when its label carries a `*`, a
- * `required` class, or a `*` drawn by CSS.
+ * labelled. Failing all of those, a lone field takes the first line of text in the nearest
+ * container that holds no other control, as LinkedIn's location typeahead needs. A field is
+ * required when it is marked so, or when its label carries a `*`, a `required` class, or a `*`
+ * drawn by CSS.
  *
  * A combobox's options are known only once its menu has been opened, so a combobox not yet probed
  * by the {@link ComboboxOptionsScript} is reported with `options: null`. One with a short label
@@ -170,6 +172,12 @@ const FormReadScript = `() => {${FormHelpers}
         });
       const closest = candidates[candidates.length - 1];
       if (closest) return { el: closest, text: stripMarker(closest.innerText) };
+      const firstLine = group.length === 1 && el.tagName !== 'SELECT'
+        ? (node.innerText || '').split('\\n').map(clean).find(Boolean)
+        : undefined;
+      if (firstLine && firstLine.length < 200 && !GenericLabel.test(stripMarker(firstLine))) {
+        return { el: null, starred: /\\*$/.test(firstLine), text: stripMarker(firstLine) };
+      }
       node = node.parentElement;
     }
     return null;
@@ -196,7 +204,7 @@ const FormReadScript = `() => {${FormHelpers}
       label: found.text.slice(0, 300),
       required: group.some((member) => member.required ||
         member.getAttribute('aria-required') === 'true') || marked(found.el) ||
-        (own ? marked(own) : false),
+        Boolean(found.starred) || (own ? marked(own) : false),
     };
   };
   window.__jobSearchKeys = window.__jobSearchKeys || 0;
@@ -361,6 +369,11 @@ const ChooseOptionScriptTemplate = `async () => {${FormHelpers}
  * Fills the native fields of a plan: text through the value setter React and its peers observe,
  * a select by its option's text, radios and checkboxes by clicking the option whose text the reader
  * reported. Fields are filled one at a time, with a short random pause between them.
+ *
+ * A radio or checkbox wrapped in an element with the `radio` or `checkbox` role is clicked through
+ * the wrapper, which is what LinkedIn listens to, and a group's members are found by name as well
+ * as by key, because a re-render replaces the selected option's input without the key stamped on
+ * it.
  */
 const FormFillScriptTemplate = `async () => {${FormHelpers}
   const fills = __FILLS__;
@@ -374,10 +387,15 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
     el.dispatchEvent(new Event('input', { bubbles: true }));
     el.dispatchEvent(new Event('change', { bubbles: true }));
   };
-  const toggle = (member) => (member.closest('[role="radio"]') || member).click();
+  const toggle = (member) =>
+    (member.closest('[role="radio"], [role="checkbox"]') || member).click();
   const results = [];
   for (const fill of fills) {
-    const members = [...document.querySelectorAll('[' + KeyAttribute + '="' + fill.key + '"]')];
+    const keyed = [...document.querySelectorAll('[' + KeyAttribute + '="' + fill.key + '"]')];
+    const named = keyed[0] && keyed[0].name
+      ? [...document.querySelectorAll('input[name="' + CSS.escape(keyed[0].name) + '"]')]
+      : [];
+    const members = [...new Set([...keyed, ...named])];
     const el = members[0];
     if (!el) {
       results.push({ key: fill.key, ok: false, reason: 'The field is no longer on the page.' });

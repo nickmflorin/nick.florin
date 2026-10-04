@@ -69,6 +69,22 @@ const PhoneLabel = /phone|mobile/i;
 const ResumeLabel = /resume|\bcv\b|curriculum/i;
 
 /**
+ * An option naming a document file — one of the resumes Easy Apply lists for choosing among Nick's
+ * earlier uploads.
+ */
+const DocumentFileOption = /\.(?:pdf|docx?|rtf|txt)\b/i;
+
+/**
+ * Whether a choice field picks among uploaded documents rather than asking a question. The resume
+ * upload, and the check that the approved resume is shown selected, cover it, so it is not planned.
+ */
+const isDocumentPicker = ({ options, type }: ReadField): boolean =>
+  type !== 'file' &&
+  options !== null &&
+  options.length > 0 &&
+  options.every(option => DocumentFileOption.test(option));
+
+/**
  * Reduces a phone number to its national digits: the digits, without the leading `1` of a North
  * American number written with its country code.
  */
@@ -121,6 +137,8 @@ const decide = (
       return resumeFile === null ? { kind: 'unanswered' } : { kind: 'upload' };
     }
     return field.required ? { kind: 'unanswered' } : { kind: 'skip' };
+  } else if (isDocumentPicker(field)) {
+    return { kind: 'skip' };
   } else if (field.type === 'checkbox' && field.options !== null && field.options.length === 0) {
     return decideCheckbox(field, context);
   } else if (field.options === null) {
@@ -153,10 +171,11 @@ const unplanned = ({ key, label, required, value }: ReadField): UnplannedField =
  *
  * Every field the data answers is planned, with its value fitted to the field's options; a phone
  * number beside a separate country-code field loses its code. The approved resume is planned into
- * the resume upload, and LinkedIn's follow and top-choice checkboxes take Nick's settings rather
- * than the form's defaults. A required field the data does not answer is left for Nick, even when
- * the form remembers a value for it; an optional one is left as it is. A combobox whose options are
- * not yet known is reported for probing rather than guessed at.
+ * the resume upload, and a picker among earlier uploads is left alone, since the approved resume is
+ * uploaded and then checked as selected. LinkedIn's follow and top-choice checkboxes take Nick's
+ * settings rather than the form's defaults. A required field the data does not answer is left for
+ * Nick, even when the form remembers a value for it; an optional one is left as it is. A combobox
+ * whose options are not yet known is reported for probing rather than guessed at.
  *
  * @param {FormReading} reading The form reader's reading of the form or step in view.
  * @param {AnswerContext} context The answers, preferences, profile and competencies.

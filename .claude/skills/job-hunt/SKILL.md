@@ -314,15 +314,17 @@ Repeat for each Easy Apply step, or once for a single-page form:
    - `unsupported`: a control the tooling cannot fill. Stop and tell Nick which one.
 
 3. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
-   entry: a combobox is clicked open by its uid, a typeahead is filled with its `typeText` through
-   `mcp__job-search-browser__fill`, and either way its `chooseFunction` then picks the option. A
-   `chosen: null` result lists the options; show them to Nick.
+   entry: a combobox is clicked open by its uid; a typeahead is focused by script and its `typeText`
+   typed with `mcp__job-search-browser__type_text`, which needs no snapshot; either way its
+   `chooseFunction` then picks the option. A `chosen: null` result lists the options; show them to
+   Nick.
 
 4. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
-   "Upload resume" button that opens it. On Easy Apply's resume step, upload through "Upload resume"
-   even when the plan lists no upload: the step preselects Nick's newest upload, which is never
-   assumed to be the approved resume.
+   "Upload resume" button that opens it. Easy Apply's resume step has no file input: upload through
+   its "Upload resume" button, whose uid a snapshot of that step gives. The step preselects Nick's
+   newest upload, which is never assumed to be the approved resume; the plan leaves the picker
+   alone, and the check confirms the approved resume is the one selected.
 
 5. **Check** the step: read it again and pass the reading to the check, re-filling anything it
    reports, until its `status` is `ok`:
@@ -340,8 +342,10 @@ the run with `--ended-by challenge`.
 
 ### 4. Hand it to Nick
 
-On Easy Apply's review step, or once a single-page form is filled, check the form a final time. When
-nothing is `pending` and `resumeVerified` is `true`, record the application as filled:
+Easy Apply's review step is a step like the others: read, plan, fill and check it, because it
+carries the "Follow {company}" checkbox, pre-checked, which appears nowhere earlier. A single-page
+form is checked once more after its last fill. When nothing is `pending` and `resumeVerified` is
+`true`, record the application as filled:
 
 ```bash
 pnpm --silent jobs application filled <id>
