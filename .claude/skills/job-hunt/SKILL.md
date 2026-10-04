@@ -410,6 +410,9 @@ then run the `submission-result` script.
   unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
   When the page states plainly that the application was not submitted — "We couldn't submit your
   application" — add `--not-submitted`, which puts the posting back in the queue for a later run.
+- A refusal that names spam or a bot check — "flagged as possible spam" — ends unattended submission
+  to that application system for the rest of the run: build the answer packets of its remaining
+  postings for Nick instead, and say so in the report. Never retry against a bot check.
 - A CAPTCHA after the click: defer the posting, and on LinkedIn end the run as a challenge.
 
 **Under `applying.submit: nick`:** leave the form open and tell Nick it is ready; record his
