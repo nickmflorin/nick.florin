@@ -1,0 +1,192 @@
+import { pick } from 'lodash-es';
+
+import { type AnswerContext, resolveAnswer } from './answers';
+import {
+  type FieldValue,
+  type FormReading,
+  type PlannedFill,
+  type ReadField,
+} from './form-scripts';
+
+/**
+ * A field the plan leaves alone, and why: Nick must answer it, or it is optional and the data does
+ * not answer it.
+ */
+export interface UnplannedField {
+  readonly current: FieldValue | null;
+  readonly key: string;
+  readonly label: string;
+  readonly required: boolean;
+}
+
+/**
+ * How one reading of a form is to be filled.
+ */
+export interface FillPlan {
+  /**
+   * The native fields, which the fill script sets.
+   */
+  readonly fills: PlannedFill[];
+  /**
+   * The comboboxes and typeaheads, each opened or typed into through the browser server before its
+   * option is chosen by script.
+   */
+  readonly interactive: PlannedFill[];
+  /**
+   * Optional fields the data does not answer that already hold a value — LinkedIn remembers earlier
+   * applications — which are left as they are and shown to Nick.
+   */
+  readonly kept: UnplannedField[];
+  /**
+   * Comboboxes whose options are not yet known: each is opened and probed, and the form read
+   * again, before it can be planned.
+   */
+  readonly needsOptions: Pick<ReadField, 'key' | 'label'>[];
+  /**
+   * Required fields the data does not answer, which only Nick may answer.
+   */
+  readonly unanswered: UnplannedField[];
+  readonly uploads: { readonly file: string; readonly key: string; readonly label: string }[];
+}
+
+type Decision =
+  | { readonly fill: PlannedFill; readonly kind: 'fill' }
+  | { readonly kind: 'keep' }
+  | { readonly kind: 'needs-options' }
+  | { readonly kind: 'skip' }
+  | { readonly kind: 'unanswered' }
+  | { readonly kind: 'upload' };
+
+/**
+ * A phone-number field's companion that sets the country calling code separately — Easy Apply's
+ * "Phone country code", Greenhouse's "Country" — in whose presence the number is entered without
+ * its code.
+ */
+const CountryCodeLabel = /country code|^country$/i;
+
+const PhoneLabel = /phone|mobile/i;
+
+const ResumeLabel = /resume|\bcv\b|curriculum/i;
+
+/**
+ * Reduces a phone number to its national digits: the digits, without the leading `1` of a North
+ * American number written with its country code.
+ */
+export const nationalNumber = (phone: string): string => {
+  const digits = phone.replace(/\D/g, '');
+  return digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+};
+
+const hasValue = (value: FieldValue | null): boolean =>
+  value !== null &&
+  value !== false &&
+  value !== '' &&
+  !(Array.isArray(value) && value.length === 0);
+
+const fill = (field: ReadField, value: FieldValue): Decision => ({
+  fill: { ...pick(field, ['key', 'label', 'type', 'widget']), value },
+  kind: 'fill',
+});
+
+const unansweredOrKept = (field: ReadField): Decision => {
+  if (field.required) {
+    return { kind: 'unanswered' };
+  }
+  return hasValue(field.value) ? { kind: 'keep' } : { kind: 'skip' };
+};
+
+const decideCheckbox = (field: ReadField, context: AnswerContext): Decision => {
+  if (/\bfollow\b/i.test(field.label)) {
+    return fill(field, context.preferences.applying.followCompany);
+  } else if (/top choice/i.test(field.label)) {
+    return fill(field, context.preferences.applying.markTopChoice);
+  }
+  const answer = resolveAnswer(
+    { label: field.label, options: ['Yes', 'No'], type: 'checkbox' },
+    context,
+  );
+  return 'unanswered' in answer ? unansweredOrKept(field) : fill(field, answer.value === 'Yes');
+};
+
+const decide = (
+  field: ReadField,
+  reading: FormReading,
+  context: AnswerContext,
+  resumeFile: null | string,
+): Decision => {
+  if (field.type === 'file') {
+    if (/autofill/i.test(field.label)) {
+      return { kind: 'skip' };
+    } else if (ResumeLabel.test(field.label)) {
+      return resumeFile === null ? { kind: 'unanswered' } : { kind: 'upload' };
+    }
+    return field.required ? { kind: 'unanswered' } : { kind: 'skip' };
+  } else if (field.type === 'checkbox' && field.options !== null && field.options.length === 0) {
+    return decideCheckbox(field, context);
+  } else if (field.options === null) {
+    return { kind: 'needs-options' };
+  }
+  const answer = resolveAnswer(
+    { label: field.label, options: field.options, type: field.type },
+    context,
+  );
+  if ('unanswered' in answer) {
+    return unansweredOrKept(field);
+  } else if (field.type === 'checkbox') {
+    return fill(field, [answer.value]);
+  }
+  const separateCode =
+    PhoneLabel.test(field.label) &&
+    reading.fields.some(other => other.key !== field.key && CountryCodeLabel.test(other.label));
+  return fill(field, separateCode ? nationalNumber(answer.value) : answer.value);
+};
+
+const unplanned = ({ key, label, required, value }: ReadField): UnplannedField => ({
+  current: value,
+  key,
+  label,
+  required,
+});
+
+/**
+ * Plans how to fill one reading of an application form from Nick's data.
+ *
+ * Every field the data answers is planned, with its value fitted to the field's options; a phone
+ * number beside a separate country-code field loses its code. The approved resume is planned into
+ * the resume upload, and LinkedIn's follow and top-choice checkboxes take Nick's settings rather
+ * than the form's defaults. A required field the data does not answer is left for Nick, even when
+ * the form remembers a value for it; an optional one is left as it is. A combobox whose options are
+ * not yet known is reported for probing rather than guessed at.
+ *
+ * @param {FormReading} reading The form reader's reading of the form or step in view.
+ * @param {AnswerContext} context The answers, preferences, profile and competencies.
+ * @param {string | null} resumeFile The staged approved resume, or `null` when none is staged.
+ *
+ * @returns {FillPlan} The plan for this reading.
+ */
+export const planFill = (
+  reading: FormReading,
+  context: AnswerContext,
+  resumeFile: null | string,
+): FillPlan => {
+  const decided = reading.fields.map(field => ({
+    decision: decide(field, reading, context, resumeFile),
+    field,
+  }));
+  const planned = decided.flatMap(({ decision }) =>
+    decision.kind === 'fill' ? [decision.fill] : [],
+  );
+  const fieldsWhere = (kind: Decision['kind']): ReadField[] =>
+    decided.filter(({ decision }) => decision.kind === kind).map(({ field }) => field);
+  return {
+    fills: planned.filter(({ widget }) => widget === 'native'),
+    interactive: planned.filter(({ widget }) => widget === 'combobox' || widget === 'typeahead'),
+    kept: fieldsWhere('keep').map(unplanned),
+    needsOptions: fieldsWhere('needs-options').map(({ key, label }) => ({ key, label })),
+    unanswered: fieldsWhere('unanswered').map(unplanned),
+    uploads:
+      resumeFile === null
+        ? []
+        : fieldsWhere('upload').map(({ key, label }) => ({ file: resumeFile, key, label })),
+  };
+};

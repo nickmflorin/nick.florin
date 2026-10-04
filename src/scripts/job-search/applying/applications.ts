@@ -7,11 +7,12 @@ import { configFileIn, writeConfigFile } from '../config-files';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord } from '../ledger/yaml-records';
-import { readApprovedResume } from '../resume/approved-resume';
 import { type Answers, AnswersSchema, type Posting } from '../schemas';
 import { type SessionContext } from '../session';
 
 import { type ResolvedAnswer } from './answers';
+import { discardDraft, requireVerifiedDraft } from './drafts';
+import { requireApprovedResume, requirePosting } from './requirements';
 
 /**
  * The directory, inside the job-search data directory, that holds the answer packets for postings
@@ -19,49 +20,38 @@ import { type ResolvedAnswer } from './answers';
  */
 export const PacketDirectoryName = 'packets';
 
-export const requirePosting = async ({ store }: SessionContext, id: string): Promise<Posting> => {
-  const posting = await store.getPosting(id);
-  if (posting === null) {
-    throw new Error(`There is no posting '${id}' in the ledger.`);
-  }
-  return posting;
-};
-
-export const requireApprovedResume = async (dataDirectory: string) => {
-  const resume = await readApprovedResume(dataDirectory);
-  if (resume.status === 'missing') {
-    throw new Error(
-      "No resume has been approved. Nick approves one with 'pnpm cli jobs resume approve'.",
-    );
-  } else if (resume.status === 'mismatched') {
-    throw new Error(
-      'The approved resume no longer matches its approval. Nick approves one again with ' +
-        "'pnpm cli jobs resume approve'.",
-    );
-  }
-  return resume;
-};
-
 /**
  * Records that a posting's application has been filled and awaits Nick's submission, with the
  * hash of the approved resume it attaches.
  *
+ * An application filled through its form must have a draft in which every planned value, and the
+ * approved resume, has been seen in the form. One Nick filled by hand from its answer packet has no
+ * draft, and is marked `byHand`.
+ *
  * @param {SessionContext} context The ledger, the clock and the data directory.
  * @param {string} id The job identifier of the posting.
+ * @param {{ readonly byHand: boolean }} options Whether Nick filled the application by hand.
  *
  * @throws {Error}
- *   If the posting was not approved in review, or no resume is approved, or the approved resume no
- *   longer matches its approval.
+ *   If the posting was not approved in review, no resume is approved, the approved resume no longer
+ *   matches its approval, or a form-filled application's draft is not verified.
  *
  * @returns {Promise<Posting>} The posting, now `filled`.
  */
-export const markFilled = (context: SessionContext, id: string): Promise<Posting> =>
+export const markFilled = (
+  context: SessionContext,
+  id: string,
+  { byHand }: { readonly byHand: boolean },
+): Promise<Posting> =>
   withLedgerLock(context.dataDirectory, async () => {
     const posting = await requirePosting(context, id);
     if (posting.status !== 'queued' || posting.review.decision !== 'approved') {
       throw new Error(`The posting '${id}' is not approved for applying.`);
     }
     const resume = await requireApprovedResume(context.dataDirectory);
+    if (!byHand) {
+      await requireVerifiedDraft(context.dataDirectory, id, resume.manifest.sha256);
+    }
     const filled: Posting = {
       ...posting,
       application: { resumeSha256: resume.manifest.sha256, submittedAt: null },
@@ -72,8 +62,8 @@ export const markFilled = (context: SessionContext, id: string): Promise<Posting
   });
 
 /**
- * Records that Nick has submitted a filled application. Only Nick submits; this records his word
- * that he has.
+ * Records that Nick has submitted a filled application, and discards its draft and staged resume.
+ * Only Nick submits; this records his word that he has.
  *
  * @param {SessionContext} context The ledger, the clock and the data directory.
  * @param {string} id The job identifier of the posting.
@@ -94,6 +84,7 @@ export const markSubmitted = (context: SessionContext, id: string): Promise<Post
       status: 'submitted',
     };
     await context.store.putPosting(submitted);
+    await discardDraft(context.dataDirectory, id);
     return submitted;
   });
 

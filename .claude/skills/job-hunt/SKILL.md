@@ -2,8 +2,9 @@
 name: job-hunt
 description:
   Run Nick's LinkedIn job search — set up the job-search preferences and application answers when
-  they are missing or incomplete, then find, filter and score postings. Use when Nick says "job
-  hunt", "set up the job search", "find me jobs", "run the job search", or invokes /job-hunt.
+  they are missing or incomplete, find, filter and score postings, and fill the applications Nick
+  approved for him to submit. Use when Nick says "job hunt", "set up the job search", "find me
+  jobs", "run the job search", "apply to the approved jobs", or invokes /job-hunt.
 argument-hint: '[setup]'
 disable-model-invocation: true
 ---
@@ -17,8 +18,9 @@ other than `0` or `2`, as an error: argument errors are printed by the CLI frame
 command runs. Exit code `2` with `"status": "refused"` is a correct, negative outcome — stop and
 report its `reason`, never retry around it.
 
-This skill performs **setup**, **discovery**, **scoring** and **review**. Applying lands in a later
-stage of the project; once Nick has approved postings, say so rather than improvising it.
+This skill performs **setup**, **discovery**, **scoring**, **review** and **applying**. Cover
+letters land in a later stage of the project; when a form requires one, leave that application for
+Nick.
 
 ## Ground Rules
 
@@ -30,6 +32,8 @@ stage of the project; once Nick has approved postings, say so rather than improv
 - **Never invent an answer.** Every value in `answers.yaml` is either derived from the public career
   fixtures or given by Nick. If neither, ask.
 - **Never approve a resume.** `jobs resume approve` is reserved for Nick and is denied to agents.
+- **Never submit.** Applications are filled and left open for Nick to submit. Never click a
+  "Submit", "Submit application" or "Send" button, on LinkedIn or any other site.
 - **Every LinkedIn page load is budgeted.** Run `pnpm --silent jobs budget take page-view` before
   every navigation and before opening every result card, in the `job-search-browser` tab only, one
   at a time. A refusal ends the run.
@@ -259,3 +263,107 @@ pnpm --silent jobs review <id> --decision skipped --reason "too backend"
 
 Approved postings wait for the applying stage. Report the decisions at the end: approved, skipped
 with their reasons, and what is left on the maybe list.
+
+## Applying
+
+Fill the applications to the postings Nick approved, one at a time: fill one, hand it to Nick, and
+move to the next only once he has submitted or dropped it. List them with
+`jobs posting list --status queued` and take the approved ones.
+
+An approved resume is required. If `jobs apply start` fails because none is approved, stop and tell
+Nick to generate one with `pnpm resume:generate` and approve it with `pnpm cli jobs resume approve`.
+Easy Apply applications happen inside a run (`jobs run start`), so that a challenge can end it.
+
+### 1. Start the application
+
+```bash
+pnpm --silent jobs apply start <id>
+```
+
+A refusal means the application system needs an account Nick has not approved: ask him, and start
+again with `--account-approved` only if he agrees. The result gives `applyAt`, where the form lives,
+and `resume`, the staged copy of the approved resume to upload.
+
+### 2. Open the form
+
+- **Easy Apply:** take a page view, navigate to `applyAt`, take an `easy-apply-fill` unit, then
+  click the posting's "Easy Apply" button. The form opens in a dialog of several steps.
+- **Ashby, Greenhouse and other boards:** navigate to `applyAt`; these pages draw on no LinkedIn
+  budget. A sign-in or account-creation page means the account policy applies: stop and ask.
+
+### 3. Fill each step
+
+Repeat for each Easy Apply step, or once for a single-page form:
+
+1. **Read** the form with the `form-read` script, and **plan** from the reading:
+
+   ```bash
+   pnpm --silent jobs page-script form-read
+   pnpm --silent jobs apply plan <id> <<'JSON'
+   { … the reading … }
+   JSON
+   ```
+
+2. **Resolve what the plan cannot fill yet**, then read and plan again:
+   - `needsOptions`: a combobox whose options appear only when opened. Take one snapshot of the step
+     to find each one's uid by its label, click it with `mcp__job-search-browser__click`, and run
+     the `combobox-options` script, which records its options and closes it.
+   - `unanswered`: a required question the data does not answer. Ask Nick, all of the step's
+     questions at once, and save each answer with `jobs answers add` so no later form asks again.
+     Never fill one yourself.
+   - `unsupported`: a control the tooling cannot fill. Stop and tell Nick which one.
+
+3. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
+   entry: a combobox is clicked open by its uid, a typeahead is filled with its `typeText` through
+   `mcp__job-search-browser__fill`, and either way its `chooseFunction` then picks the option. A
+   `chosen: null` result lists the options; show them to Nick.
+
+4. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
+   with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
+   "Upload resume" button that opens it. On Easy Apply's resume step, upload through "Upload resume"
+   even when the plan lists no upload: the step preselects Nick's newest upload, which is never
+   assumed to be the approved resume.
+
+5. **Check** the step: read it again and pass the reading to the check, re-filling anything it
+   reports, until its `status` is `ok`:
+
+   ```bash
+   pnpm --silent jobs apply check <id> <<'JSON'
+   { … the reading taken after filling … }
+   JSON
+   ```
+
+6. **Move on.** Run `jobs apply pause`, then click "Next", "Continue" or "Review". Never "Submit".
+
+A reading whose `challenge` is `true` is refused by the plan: stop at once, and on LinkedIn finish
+the run with `--ended-by challenge`.
+
+### 4. Hand it to Nick
+
+On Easy Apply's review step, or once a single-page form is filled, check the form a final time. When
+nothing is `pending` and `resumeVerified` is `true`, record the application as filled:
+
+```bash
+pnpm --silent jobs application filled <id>
+```
+
+Tell Nick the application is ready in the browser tab, with any values the plan `kept` from an
+earlier application and the answers he gave. Leave the tab on the form.
+
+### 5. Record the outcome
+
+When Nick says he submitted it, record the submission, which also removes the staged resume:
+
+```bash
+pnpm --silent jobs application submitted <id>
+```
+
+If he drops the application instead, discard it:
+
+```bash
+pnpm --silent jobs apply discard <id>
+```
+
+A posting whose system the tooling does not fill — Workday, or an unrecognized board — gets an
+answer packet instead (`jobs packet build <id>`). Nick applies from it by hand; record the
+application with `jobs application filled <id> --by-hand`, then the submission as above.

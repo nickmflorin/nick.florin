@@ -8,6 +8,13 @@ import {
   JobsApplicationSubmittedCommand,
   JobsPacketBuildCommand,
 } from './commands/jobs/jobs-apply-commands';
+import {
+  JobsApplyCheckCommand,
+  JobsApplyDiscardCommand,
+  JobsApplyPauseCommand,
+  JobsApplyPlanCommand,
+  JobsApplyStartCommand,
+} from './commands/jobs/jobs-apply-flow-commands';
 import { JobsBudgetTakeCommand } from './commands/jobs/jobs-budget-take-command';
 import {
   JobsConfigShowCommand,
@@ -42,6 +49,11 @@ const Commands: readonly CommandClass[] = [
   JobsAnswersResolveCommand,
   JobsApplicationFilledCommand,
   JobsApplicationSubmittedCommand,
+  JobsApplyCheckCommand,
+  JobsApplyDiscardCommand,
+  JobsApplyPauseCommand,
+  JobsApplyPlanCommand,
+  JobsApplyStartCommand,
   JobsBudgetTakeCommand,
   JobsConfigShowCommand,
   JobsConfigStatusCommand,

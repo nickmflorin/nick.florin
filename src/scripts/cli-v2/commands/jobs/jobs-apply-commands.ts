@@ -14,10 +14,9 @@ import {
   markSubmitted,
   packetFileFor,
   renderPacket,
-  requireApprovedResume,
-  requirePosting,
   saveCustomAnswer,
 } from '~/scripts/job-search/applying/applications';
+import { requireApprovedResume, requirePosting } from '~/scripts/job-search/applying/requirements';
 import { resolveSessionContext } from '~/scripts/job-search/context';
 import { writeFileAtomically } from '~/scripts/job-search/fs';
 
@@ -105,7 +104,7 @@ export class JobsPacketBuildCommand extends JsonCommand {
       an account, the approved resume to attach, the standard answers, and the years of experience
       with each competency the description names. Requires an approved resume.
     `,
-    examples: [['Build a packet', '$0 jobs packet build 4444154507']],
+    examples: [['Build a packet', '$0 jobs packet build 4012345679']],
   });
   public id = Option.String({ name: 'id', required: true });
 
@@ -138,12 +137,28 @@ export class JobsApplicationFilledCommand extends JsonCommand {
   public static usage = Command.Usage({
     category: 'Jobs',
     description: "Record that a posting's application is filled and awaits Nick's submission.",
-    examples: [['Record a filled application', '$0 jobs application filled 4461125742']],
+    details: `
+      A form-filled application must have been verified with \`jobs apply check\`: every planned
+      value seen in the form, and the approved resume seen attached. Pass \`--by-hand\` only for an
+      application Nick filled himself from its answer packet.
+    `,
+    examples: [
+      ['Record a filled application', '$0 jobs application filled 4012345678'],
+      [
+        'Record an application Nick filled by hand',
+        '$0 jobs application filled 4012345679 --by-hand',
+      ],
+    ],
+  });
+  public byHand = Option.Boolean('--by-hand', false, {
+    description: 'Nick filled the application himself, from its answer packet.',
   });
   public id = Option.String({ name: 'id', required: true });
 
   protected async run(): Promise<JsonResult> {
-    const posting = await markFilled(await resolveSessionContext(), this.id);
+    const posting = await markFilled(await resolveSessionContext(), this.id, {
+      byHand: this.byHand,
+    });
     return { id: posting.id, status: posting.status };
   }
 }
@@ -158,9 +173,9 @@ export class JobsApplicationSubmittedCommand extends JsonCommand {
     description: 'Record that Nick has submitted a filled application.',
     details: `
       Only Nick submits. Run this once he has said he submitted the application, never on the
-      strength of a form having been filled.
+      strength of a form having been filled. Discards the application's draft and staged resume.
     `,
-    examples: [['Record a submission', '$0 jobs application submitted 4461125742']],
+    examples: [['Record a submission', '$0 jobs application submitted 4012345678']],
   });
   public id = Option.String({ name: 'id', required: true });
 

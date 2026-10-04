@@ -7,7 +7,7 @@ const SearchUrl = 'https://www.linkedin.com/jobs/search/?keywords=senior%20front
 describe('preferences schema', () => {
   it('applies every default to a file holding only the required fields', () => {
     expect(PreferencesSchema.parse(MinimalPreferences)).toStrictEqual({
-      applying: { newAccounts: 'ask' },
+      applying: { followCompany: false, markTopChoice: false, newAccounts: 'ask' },
       coverLetters: { optionalAt: 80 },
       hard: {
         applyHosts: { block: [] },
@@ -24,6 +24,7 @@ describe('preferences schema', () => {
         cooldownHoursAfterChallenge: 48,
         delaySeconds: [5, 15],
         easyApplyFillsPerDay: 15,
+        formStepDelaySeconds: [2, 6],
         linkedinPageViewsPerDay: 120,
         runsPerDay: 2,
       },

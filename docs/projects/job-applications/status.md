@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-10-03_
+_Last updated: 2026-10-04_
 
 ## Phase
 
@@ -58,9 +58,15 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
    views) and scored by four parallel `job-screener` agents (7 queued, 9 maybe, after one re-score);
    Nick reviewed the queue, approving 15 and skipping Ladders as an account funnel, which led to the
    blocked-sites filter and the `applying.newAccounts` policy.
-5. **Applying** — in progress. 5a done 2026-10-04: `jobs answers resolve|add`, `jobs packet build`,
-   `jobs application filled|submitted`. Next, 5b: explore a live Easy Apply form, then the form
-   reader and filler page scripts for Easy Apply, Ashby and Greenhouse; then 5c, cover letters. 15
-   approved postings wait. Prerequisite for filling: Nick approves a resume with
-   `pnpm cli jobs resume approve`.
+5. **Applying** — in progress.
+   - 5a — done 2026-10-04: `jobs answers resolve|add`, `jobs packet build`,
+     `jobs application filled|submitted`.
+   - 5b — written 2026-10-04: a live Easy Apply walkthrough of an approved posting, discarded at the
+     review step, then the generic form reader, planner and filler, the verified draft that gates
+     `jobs application filled`, per-application resume staging, and
+     `jobs apply start|plan|check|pause|discard`. The reader and planner were run against live Ashby
+     and Greenhouse forms, and Greenhouse's comboboxes and location typeahead were filled live;
+     nothing was submitted. Not yet run end to end.
+   - Next: the first real fills, one each of Easy Apply, Ashby and Greenhouse, for him to submit;
+     then 5c, cover letters. 15 approved postings wait.
 6. **Learning** — search yield tracking, review reasons and proposed preference edits.

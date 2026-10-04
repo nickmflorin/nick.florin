@@ -63,15 +63,15 @@ describe('applications', () => {
   describe('markFilled()', () => {
     it('refuses while no resume is approved', async () => {
       expect.hasAssertions();
-      await expect(markFilled(context(), '4012345678')).rejects.toThrow(
+      await expect(markFilled(context(), '4012345678', { byHand: true })).rejects.toThrow(
         'No resume has been approved',
       );
     });
 
-    it('records the approved resume and marks the application filled', async () => {
+    it('records the approved resume and marks an application filled by hand', async () => {
       expect.hasAssertions();
       await approveAResume();
-      await expect(markFilled(context(), '4012345678')).resolves.toMatchObject({
+      await expect(markFilled(context(), '4012345678', { byHand: true })).resolves.toMatchObject({
         application: { submittedAt: null },
         status: 'filled',
       });
@@ -81,7 +81,9 @@ describe('applications', () => {
       expect.hasAssertions();
       await approveAResume();
       await context().store.putPosting(posting({ id: '4012345679', status: 'maybe' }));
-      await expect(markFilled(context(), '4012345679')).rejects.toThrow('not approved');
+      await expect(markFilled(context(), '4012345679', { byHand: true })).rejects.toThrow(
+        'not approved',
+      );
     });
   });
 
@@ -89,7 +91,7 @@ describe('applications', () => {
     it('records the submission of a filled application', async () => {
       expect.hasAssertions();
       await approveAResume();
-      await markFilled(context(), '4012345678');
+      await markFilled(context(), '4012345678', { byHand: true });
       await expect(markSubmitted(context(), '4012345678')).resolves.toMatchObject({
         application: { submittedAt: '2026-10-04T12:00:00.000Z' },
         status: 'submitted',

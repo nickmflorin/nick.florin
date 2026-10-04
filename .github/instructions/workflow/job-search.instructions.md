@@ -31,9 +31,22 @@ cat > src/scripts/job-search/my-preferences.yaml <<'YAML'
 YAML
 ```
 
-The one exception is `build/job-search/`, where the browser server saves a posting's text for
-`jobs posting describe` to move into the ledger; it is gitignored, and each file is deleted on
-attach.
+Two places outside the data directory hold private files briefly, both because the browser server
+reads and writes only inside the workspace and the operating system's temporary directory:
+
+- `build/job-search/`, where the browser server saves a posting's text for `jobs posting describe`
+  to move into the ledger. It is gitignored, and each file is deleted on attach.
+- `job-search-resume/<id>/` in the temporary directory, where `jobs apply start` stages the approved
+  resume for upload. It is readable by Nick's account alone, and is removed when the application is
+  submitted or discarded.
+
+```bash
+# Correct: the CLI stages the verified approved resume, and the upload reads the staged copy.
+pnpm --silent jobs apply start 4012345678   # prints { "resume": "…/job-search-resume/…/…pdf" }
+
+# Disallowed: the resume copied into the working tree, one `git add -A` away from being published.
+cp "$JOBS_DATA_DIR/resume/Resume.pdf" build/resume.pdf
+```
 
 ## LinkedIn Activity Is Budgeted and Human-Paced
 
@@ -51,7 +64,8 @@ run with `jobs run finish … --ended-by challenge` or `logged-out`. Never try t
 
 ## What Only Nick Does
 
-- **Submitting an application.** Forms are filled and left for Nick to submit.
+- **Submitting an application.** Forms are filled and left for Nick to submit; never click a
+  "Submit", "Submit application" or "Send" button on any site.
 - **Approving a resume.** `jobs resume approve` is reserved for him and denied to agents.
 - **Signing into LinkedIn.** Never type or store his credentials.
 - **Answering a question the data does not answer.** Ask him; never invent an answer.

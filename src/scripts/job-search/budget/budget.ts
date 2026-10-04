@@ -53,18 +53,20 @@ const cooldownRefusal = (cooldown: Cooldown): BudgetDecision => ({
 });
 
 /**
- * Picks the pause before the next page load, uniformly within the configured range, from a
- * random number in `[0, 1)`.
+ * Picks a pause, in milliseconds, uniformly within a configured range of seconds, from a random
+ * number in `[0, 1)`: the pause before a page load, or between the steps of an application form.
  */
-const pageViewDelayMs = ([minimum, maximum]: Limits['delaySeconds'], random: number): number =>
-  (minimum + (maximum - minimum) * random) * MillisecondsPerSecond;
+export const delayWithinMs = (
+  [minimum, maximum]: readonly [number, number],
+  random: number,
+): number => (minimum + (maximum - minimum) * random) * MillisecondsPerSecond;
 
 const grantPageView = ({ budget, limits, now }: BudgetState, random: number): BudgetDecision => {
   const sinceLast =
     budget.lastPageViewAt === null
       ? Infinity
       : now.getTime() - new Date(budget.lastPageViewAt).getTime();
-  const waitMs = Math.max(0, Math.ceil(pageViewDelayMs(limits.delaySeconds, random) - sinceLast));
+  const waitMs = Math.max(0, Math.ceil(delayWithinMs(limits.delaySeconds, random) - sinceLast));
   return {
     budget: {
       ...budget,

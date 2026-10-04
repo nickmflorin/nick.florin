@@ -89,7 +89,12 @@ const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentif
 
 /**
  * The question categories answered from Nick's data, in the order they are tried. Each pattern is
- * matched against the question's label; the first that matches and yields a value answers it.
+ * matched against the question's label; the first that matches and yields a value fitting the field
+ * answers it.
+ *
+ * The yes-or-no categories come before the contact categories because their questions routinely
+ * mention a place — "authorized to work in the country where this role is based" — that the looser
+ * location and country patterns would otherwise claim.
  */
 const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   [/first name/i, (_label, { profile }) => from('profile', profile.firstName)],
@@ -97,6 +102,16 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   [
     /^(?:full |legal )?name\b/i,
     (_label, { profile }) => from('profile', `${profile.firstName} ${profile.lastName}`),
+  ],
+  [
+    /sponsor/i,
+    (_label, { preferences }) => from('preferences', yesNo(preferences.hard.sponsorshipRequired)),
+  ],
+  [
+    // cspell:disable-next-line
+    /authori[sz]ed to work|legally (?:able|eligible|permitted) to work|work authori[sz]ation|eligible to work/i,
+    (_label, { answers }) =>
+      from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
   ],
   [/e-?mail/i, (_label, { answers }) => from('answers', answers.contact.email)],
   [/phone|mobile/i, (_label, { answers }) => from('answers', answers.contact.phone)],
@@ -115,16 +130,6 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
     (_label, { answers }) => from('answers', answers.contact.region),
   ],
   [/country/i, (_label, { answers }) => from('answers', answers.contact.country)],
-  [
-    /sponsor/i,
-    (_label, { preferences }) => from('preferences', yesNo(preferences.hard.sponsorshipRequired)),
-  ],
-  [
-    // cspell:disable-next-line
-    /authori[sz]ed to work|legally (?:able|eligible|permitted) to work|work authori[sz]ation|eligible to work/i,
-    (_label, { answers }) =>
-      from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
-  ],
   [
     /notice period|start date|when can you start|available to start|earliest .*start/i,
     (_label, { answers }) =>
@@ -177,13 +182,22 @@ const customAnswer = (label: string, { answers }: AnswerContext): Candidate => {
   return match === undefined ? null : { source: 'custom', value: match.answer };
 };
 
+const fitted = (
+  label: string,
+  question: FormQuestion,
+  candidate: Candidate,
+): null | ResolvedAnswer => {
+  const value = candidate === null ? null : fitToOptions(candidate.value, question);
+  return candidate === null || value === null ? null : { label, source: candidate.source, value };
+};
+
 /**
  * Answers one application-form question from Nick's data, or reports it unanswered.
  *
- * An answer saved for this exact question takes precedence; then the question categories are
- * tried in order. For a choice field the answer must fit one of its options, so a question whose
- * category is known but whose options do not admit the answer is reported unanswered rather than
- * forced.
+ * An answer saved for this exact question takes precedence; then each question category whose
+ * pattern matches is tried in order. For a choice field the answer must fit one of its options, so
+ * a category whose answer the options do not admit gives way to the next, and a question no
+ * category fits is reported unanswered rather than forced.
  *
  * @param {FormQuestion} question The question as the form reader reported it.
  * @param {AnswerContext} context The answers, preferences, profile and competencies.
@@ -192,15 +206,14 @@ const customAnswer = (label: string, { answers }: AnswerContext): Candidate => {
  */
 export const resolveAnswer = (question: FormQuestion, context: AnswerContext): ResolvedAnswer => {
   const label = question.label.trim();
-  const candidate =
-    customAnswer(label, context) ??
-    Resolvers.reduce<Candidate>(
-      (found, [pattern, resolve]) =>
-        found ?? (pattern.test(label) ? resolve(label, context) : null),
-      null,
-    );
-  const value = candidate === null ? null : fitToOptions(candidate.value, question);
-  return candidate === null || value === null
-    ? { label, unanswered: true }
-    : { label, source: candidate.source, value };
+  return (
+    [
+      customAnswer(label, context),
+      ...Resolvers.filter(([pattern]) => pattern.test(label)).map(([, resolve]) =>
+        resolve(label, context),
+      ),
+    ]
+      .map(candidate => fitted(label, question, candidate))
+      .find((answer): answer is ResolvedAnswer => answer !== null) ?? { label, unanswered: true }
+  );
 };

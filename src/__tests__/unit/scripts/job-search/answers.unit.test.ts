@@ -103,6 +103,32 @@ describe('resolveAnswer()', () => {
     ).toMatchObject({ source: 'answers', value: 'I decline to self-identify' });
   });
 
+  it('answers an authorization question that names where the role is based', () => {
+    expect(
+      resolveAnswer(
+        choice(
+          'Are you legally authorized to work in the country where this role is based without ' +
+            'restriction?',
+          ['Yes', 'No'],
+        ),
+        Context,
+      ),
+    ).toMatchObject({ source: 'answers', value: 'Yes' });
+  });
+
+  it('falls through to the next matching category when an answer does not fit the options', () => {
+    expect(
+      resolveAnswer(
+        choice('How did you hear about us: LinkedIn, a referral or elsewhere?', [
+          'LinkedIn',
+          'Referral',
+          'Other',
+        ]),
+        Context,
+      ),
+    ).toMatchObject({ value: 'LinkedIn' });
+  });
+
   it('reports a choice field whose options do not admit the answer', () => {
     expect(resolveAnswer(choice('When can you start?', ['Within 30 days']), Context)).toMatchObject(
       { unanswered: true },

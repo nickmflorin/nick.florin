@@ -141,8 +141,17 @@ export const NewAccountPolicies = ['allow', 'ask', 'never'] as const;
 
 export type NewAccountPolicy = (typeof NewAccountPolicies)[number];
 
+/**
+ * How applications are filled. `followCompany` and `markTopChoice` set the checkboxes LinkedIn adds
+ * to an Easy Apply form — following the company, which it pre-checks, and marking the posting a top
+ * choice, of which it allows a few a month — so that neither is left to the form's default.
+ */
 const ApplyingSchema = z
-  .object({ newAccounts: z.enum(NewAccountPolicies).default('ask') })
+  .object({
+    followCompany: z.boolean().default(false),
+    markTopChoice: z.boolean().default(false),
+    newAccounts: z.enum(NewAccountPolicies).default('ask'),
+  })
   .strict()
   .default({});
 
@@ -165,6 +174,12 @@ const LimitsSchema = z
         message: 'The minimum delay must not exceed the maximum delay.',
       }),
     easyApplyFillsPerDay: z.number().int().positive().default(15),
+    formStepDelaySeconds: z
+      .tuple([z.number().positive(), z.number().positive()])
+      .default([2, 6])
+      .refine(([minimum, maximum]) => minimum <= maximum, {
+        message: 'The minimum delay must not exceed the maximum delay.',
+      }),
     linkedinPageViewsPerDay: z.number().int().positive().default(120),
     runsPerDay: z.number().int().positive().default(2),
   })

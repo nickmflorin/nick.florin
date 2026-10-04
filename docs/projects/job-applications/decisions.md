@@ -16,6 +16,58 @@ Format:
 
 ---
 
+## 2026-10-04 — Forms are filled by one generic reader and filler, and verified before "filled"
+
+**Decision:** Stage 5b fills Easy Apply, Ashby and Greenhouse forms with one set of page scripts
+(`src/scripts/job-search/applying/form-scripts.ts`) and one deterministic planner (`fill-plan.ts`),
+rather than a script per system:
+
+- **The reader** stamps every field with a `data-job-search-key` attribute and reports its label,
+  options, required flag and current value. Labels resolve through `aria-label`, `aria-labelledby`,
+  `label[for]` (skipping bare verbs such as "Attach"), the fieldset legend, and the nearest unowned
+  label before the field, which covers LinkedIn's dialog, Ashby's radio questions and Greenhouse's
+  file inputs alike.
+- **The planner** answers each field through the answer resolver, enters a phone number without its
+  code beside a separate country-code field, sets LinkedIn's follow and top-choice checkboxes from
+  `applying.followCompany` and `applying.markTopChoice` (both off by default), plans the approved
+  resume into the resume upload, and leaves every required question the data does not answer for
+  Nick — even when the form remembers a value for it.
+- **The filler** sets native fields by script. Comboboxes and typeaheads answer only to trusted
+  input, so they are opened through the browser server and the option is then chosen by script.
+- **Every planned value is recorded in a draft** (`drafts/<id>.yaml` in the data directory) and
+  checked against a fresh reading of the form. `jobs application filled` refuses until every value
+  has been seen in the form and the approved resume has been seen attached.
+- **The approved resume is staged per application** under the operating system's temporary
+  directory, the only place outside the workspace the browser server uploads from, and removed when
+  the application is submitted or discarded.
+
+```bash
+pnpm --silent jobs apply start 4012345678          # account policy, stage the resume, open a draft
+pnpm --silent jobs apply plan 4012345678 < reading.json   # plan, record, print the fill script
+pnpm --silent jobs apply check 4012345678 < reading.json  # verify what the form now shows
+pnpm --silent jobs application filled 4012345678    # refused until the draft is verified
+```
+
+**Why:** A live Easy Apply walkthrough of an approved posting, discarded at the review step, showed
+what the design must handle. Step 1 would not advance because a required "Location (city)" typeahead
+was empty, not because script-set values were ignored; script events work for native fields. The
+resume step preselects Nick's newest LinkedIn upload, so leaving the default would attach whatever
+he last uploaded, approved or not. The follow-company checkbox is pre-checked. The step headings and
+field markup of Ashby and Greenhouse, read live the same day, differ from LinkedIn's but yield to
+the same label precedence. Greenhouse renders every select as a combobox whose menu opens only on a
+trusted click, and its location search finds "Washington" but nothing for "Washington, DC", so a
+typeahead is given the place's leading name and picks the suggestion that best matches the rest. The
+draft check exists because a form can silently drop a value — the failure the Location field showed
+— and the human submitting should never be the first to notice.
+
+**Alternatives considered:** A script per application system (three copies of the same label and
+option logic, and none for the next board). Trusting the fill results without re-reading the form (a
+dropped value would reach the review step unnoticed). Selecting a previously uploaded resume by its
+file name (its content cannot be verified). Copying the resume into `build/` for upload (one
+`git add -A` from publishing it).
+
+---
+
 ## 2026-10-04 — Answers are resolved deterministically; Ashby and Greenhouse filling moves into v1
 
 **Decision:** Application-form questions are answered by `jobs answers resolve`

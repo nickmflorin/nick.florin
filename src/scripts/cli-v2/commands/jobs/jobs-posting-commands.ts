@@ -52,7 +52,7 @@ export class JobsPostingShowCommand extends JsonCommand {
   public static usage = Command.Usage({
     category: 'Jobs',
     description: 'Print one posting from the ledger, description included.',
-    examples: [['Show a posting', '$0 jobs posting show 4471755128']],
+    examples: [['Show a posting', '$0 jobs posting show 4012345678']],
   });
   public id = Option.String({ name: 'id', required: true });
 
@@ -107,7 +107,7 @@ export class JobsScoreRecordCommand extends JsonCommand {
       \`dealbreakers\`, \`gaps\`, \`flags\` and \`rationale\` — and moves the posting to the queue,
       the maybe list or the dropped postings by the thresholds in \`preferences.yaml\`.
     `,
-    examples: [['Record a score', '$0 jobs score record 4471755128 < score.json']],
+    examples: [['Record a score', '$0 jobs score record 4012345678 < score.json']],
   });
   public id = Option.String({ name: 'id', required: true });
 
@@ -153,8 +153,8 @@ export class JobsReviewCommand extends JsonCommand {
       Nick gave, in a few words, so that the learning loop can propose preference changes from it.
     `,
     examples: [
-      ['Approve a posting', '$0 jobs review 4471755128 --decision approved'],
-      ['Skip a posting', '$0 jobs review 4471755128 --decision skipped --reason "too backend"'],
+      ['Approve a posting', '$0 jobs review 4012345678 --decision approved'],
+      ['Skip a posting', '$0 jobs review 4012345678 --decision skipped --reason "too backend"'],
     ],
   });
   public decision = Option.String('--decision', {

@@ -145,7 +145,19 @@ its own branch/PR.
       created.
 - [ ] **Detect a logged-out session** and stop the run with a request to log in manually in the
       job-search window.
-- [ ] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1)
+- [x] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1) Landed 2026-10-04 (stage 5b)
+      as one generic form reader, planner and filler (`src/scripts/job-search/applying/`), driven
+      step by step through `jobs apply start|plan|check|pause|discard`. Not yet run end to end.
+- [x] **Fill Ashby and Greenhouse forms**, stopping before Submit, through the same reader, planner
+      and filler as Easy Apply, on the employer's form directly. (v1) Landed 2026-10-04 (stage 5b);
+      read and planned against live Ashby and Greenhouse forms, and Greenhouse's comboboxes and
+      location typeahead filled live.
+- [ ] **Fill the first approved applications end to end:** one Easy Apply, one Ashby and one
+      Greenhouse posting, each left on its final step for him to submit, to confirm the resume
+      upload and the review-step check against live forms. (v1)
+- [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
+      `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
+      then a form with one is stopped and reported.
 - [x] **Classify external postings by applicant tracking system.** Resolve the Apply button's
       redirect target and map its host to a system (`boards.greenhouse.io`, `jobs.lever.co`,
       `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1) Landed 2026-10-04 in
@@ -175,13 +187,19 @@ its own branch/PR.
 - [x] **Keep approval human-only.** Deny the command to agents in `.claude/settings.json`, and state
       it in the guardrail rules. (v1) The deny rules landed 2026-10-03; the rule statement lands
       with the guardrail rules in stage 4.
-- [ ] **Use the approved resume when applying.** Show it in the start-of-run summary (noting, as
-      information only, when resume content has changed since approval); block filling without one;
-      verify the copy's hash against the manifest before attaching; record the hash on each
-      application; on Easy Apply, upload only when it differs from the last one sent. (v1)
-- [ ] **Enforce the new-account policy when applying.** Before filling a form on a path whose
+- [x] **Use the approved resume when applying.** Block filling without one; verify the copy's hash
+      against the manifest before attaching; record the hash on each application. (v1) Landed
+      2026-10-04: `jobs apply start` stages a verified copy per application, and an application is
+      marked filled only once the form shows the approved resume attached. It is uploaded to every
+      application rather than only when it differs from the last one sent, because Easy Apply
+      preselects Nick's newest upload, whose content cannot be checked.
+- [ ] **Show the approved resume in the start-of-run summary**, noting, as information only, when
+      resume content has changed since approval.
+- [x] **Enforce the new-account policy when applying.** Before filling a form on a path whose
       `AccountRequirements` entry is `yes` or `unknown`, stop under `ask` and wait for Nick; under
-      `never`, leave the application as a packet for him. (v1)
+      `never`, leave the application as a packet for him. (v1) Landed 2026-10-04 in
+      `jobs apply start`, which refuses such a posting unless Nick approved the account
+      (`--account-approved`).
 
 ## Cover Letters
 
@@ -197,7 +215,8 @@ Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./d
 
 - [ ] **Fill Greenhouse, Lever and Ashby forms**, stopping before Submit. Greenhouse's public
       job-board API returns a posting's questions, so answers can be drafted before the browser
-      opens. (v2) Ashby and Greenhouse moved into v1 on 2026-10-04; Lever stays here.
+      opens. (v2) Ashby and Greenhouse moved into v1 on 2026-10-04 and landed the same day; Lever
+      stays here.
 - [ ] **Discover from a company watchlist.** Read the public job-board APIs of Greenhouse, Lever and
       Ashby for a list of named companies, with plain HTTP from the cli and no browser — no LinkedIn
       activity, full descriptions, often earlier than LinkedIn, and the system is known in advance.
