@@ -136,10 +136,9 @@ export class JobsApplyPlanCommand extends JsonCommand {
       this.preview ? null : readDraft(context.dataDirectory, this.id),
     ]);
     const plan = planFill(reading, answerContext, {
-      coverLetter:
-        draft === null || draft.coverLetter === null
-          ? null
-          : { file: draft.coverLetter.stagedFile, text: draft.coverLetter.text },
+      coverLetter: draft?.coverLetter
+        ? { file: draft.coverLetter.stagedFile, text: draft.coverLetter.text }
+        : null,
       resumeFile: draft?.resume.stagedFile ?? null,
     });
     if (!this.preview) {

@@ -24,6 +24,11 @@ export interface UnplannedField {
  */
 export interface FillPlan {
   /**
+   * Fields that ask for a cover letter when no approved letter is staged: required ones keep the
+   * application from being submitted until Nick approves a drafted letter.
+   */
+  readonly coverLetters: Pick<ReadField, 'key' | 'label' | 'required'>[];
+  /**
    * The native fields, which the fill script sets.
    */
   readonly fills: PlannedFill[];
@@ -37,11 +42,6 @@ export interface FillPlan {
    * applications — which are left as they are and shown to Nick.
    */
   readonly kept: UnplannedField[];
-  /**
-   * Fields that ask for a cover letter when no approved letter is staged: required ones keep the
-   * application from being submitted until Nick approves a drafted letter.
-   */
-  readonly coverLetters: Pick<ReadField, 'key' | 'label' | 'required'>[];
   /**
    * Comboboxes whose options are not yet known: each is opened and probed, and the form read
    * again, before it can be planned.

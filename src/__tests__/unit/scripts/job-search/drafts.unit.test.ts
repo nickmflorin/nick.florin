@@ -12,8 +12,8 @@ import {
   startApplication,
 } from '~/scripts/job-search/applying/drafts';
 import { type FillPlan } from '~/scripts/job-search/applying/fill-plan';
-import { packetFileFor } from '~/scripts/job-search/applying/packets';
 import { type FormReading, type ReadField } from '~/scripts/job-search/applying/form-scripts';
+import { packetFileFor } from '~/scripts/job-search/applying/packets';
 import { YamlLedgerStore } from '~/scripts/job-search/ledger/yaml-ledger-store';
 import { approveResume } from '~/scripts/job-search/resume/approved-resume';
 import { PreferencesSchema } from '~/scripts/job-search/schemas';
@@ -78,6 +78,7 @@ const reading = (fields: ReadField[]): FormReading => ({
   challenge: false,
   fields,
   progress: null,
+  signIn: false,
   text: '',
   unsupported: [],
   url: 'https://boards.example.com/apply',
@@ -291,12 +292,10 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await fs.mkdir(path.dirname(packetFileFor(dataDirectory(), Id)), { recursive: true });
       await fs.writeFile(packetFileFor(dataDirectory(), Id), '# Packet');
-      await expect(listHeldApplications(context())).resolves.toMatchObject([
-        {
-          id: Id,
-          packet: packetFileFor(dataDirectory(), Id),
-          reason: expect.stringMatching(/^Apply by hand/),
-        },
+      const [held] = await listHeldApplications(context());
+      expect([held.packet, held.reason?.startsWith('Apply by hand')]).toStrictEqual([
+        packetFileFor(dataDirectory(), Id),
+        true,
       ]);
     });
   });

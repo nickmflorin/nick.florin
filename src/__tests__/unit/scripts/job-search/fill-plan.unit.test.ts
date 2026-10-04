@@ -42,6 +42,7 @@ const reading = (fields: ReadField[]): FormReading => ({
   challenge: false,
   fields,
   progress: null,
+  signIn: false,
   text: '',
   unsupported: [],
   url: 'https://boards.example.com/apply',

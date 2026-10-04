@@ -233,7 +233,7 @@ export const stageCoverLetter = async (
   directory: string,
 ): Promise<null | StagedLetter> => {
   const letter = await readCoverLetter(context.dataDirectory, id);
-  if (letter === null || letter.approvedAt === null) {
+  if (!letter?.approvedAt) {
     return null;
   }
   const [answers, { firstName, lastName }] = await Promise.all([

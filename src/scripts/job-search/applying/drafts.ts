@@ -14,7 +14,6 @@ import { type SessionContext } from '../session';
 
 import { stageCoverLetter } from './cover-letters';
 import { type FillPlan, isDocumentPicker } from './fill-plan';
-import { PacketDirectoryName, packetFileFor } from './packets';
 import {
   type FieldValue,
   FieldValueSchema,
@@ -23,6 +22,7 @@ import {
   type ReadField,
   ReadFieldTypes,
 } from './form-scripts';
+import { PacketDirectoryName, packetFileFor } from './packets';
 import { requireApprovedResume, requirePosting } from './requirements';
 
 /**

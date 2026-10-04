@@ -17,8 +17,10 @@ describe('lookUpCredentials()', () => {
   });
 
   it('refuses when a variable the settings name is unset, for Nick to sign in by hand', () => {
-    expect(lookUpCredentials(Settings, { JOBS_LINKEDIN_EMAIL: 'jane@example.com' })).toMatchObject({
-      reason: expect.stringContaining('JOBS_LINKEDIN_PASSWORD'),
+    expect(lookUpCredentials(Settings, { JOBS_LINKEDIN_EMAIL: 'jane@example.com' })).toStrictEqual({
+      reason:
+        'JOBS_LINKEDIN_EMAIL or JOBS_LINKEDIN_PASSWORD is not set in .env.local: Nick signs in ' +
+        'by hand in the job-search window.',
       status: 'refused',
     });
   });

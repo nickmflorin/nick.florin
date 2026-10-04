@@ -113,7 +113,7 @@ const waitWhile = async (
   for (let attempt = 0; attempt < 40; attempt += 1) {
     /* eslint-disable-next-line no-await-in-loop -- Each check waits for the previous one. */
     const url = await currentUrl(page);
-    if (!pattern.test(new URL(url).pathname) && !/^about:/.test(url)) {
+    if (!pattern.test(new URL(url).pathname) && !url.startsWith('about:')) {
       return url;
     }
     /* eslint-disable-next-line no-await-in-loop -- Each check waits for the previous one. */
@@ -213,7 +213,7 @@ export const signInToLinkedIn = async (
   const targets = TargetsSchema.parse(
     await (await fetch(`http://127.0.0.1:${DebuggingPort}/json/list`)).json(),
   ).filter(({ type }) => type === 'page');
-  const target = targets.find(({ url }) => /linkedin\.com/.test(url)) ?? targets.at(0);
+  const target = targets.find(({ url }) => url.includes('linkedin.com')) ?? targets.at(0);
   if (target === undefined) {
     return { reason: 'The job-search Chrome has no open page.', status: 'refused' };
   }
@@ -239,7 +239,7 @@ export const signInToLinkedIn = async (
     await context.clock.sleep(400 + Math.floor(context.clock.random() * 600));
     await typeInto(page, '#password', credentials.password);
     await context.clock.sleep(300 + Math.floor(context.clock.random() * 500));
-    await page.evaluate(`document.querySelector('button[type="submit"]').click()`);
+    await page.evaluate('document.querySelector(\'button[type="submit"]\').click()');
     const landed = new URL(await waitWhile(page, SignInPage, context.clock.sleep));
     if (Checkpoint.test(landed.pathname)) {
       return {

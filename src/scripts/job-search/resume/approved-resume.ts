@@ -5,9 +5,9 @@ import { z } from 'zod';
 
 import {
   readResumeProvenance,
-  resumeSourcesChangedSince,
   type ResumeProvenance,
   ResumeProvenanceSchema,
+  resumeSourcesChangedSince,
   sha256OfFile,
 } from '~/scripts/generate-resume/provenance';
 
