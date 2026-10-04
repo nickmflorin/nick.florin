@@ -431,3 +431,33 @@ handed-off posting, record it in one step:
 ```bash
 pnpm --silent jobs application submitted <id> --by-hand
 ```
+
+## Learning
+
+At the end of every unattended run, and whenever Nick asks how the search is going, read what the
+search has learned:
+
+```bash
+pnpm --silent jobs learning report
+```
+
+Put proposals in the report, never write them unasked: retire a search marked `barren`; draft a
+search for a kind of role that keeps scoring well from the recommendations; and turn a reason Nick
+gives for skipping again and again into a hard or soft preference. He accepts a proposal, and only
+then is it written with `jobs config write`.
+
+## Unattended Run
+
+When invoked to run the job search end to end — "run the job hunt", or a scheduled run — do it all
+without stopping to ask anything:
+
+1. **Launch the browser** with `jobs browser launch`.
+2. **Discover**, as above, within the day's budget.
+3. **Score** every pending posting; postings scored into the band `applying.autoApprove` names are
+   approved as they are scored.
+4. **Apply** to every approved posting, as above, deferring whatever needs Nick.
+5. **Report** once, at the end: what was submitted, `jobs apply held`, the cover letters to approve,
+   the maybe list, and the learning report's proposals.
+
+A refusal, a challenge or a lapsed session ends the step it happens in, and the run goes on to the
+report.

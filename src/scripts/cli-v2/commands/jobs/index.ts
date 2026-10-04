@@ -18,6 +18,7 @@ export {
   JobsCoverLetterShowCommand,
 } from './cover-letter';
 export { JobsConfigShowCommand, JobsConfigStatusCommand, JobsConfigWriteCommand } from './config';
+export { JobsLearningReportCommand } from './learning';
 export { JobsPacketBuildCommand } from './packet';
 export { JobsPageScriptCommand } from './page-script';
 export {
