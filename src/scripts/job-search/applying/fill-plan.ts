@@ -209,11 +209,12 @@ const unplanned = ({ key, label, required, value }: ReadField): UnplannedField =
  * Every field the data answers is planned, with its value fitted to the field's options; a phone
  * number beside a separate country-code field loses its code. The approved resume is planned into
  * the resume upload, and a picker among earlier uploads is left alone, since the approved resume is
- * uploaded and then checked as selected. A cover-letter field takes the approved letter, and without
- * one is left alone when optional and reported when required. LinkedIn's follow and top-choice checkboxes take Nick's
- * settings rather than the form's defaults. A required field the data does not answer is left for
- * Nick, even when the form remembers a value for it; an optional one is left as it is. A combobox
- * whose options are not yet known is reported for probing rather than guessed at.
+ * uploaded and then checked as selected. A cover-letter field takes the approved letter, and
+ * without one is left alone when optional and reported when required. LinkedIn's follow and
+ * top-choice checkboxes take Nick's settings rather than the form's defaults. A required field the
+ * data does not answer is left for Nick, even when the form remembers a value for it; an optional
+ * one is left as it is. A combobox whose options are not yet known is reported for probing rather
+ * than guessed at.
  *
  * @param {FormReading} reading The form reader's reading of the form or step in view.
  * @param {AnswerContext} context The answers, preferences, profile and competencies.

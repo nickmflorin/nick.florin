@@ -40,8 +40,8 @@ export class JobsPageScriptCommand extends JsonCommand {
       \`combobox-options\` reads the options of the combobox whose menu was just opened through the
       browser server, and \`choose-option\` chooses the option reading \`--value\` from the open
       menu. \`embedded-board\` finds the direct link to an application form embedded in an
-      employer's careers page. \`submission-result\` waits for the confirmation that a submitted application went
-      through, and reports the page's errors when none appears.
+      employer's careers page. \`submission-result\` waits for the confirmation that a submitted
+      application went through, and reports the page's errors when none appears.
 
       Pass the printed \`function\` to the browser server's \`evaluate_script\` tool.
     `,

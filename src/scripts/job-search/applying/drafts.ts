@@ -45,9 +45,9 @@ type DraftEntry = z.infer<typeof DraftEntrySchema>;
 
 /**
  * Why the agent may not submit an application until Nick acts on it: a cover letter the form
- * requires and he has not approved, a required question the data does not answer, a combobox whose options were never probed, a control the tooling cannot fill, a
- * value the form remembered from an earlier application rather than took from Nick's data, or a
- * required field no plan covered.
+ * requires and he has not approved, a required question the data does not answer, a combobox whose
+ * options were never probed, a control the tooling cannot fill, a value the form remembered from an
+ * earlier application rather than took from Nick's data, or a required field no plan covered.
  */
 export const BlockerKinds = [
   'cover-letter',
