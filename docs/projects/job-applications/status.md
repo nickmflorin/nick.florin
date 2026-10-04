@@ -47,11 +47,13 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
    - 3a — done 2026-10-03: the `job-search-browser` server, `~/job-search/` and its README, and
      `jobs search url`.
    - 3b — done 2026-10-03: the setup machinery, and the setup itself, run with Nick, which wrote
-     `preferences.yaml` (with five generated searches) and `answers.yaml` to the private data
-     directory.
-   - 3c — live discovery: restart the session to load the browser server, log into LinkedIn by hand
-     in its window, then read recommendations and generated searches in two passes, with logged-out
-     detection.
+     `preferences.yaml` (with generated searches, rewritten as query phrases on 2026-10-04) and
+     `answers.yaml` to the private data directory.
+   - 3c — in progress 2026-10-04: signed into LinkedIn in the dedicated profile; a first live
+     session read the recommendations and one search, triaging the recommendations (6 rejected, 1
+     survivor) within 3 page views, and its findings reshaped discovery (see the 2026-10-04
+     decision). The discovery procedure is in the `job-hunt` skill; the next step is a full run
+     through it.
 4. **Judgment and orchestration** — the `job-screener` agent, the rest of the orchestrating skill
    (per-run confirmation, review queue) and the guardrail rules. End to end through the review
    queue, before anything touches a form.

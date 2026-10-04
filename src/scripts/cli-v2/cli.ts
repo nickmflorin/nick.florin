@@ -6,6 +6,7 @@ import {
   JobsConfigStatusCommand,
   JobsConfigWriteCommand,
 } from './commands/jobs/jobs-config-commands';
+import { JobsPageScriptCommand } from './commands/jobs/jobs-page-script-command';
 import { JobsProfileDigestCommand } from './commands/jobs/jobs-profile-digest-command';
 import { JobsResumeApproveCommand } from './commands/jobs/jobs-resume-approve-command';
 import { JobsRunFinishCommand, JobsRunStartCommand } from './commands/jobs/jobs-run-commands';
@@ -24,6 +25,7 @@ const Commands: readonly CommandClass[] = [
   JobsBudgetTakeCommand,
   JobsConfigStatusCommand,
   JobsConfigWriteCommand,
+  JobsPageScriptCommand,
   JobsProfileDigestCommand,
   JobsResumeApproveCommand,
   JobsRunFinishCommand,

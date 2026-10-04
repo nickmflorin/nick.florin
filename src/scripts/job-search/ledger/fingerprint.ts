@@ -76,14 +76,15 @@ export const postingFingerprint = ({
  * job identifier or, failing that, the same fingerprint.
  *
  * @param {readonly Posting[]} postings The recorded postings.
- * @param {Pick<Posting, 'fingerprint' | 'id'>} candidate The newly seen posting.
+ * @param {{ readonly fingerprint: string; readonly id: null | string }} candidate
+ *   The newly seen posting, whose job identifier may not be known yet.
  *
  * @returns {null | Posting} The duplicated posting, or `null` when the candidate is new.
  */
 export const findDuplicate = (
   postings: readonly Posting[],
-  candidate: Pick<Posting, 'fingerprint' | 'id'>,
+  candidate: { readonly fingerprint: string; readonly id: null | string },
 ): null | Posting =>
-  postings.find(posting => posting.id === candidate.id) ??
+  postings.find(posting => candidate.id !== null && posting.id === candidate.id) ??
   postings.find(posting => posting.fingerprint === candidate.fingerprint) ??
   null;

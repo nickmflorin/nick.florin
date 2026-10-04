@@ -10,6 +10,7 @@ import { type Candidate, type Posting } from '~/scripts/job-search/schemas';
  */
 export const posting = (overrides: Partial<Posting> = {}): Posting => ({
   application: null,
+  applyUrl: null,
   applyVia: 'easy-apply',
   company: 'Acme',
   filterReason: null,
@@ -47,6 +48,7 @@ export const MinimalPreferences = {
  * @returns {Candidate} The placeholder candidate, with the overrides applied.
  */
 export const candidate = (overrides: Partial<Candidate> = {}): Candidate => ({
+  applyUrl: null,
   applyVia: 'easy-apply',
   company: 'Acme',
   companySize: '51-200',
@@ -57,7 +59,6 @@ export const candidate = (overrides: Partial<Candidate> = {}): Candidate => ({
   source: { kind: 'search', search: 'senior-frontend-remote' },
   sponsorshipOffered: null,
   title: 'Senior Software Engineer',
-  url: 'https://www.linkedin.com/jobs/view/4012345678',
   workplace: 'remote',
   ...overrides,
 });

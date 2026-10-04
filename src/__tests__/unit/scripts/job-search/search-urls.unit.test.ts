@@ -2,62 +2,35 @@ import { buildSearchUrl, searchNameFor } from '~/scripts/job-search/discovery/se
 import { LinkedInJobSearchUrl, PreferencesSchema } from '~/scripts/job-search/schemas';
 
 describe('buildSearchUrl()', () => {
-  it('applies the workplaces, posting age, levels and Easy Apply through LinkedIn filters', () => {
+  it('carries the query phrase and the posting age, and nothing LinkedIn discards', () => {
     const url = new URL(
-      buildSearchUrl(
-        {
-          easyApplyOnly: true,
-          experienceLevels: ['mid-senior', 'director'],
-          keywords: '  senior frontend engineer ',
-          location: 'United States',
-        },
-        { postedWithinDays: 7, workplace: ['remote', 'hybrid'] },
-      ),
+      buildSearchUrl('  senior software engineer   hybrid Washington DC ', { postedWithinDays: 7 }),
     );
     expect(`${url.origin}${url.pathname}`).toBe(LinkedInJobSearchUrl);
     expect([...url.searchParams]).toStrictEqual([
-      ['keywords', 'senior frontend engineer'],
-      ['location', 'United States'],
-      ['f_WT', '2,3'],
+      ['keywords', 'senior software engineer hybrid Washington DC'],
       ['f_TPR', 'r604800'],
-      ['f_E', '4,5'],
-      ['f_AL', 'true'],
-      ['sortBy', 'DD'],
-    ]);
-  });
-
-  it('omits the optional filters when they are not given', () => {
-    const url = new URL(
-      buildSearchUrl(
-        { easyApplyOnly: false, experienceLevels: [], keywords: 'staff engineer', location: null },
-        { postedWithinDays: 14, workplace: ['remote'] },
-      ),
-    );
-    expect([...url.searchParams.keys()].toSorted()).toStrictEqual([
-      'f_TPR',
-      'f_WT',
-      'keywords',
-      'sortBy',
     ]);
   });
 
   it('builds a URL that the preferences schema accepts as a search', () => {
-    const url = buildSearchUrl(
-      { easyApplyOnly: true, experienceLevels: [], keywords: 'react engineer', location: null },
-      { postedWithinDays: 14, workplace: ['remote'] },
-    );
+    const query = 'senior full stack engineer remote';
     expect(() =>
       PreferencesSchema.shape.searches.parse([
-        { name: searchNameFor('react engineer'), origin: 'generated', url },
+        {
+          name: searchNameFor(query),
+          origin: 'generated',
+          url: buildSearchUrl(query, { postedWithinDays: 14 }),
+        },
       ]),
     ).not.toThrow();
   });
 });
 
 describe('searchNameFor()', () => {
-  it('derives a hyphen-case name from the keywords', () => {
-    expect(searchNameFor('Senior Front-End Engineer (React)')).toBe(
-      'senior-front-end-engineer-react',
+  it('derives a hyphen-case name from the query phrase', () => {
+    expect(searchNameFor('Senior Front-End Engineer (React) remote')).toBe(
+      'senior-front-end-engineer-react-remote',
     );
   });
 });

@@ -41,29 +41,29 @@ const CandidateSourceSchema = z.discriminatedUnion('kind', [
 /**
  * A posting as the browser pass read it from LinkedIn, before it has been triaged.
  *
- * Every fact other than the identity of the posting is nullable, because a result card publishes
- * only some of them and a full posting does not always publish all of them either. A `null` is
- * deferred at the `card` stage and decided by the configured policy at the `detail` stage. In
- * particular, `sponsorshipOffered` is `false` only when the posting says it offers no sponsorship.
+ * Every fact other than the company and title is nullable, because a result card publishes only
+ * some of them and a full posting does not always publish all of them either. A `null` is deferred
+ * at the `card` stage and decided by the configured policy at the `detail` stage. In particular,
+ * `sponsorshipOffered` is `false` only when the posting says it offers no sponsorship.
+ *
+ * The LinkedIn job identifier is among the facts a result card may not publish — LinkedIn's search
+ * results expose it only once a card is opened — so it is required only at the `detail` stage. The
+ * `applyUrl` is the external "Apply" link, from which the applicant tracking system is identified
+ * when `applyVia` is `unresolved`.
  */
 export const CandidateSchema = z
   .object({
+    applyUrl: z.string().url().nullable(),
     applyVia: z.enum(ApplicationSystems),
     company: TextSchema,
     companySize: z.enum(CompanySizeBands).nullable(),
     compensation: CompensationSchema.nullable(),
-    id: z.string().regex(LinkedInJobIdPattern),
+    id: z.string().regex(LinkedInJobIdPattern).nullable(),
     location: TextSchema.nullable(),
     postedAt: TimestampSchema.nullable(),
     source: CandidateSourceSchema,
     sponsorshipOffered: z.boolean().nullable(),
     title: TextSchema,
-    url: z
-      .string()
-      .url()
-      .refine(url => url.startsWith('https://www.linkedin.com/jobs/view/'), {
-        message: 'A posting URL must be a LinkedIn job view.',
-      }),
     workplace: z.enum(Workplaces).nullable(),
   })
   .strict();

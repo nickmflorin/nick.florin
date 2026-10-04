@@ -122,7 +122,7 @@ describe('job-search session', () => {
         status: 'pending',
       });
       const second = await triageBatch(context, '2026-10-03-1', 'card', [candidate()]);
-      expect(second.duplicates).toStrictEqual([{ duplicateOf: '4012345678', id: '4012345678' }]);
+      expect(second.duplicates.map(({ duplicateOf }) => duplicateOf)).toStrictEqual(['4012345678']);
     });
 
     it('refuses a batch for a run that is not open', async () => {

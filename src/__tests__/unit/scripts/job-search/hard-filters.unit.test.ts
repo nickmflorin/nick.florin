@@ -106,6 +106,24 @@ describe('applyHardFilters()', () => {
       ).toBe("The hybrid location 'Austin, TX' is not one of those accepted.");
     });
 
+    it('defers an on-site label in an accepted hybrid city to the detail stage', () => {
+      const onsiteInNewYork = candidate({ location: 'New York, NY', workplace: 'onsite' });
+      expect(applyHardFilters(onsiteInNewYork, hybridInNewYork, Card)).toBeNull();
+      expect(applyHardFilters(onsiteInNewYork, hybridInNewYork, Detail)).toBe(
+        "The workplace 'onsite' is not one of those accepted.",
+      );
+    });
+
+    it('rejects an on-site label outside the accepted hybrid cities at once', () => {
+      expect(
+        applyHardFilters(
+          candidate({ location: 'Austin, TX', workplace: 'onsite' }),
+          hybridInNewYork,
+          Card,
+        ),
+      ).toBe("The workplace 'onsite' is not one of those accepted.");
+    });
+
     it('defers an unpublished workplace at both stages', () => {
       expect(applyHardFilters(candidate({ workplace: null }), Defaults, Detail)).toBeNull();
     });

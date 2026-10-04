@@ -17,8 +17,9 @@ other than `0` or `2`, as an error: argument errors are printed by the CLI frame
 command runs. Exit code `2` with `"status": "refused"` is a correct, negative outcome — stop and
 report its `reason`, never retry around it.
 
-This skill currently performs **setup** only. Searching, scoring and applying land in later stages
-of the project; if asked to run a search, say so rather than improvising one.
+This skill performs **setup** and **discovery**. Scoring and applying land in later stages of the
+project; discovery ends with the surviving postings recorded as `pending`, and if asked to score or
+apply, say so rather than improvising it.
 
 ## Ground Rules
 
@@ -30,6 +31,12 @@ of the project; if asked to run a search, say so rather than improvising one.
 - **Never invent an answer.** Every value in `answers.yaml` is either derived from the public career
   fixtures or given by Nick. If neither, ask.
 - **Never approve a resume.** `jobs resume approve` is reserved for Nick and is denied to agents.
+- **Every LinkedIn page load is budgeted.** Run `pnpm --silent jobs budget take page-view` before
+  every navigation and before opening every result card, in the `job-search-browser` tab only, one
+  at a time. A refusal ends the run.
+- **Stop on a challenge.** A CAPTCHA, an "unusual activity" page, a security checkpoint or an
+  unexpected sign-in page ends the run at once, with `--ended-by challenge` or `logged-out`. Never
+  attempt to get past one, and never sign in on Nick's behalf.
 
 ## Setup
 
@@ -111,3 +118,70 @@ pnpm --silent jobs search url --keywords "senior frontend engineer" --level mid-
 
 Add each returned `search` entry to `searches` in the preferences, write the file again, and confirm
 both files report `complete`.
+
+## Discovery
+
+Run discovery once both configuration files are `complete`. Every page is read with the read-only
+page scripts, never with a full snapshot unless a script comes back empty:
+
+```bash
+pnpm --silent jobs page-script result-cards   # prints { "function": "() => { … }" }
+pnpm --silent jobs page-script job-detail
+```
+
+Pass the printed `function` to `mcp__job-search-browser__evaluate_script` with
+`waitForStableDom: false`.
+
+### 1. Start the run
+
+Confirm the preferences with Nick in one short summary — run as saved, adjust for this run only, or
+update the saved file — then start the run, passing each run-only adjustment as given:
+
+```bash
+pnpm --silent jobs run start --override "Onsite in Boston is fine"
+```
+
+### 2. Read each source's result cards
+
+The sources are the recommendations page (`https://www.linkedin.com/jobs/collections/recommended/`)
+and each search in the preferences, by its `url`. For each: take a page view, navigate the tab, and
+run the `result-cards` script.
+
+- **Check the page first.** If its `url` is a sign-in, `authwall`, `checkpoint` or challenge page,
+  finish the run as `logged-out` or `challenge` and tell Nick.
+- **Check the filters.** LinkedIn's job search reads the query as natural language and applies its
+  own filters; report any `filters` that contradict the preferences (such as `Remote` missing from a
+  remote search) rather than trusting the results to be filtered.
+- **Build one candidate per card** from its `lines`: `title`, `company`, `location` and `workplace`
+  from the `City, ST (Remote|Hybrid|On-site)` line, `compensation` from a `$…K/yr` line, `postedAt`
+  from `Posted N units ago` (computed back from now), `applyVia: 'easy-apply'` when a line reads
+  `Easy Apply` and `unresolved` otherwise, `id` when the card has one and `null` otherwise, and
+  `null` for every fact the card does not show. `source` is `{ "kind": "recommendations" }` or
+  `{ "kind": "search", "search": "<name>" }`.
+- **Triage the batch** at the card stage:
+
+```bash
+pnpm --silent jobs triage --run <run-id> --stage card <<'JSON'
+[ … candidates … ]
+JSON
+```
+
+### 3. Open each survivor
+
+For each card-stage survivor: take a page view, open it (click its card in the results list, or
+navigate to `https://www.linkedin.com/jobs/view/<id>/` when the card carried an id), and run the
+`job-detail` script. Rebuild the candidate from the posting's text with every fact it publishes —
+`id` (required now), `companySize` from `N-M employees`, `compensation`, `postedAt`,
+`sponsorshipOffered: false` only when the text says no sponsorship, and `applyUrl` from the script.
+When the description contradicts LinkedIn's workplace label (an "On-site" role describing office
+days twice a week), use the description's arrangement. Triage the opened postings at the detail
+stage; survivors are recorded as `pending`.
+
+### 4. Finish the run
+
+```bash
+pnpm --silent jobs run finish <run-id> --ended-by completed
+```
+
+Report the sources read, the page views used, what was rejected and why (grouped by reason), and the
+postings now pending their score.

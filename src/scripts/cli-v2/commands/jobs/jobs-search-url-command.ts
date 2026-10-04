@@ -2,69 +2,46 @@ import { Command, Option } from 'clipanion';
 import { z } from 'zod';
 
 import { resolveSessionContext } from '~/scripts/job-search/context';
-import {
-  buildSearchUrl,
-  ExperienceLevels,
-  searchNameFor,
-} from '~/scripts/job-search/discovery/search-urls';
+import { buildSearchUrl, searchNameFor } from '~/scripts/job-search/discovery/search-urls';
 
 import { zodValidator } from '../../args/zod-validator';
 import { JsonCommand, type JsonResult } from '../json-command';
 
-const LevelChoices = ExperienceLevels.join(', ');
-
 /**
- * Builds a LinkedIn job-search URL from keywords and the saved hard filters, as an entry ready for
- * the `searches` list in `preferences.yaml`.
+ * Builds a LinkedIn job-search URL for a query phrase, as an entry ready for the `searches` list in
+ * `preferences.yaml`.
  */
 export class JobsSearchUrlCommand extends JsonCommand {
   public static override paths = [['jobs', 'search', 'url']];
   public static usage = Command.Usage({
     category: 'Jobs',
-    description: 'Build a LinkedIn job-search URL from keywords and the saved hard filters.',
+    description: 'Build a LinkedIn job-search URL for a query phrase.',
     details: `
-      The accepted workplaces and the posting-age limit come from \`preferences.yaml\` and are
-      applied through LinkedIn's own filters, so postings they exclude never cost a page view.
-      Results are ordered newest first.
+      LinkedIn's job search reads the query as natural language and discards most URL filters, so
+      the phrase carries the workplace and location itself. The posting-age limit comes from
+      \`preferences.yaml\`.
     `,
     examples: [
+      ['A remote search', '$0 jobs search url --query "senior full stack engineer remote"'],
       [
-        'A remote-or-hybrid senior search, Easy Apply only',
-        '$0 jobs search url --keywords "senior frontend engineer" --level mid-senior --easy-apply',
+        'A hybrid search in one city',
+        '$0 jobs search url --query "senior software engineer hybrid Washington DC"',
       ],
     ],
   });
-  public easyApply = Option.Boolean('--easy-apply', false, {
-    description: 'Restrict the search to postings that take an Easy Apply application.',
-  });
-  public keywords = Option.String('--keywords', {
-    description: 'The search keywords.',
+  public query = Option.String('--query', {
+    description: 'The query phrase, including any workplace and location.',
     required: true,
     validator: zodValidator(z.string().trim().min(1)),
-  });
-  public levels = Option.Array('--level', {
-    description: `An experience level to restrict to; repeatable: ${LevelChoices}.`,
-    validator: zodValidator(z.array(z.enum(ExperienceLevels))),
-  });
-  public location = Option.String('--location', {
-    description: "The location to search within. Defaults to the LinkedIn profile's location.",
   });
 
   protected async run(): Promise<JsonResult> {
     const { preferences } = await resolveSessionContext();
     return {
       search: {
-        name: searchNameFor(this.keywords),
+        name: searchNameFor(this.query),
         origin: 'generated',
-        url: buildSearchUrl(
-          {
-            easyApplyOnly: this.easyApply,
-            experienceLevels: this.levels ?? [],
-            keywords: this.keywords,
-            location: this.location ?? null,
-          },
-          preferences.hard,
-        ),
+        url: buildSearchUrl(this.query, preferences.hard),
       },
       status: 'ok',
     };

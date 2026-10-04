@@ -98,6 +98,7 @@ export const PostingSchema = z
       })
       .strict()
       .nullable(),
+    applyUrl: z.string().url().nullable().default(null),
     applyVia: z.enum(ApplicationSystems),
     company: TextSchema,
     filterReason: TextSchema.nullable(),

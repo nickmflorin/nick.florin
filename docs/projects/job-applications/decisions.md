@@ -16,6 +16,62 @@ Format:
 
 ---
 
+## 2026-10-04 — Discovery adapted to LinkedIn's AI job search, from the first live session
+
+**Decision:** Four changes, each forced by what the first live session found:
+
+1. **Searches are query phrases.** LinkedIn's job search now reads the query as natural language and
+   discards most URL filters — workplace, experience level, location and sort order — while
+   substituting the profile's location and adding a salary filter from the profile's job
+   preferences. The workplace and location therefore go into the phrase
+   (`senior software engineer remote`, `senior software engineer hybrid Washington DC`), the URL
+   carries only the keywords and the posting age, and each run reads back the filters LinkedIn
+   applied.
+2. **The card pass works without job identifiers.** Search result cards expose no identifier until a
+   card is opened, so candidates at the `card` stage may have `id: null`: they are deduplicated by
+   fingerprint, rejections without an identifier are not recorded (they are rejected again from
+   their card at no cost), and only survivors are opened — one page view each — which yields the
+   identifier the `detail` stage requires.
+3. **Pages are read with read-only scripts.** `jobs page-script result-cards` and `job-detail` print
+   scripts the agent runs through `evaluate_script`: the first reads each card through its "Dismiss
+   {title} job" button, an accessible name rather than a class name, together with the applied
+   filters; the second reads the opened posting's text, its identifier, and its external apply link,
+   from which `applyVia` is classified deterministically
+   (`src/scripts/job-search/discovery/apply-systems.ts`). A results page costs about 2,500
+   characters rather than a 10,000–15,000-token snapshot.
+4. **An on-site label in an accepted hybrid city is settled from the description.** At the card
+   stage it is deferred rather than rejected; at the detail stage the agent uses the description's
+   arrangement where it contradicts the label.
+
+**Why:** The first session read a role labeled "On-site" whose description set two office days a
+week in Washington, DC; saw every URL filter but the posting age discarded; and found no job
+identifiers on search result cards.
+
+**Alternatives considered:** Keeping URL filters (most are ignored). Opening every card to get its
+identifier (spends the page budget on obvious mismatches). Full snapshots (several times the
+tokens). Trusting the workplace label (loses mislabeled hybrid roles).
+
+---
+
+## 2026-10-04 — LinkedIn is signed into with a password; attaching to a normal launch is deferred
+
+**Decision:** The dedicated profile is signed into LinkedIn with the account's email and password.
+The `job-search-browser` server keeps launching Chrome itself.
+
+**Why:** The server launches Chrome in test-automation mode ("Chrome is being controlled by
+automated test software"), in which Google refuses sign-in, so "Sign in with Google" fails. A
+password sign-in works in that mode. The cost is that the mode also sets `navigator.webdriver`,
+which LinkedIn can read on every page — accepted for now under the daily limits, the pacing and the
+single tab.
+
+**Alternatives considered:** Launching the dedicated profile as an ordinary Chrome window with a
+local debugging port and attaching to it with `--browserUrl` (Google sign-in works and the
+test-automation mode is gone; costs a launch command before each session; deferred to a future
+improvement). Neither removes LinkedIn's other means of detecting automation, nor changes that its
+terms prohibit it.
+
+---
+
 ## 2026-10-03 — Setup precedes live discovery; the agent reads pages for v1
 
 **Decision:** Stage 3 is split so that nothing touches LinkedIn before the preferences exist: 3a

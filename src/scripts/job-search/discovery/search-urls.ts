@@ -1,4 +1,4 @@
-import { LinkedInJobSearchUrl, type Preferences, type Workplace } from '../schemas';
+import { LinkedInJobSearchUrl, type Preferences } from '../schemas';
 
 const SecondsPerDay = 24 * 60 * 60;
 
@@ -8,91 +8,37 @@ const SecondsPerDay = 24 * 60 * 60;
 export const LinkedInRecommendationsUrl = 'https://www.linkedin.com/jobs/collections/recommended/';
 
 /**
- * The experience levels LinkedIn's job search filters by, in its own order.
- */
-export const ExperienceLevels = [
-  'internship',
-  'entry',
-  'associate',
-  'mid-senior',
-  'director',
-  'executive',
-] as const;
-
-export type ExperienceLevel = (typeof ExperienceLevels)[number];
-
-/**
- * The codes LinkedIn's job search uses for each experience level, in its `f_E` parameter.
- */
-const ExperienceLevelCodes = {
-  associate: '3',
-  director: '5',
-  entry: '2',
-  executive: '6',
-  internship: '1',
-  'mid-senior': '4',
-} as const satisfies Record<ExperienceLevel, string>;
-
-/**
- * The codes LinkedIn's job search uses for each workplace, in its `f_WT` parameter.
- */
-const WorkplaceCodes = {
-  hybrid: '3',
-  onsite: '1',
-  remote: '2',
-} as const satisfies Record<Workplace, string>;
-
-export interface SearchSpec {
-  readonly easyApplyOnly: boolean;
-  readonly experienceLevels: readonly ExperienceLevel[];
-  readonly keywords: string;
-  /**
-   * The location LinkedIn searches within, such as `United States`. LinkedIn falls back to the
-   * signed-in profile's location when it is omitted.
-   */
-  readonly location: null | string;
-}
-
-/**
- * Builds a LinkedIn job-search URL that applies, through LinkedIn's own filters, as many of the
- * hard filters as LinkedIn can apply itself: the accepted workplaces and the posting age. Results
- * are ordered newest first, so that a run reaches the postings it has not seen before the ones
- * earlier runs recorded.
+ * Builds a LinkedIn job-search URL for a query phrase.
  *
- * Filtering in the URL is what keeps a run's page views low: postings LinkedIn has already excluded
- * never cost a result-card read.
+ * LinkedIn's job search interprets the query as natural language and discards most URL filters —
+ * workplace, experience level, location and sort order among them — so the query phrase itself
+ * carries the workplace and location, as in `senior software engineer remote` or `senior software
+ * engineer hybrid Washington DC`. Only the posting age, which LinkedIn still honors, rides in the
+ * URL. Whatever LinkedIn does apply is read back from the results page on every run.
  *
- * @param {SearchSpec} spec The keywords, levels, location and Easy Apply restriction.
- * @param {Pick<Preferences['hard'], 'postedWithinDays' | 'workplace'>} hard
- *   The hard filters LinkedIn can apply.
+ * @param {string} query The query phrase, including any workplace and location.
+ * @param {Pick<Preferences['hard'], 'postedWithinDays'>} hard The posting-age limit.
  *
- * @returns {string} The URL of the search's results page, newest postings first.
+ * @returns {string} The URL of the search's results page.
  */
 export const buildSearchUrl = (
-  spec: SearchSpec,
-  hard: Pick<Preferences['hard'], 'postedWithinDays' | 'workplace'>,
+  query: string,
+  { postedWithinDays }: Pick<Preferences['hard'], 'postedWithinDays'>,
 ): string => {
   const url = new URL(LinkedInJobSearchUrl);
   url.search = new URLSearchParams([
-    ['keywords', spec.keywords.trim()],
-    ...(spec.location === null ? [] : [['location', spec.location]]),
-    ['f_WT', hard.workplace.map(workplace => WorkplaceCodes[workplace]).join(',')],
-    ['f_TPR', `r${hard.postedWithinDays * SecondsPerDay}`],
-    ...(spec.experienceLevels.length === 0
-      ? []
-      : [['f_E', spec.experienceLevels.map(level => ExperienceLevelCodes[level]).join(',')]]),
-    ...(spec.easyApplyOnly ? [['f_AL', 'true']] : []),
-    ['sortBy', 'DD'],
+    ['keywords', query.trim().replace(/\s+/gu, ' ')],
+    ['f_TPR', `r${postedWithinDays * SecondsPerDay}`],
   ]).toString();
   return url.toString();
 };
 
 /**
- * Derives a search's name from its keywords, in the hyphen-case form that `preferences.yaml`
+ * Derives a search's name from its query phrase, in the hyphen-case form that `preferences.yaml`
  * requires of search names.
  */
-export const searchNameFor = (keywords: string): string =>
-  keywords
+export const searchNameFor = (query: string): string =>
+  query
     .toLowerCase()
     .split(/[^a-z0-9]+/u)
     .filter(word => word !== '')

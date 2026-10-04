@@ -74,15 +74,35 @@ const filterTitle: HardFilter = ({ title }, { titles }) => {
     : `The title '${title}' matches none of the included titles.`;
 };
 
-const filterWorkplace: HardFilter = ({ location, workplace }, filters) => {
-  if (workplace === null) {
+const isAcceptedLocation = (location: string, filters: HardFilters): boolean =>
+  filters.locations.some(accepted => containsAllWords(location, accepted));
+
+/**
+ * Whether a result card's `onsite` label should be left for the full posting to settle: the role is
+ * in a city where hybrid work is accepted, and LinkedIn's workplace label is sometimes contradicted
+ * by the description — a role labeled on-site that describes two office days a week.
+ */
+const mayBeMislabeledHybrid = (
+  { location, workplace }: Candidate,
+  filters: HardFilters,
+  { stage }: HardFilterContext,
+): boolean =>
+  stage === 'card' &&
+  workplace === 'onsite' &&
+  filters.workplace.includes('hybrid') &&
+  location !== null &&
+  isAcceptedLocation(location, filters);
+
+const filterWorkplace: HardFilter = (candidate, filters, context) => {
+  const { location, workplace } = candidate;
+  if (workplace === null || mayBeMislabeledHybrid(candidate, filters, context)) {
     return null;
   } else if (!filters.workplace.includes(workplace)) {
     return `The workplace '${workplace}' is not one of those accepted.`;
   } else if (workplace === 'remote' || filters.locations.length === 0 || location === null) {
     return null;
   }
-  return filters.locations.some(accepted => containsAllWords(location, accepted))
+  return isAcceptedLocation(location, filters)
     ? null
     : `The ${workplace} location '${location}' is not one of those accepted.`;
 };

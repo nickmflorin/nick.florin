@@ -44,7 +44,9 @@ its own branch/PR.
 - [ ] **Confirm or override at the start of each run.** One-screen summary plus any queued
       learning-loop edits; run as saved, adjust for this run only (recorded on the run's ledger
       entry, never written to the file), or update the saved preferences. (v1)
-- [ ] **Read LinkedIn's recommendations** (`/jobs/collections/recommended`) in the browser. (v1)
+- [x] **Read LinkedIn's recommendations** (`/jobs/collections/recommended`) in the browser. (v1)
+      Landed 2026-10-04: read through the `result-cards` page script; the recommendations page still
+      links each card to its posting, so its cards carry identifiers.
 - [ ] **Generate and run searches.** Title × keyword combinations derived from the profile, carrying
       LinkedIn's own filters as query parameters, stored in `preferences.yaml`. (v1) The URL builder
       landed 2026-10-03 as `jobs search url` (`src/scripts/job-search/discovery/search-urls.ts`):
@@ -58,9 +60,12 @@ its own branch/PR.
       origin: generated # generated | manual
   ```
 
-- [ ] **Read in two passes.** Apply the hard filters to the data on the result cards first (title,
+- [x] **Read in two passes.** Apply the hard filters to the data on the result cards first (title,
       company, location, posting age, Easy Apply badge, compensation when shown), and open the full
-      description only for the postings that survive. (v1)
+      description only for the postings that survive. (v1) Landed 2026-10-04: the card pass dedupes
+      by fingerprint and needs no identifier; survivors are opened one page view each and read with
+      the `job-detail` script; an on-site label in an accepted hybrid city is deferred to the
+      description.
 - [ ] **Track search yield** in the ledger — postings found, and how many scored into the queue —
       and retire searches that stay barren. (v1)
 - [ ] **Learn from review.** Record an optional short reason with each approve or skip, and
@@ -119,9 +124,11 @@ its own branch/PR.
 - [ ] **Detect a logged-out session** and stop the run with a request to log in manually in the
       job-search window.
 - [ ] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1)
-- [ ] **Classify external postings by applicant tracking system.** Resolve the Apply button's
+- [x] **Classify external postings by applicant tracking system.** Resolve the Apply button's
       redirect target and map its host to a system (`boards.greenhouse.io`, `jobs.lever.co`,
-      `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1)
+      `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1) Landed 2026-10-04 in
+      `src/scripts/job-search/discovery/apply-systems.ts`, unwrapping LinkedIn's `safety/go`
+      interstitial; triage resolves `unresolved` from the posting's `applyUrl`.
 - [ ] **Prepare an answer packet for external postings** — drafted answers, the resume path, derived
       experience figures and the link — so a manual application takes minutes. (v1)
 
@@ -182,3 +189,7 @@ Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./d
       faster, and free per page. Deferred until real sessions show which fields LinkedIn's
       obfuscated markup keeps stable; the agent-read snapshot stays as the fallback when the
       extractor's output fails the candidate schema.
+- [ ] **Attach to a normally launched job-search Chrome.** A `pnpm jobs:browser` command that opens
+      the dedicated profile as an ordinary Chrome window with a local debugging port, and a
+      `--browserUrl` server entry that attaches to it — so the window is not in test-automation
+      mode, which sets `navigator.webdriver` for every site and blocks Google sign-in.
