@@ -68,7 +68,7 @@ const subjectOf = (candidate: Candidate): TriageSubject =>
 
 const toPosting = (
   candidate: { readonly id: string } & Candidate,
-  { now, runId }: Pick<TriageInput, 'now' | 'runId'>,
+  { now, recorded, runId }: Pick<TriageInput, 'now' | 'recorded' | 'runId'>,
   {
     filterReason,
     status,
@@ -80,9 +80,11 @@ const toPosting = (
     candidate.applyVia === 'unresolved' && candidate.applyUrl !== null
       ? classifyApplyUrl(candidate.applyUrl)
       : candidate.applyVia,
+  description: null,
   filterReason,
   fingerprint: postingFingerprint(candidate),
-  firstSeenAt: now.toISOString(),
+  firstSeenAt:
+    recorded.find(posting => posting.id === candidate.id)?.firstSeenAt ?? now.toISOString(),
   review: { decision: null, reason: null, reviewedAt: null },
   score: null,
   source: { ...candidate.source, run: runId },
@@ -90,13 +92,21 @@ const toPosting = (
   url: `${LinkedInJobViewUrl}${candidate.id}/`,
 });
 
+/**
+ * Whether a recorded posting is settled, so that seeing it again skips it. A posting rejected by a
+ * hard filter is not: the filters cost nothing to apply and the preferences behind them change, so
+ * it is filtered again on every sighting, and recorded again — keeping when it was first seen — if
+ * it is rejected again. A posting that has been scored or reviewed is settled.
+ */
+const isSettled = (posting: Posting): boolean => posting.status !== 'filtered';
+
 const hasId = (candidate: Candidate): candidate is { readonly id: string } & Candidate =>
   candidate.id !== null;
 
 /**
- * Finds what a candidate duplicates: a posting already in the ledger or, failing that, a candidate
- * earlier in the same batch, matched by job identifier where both have one and otherwise by
- * fingerprint.
+ * Finds what a candidate duplicates: a settled posting already in the ledger or, failing that, a
+ * candidate earlier in the same batch, matched by job identifier where both have one and otherwise
+ * by fingerprint.
  */
 const duplicateOf = (
   candidate: Candidate,
@@ -112,7 +122,7 @@ const duplicateOf = (
         postingFingerprint(other) === fingerprint,
     );
   return (
-    findDuplicate(recorded, { fingerprint, id: candidate.id })?.id ??
+    findDuplicate(recorded.filter(isSettled), { fingerprint, id: candidate.id })?.id ??
     (earlier === undefined ? null : (earlier.id ?? postingFingerprint(earlier)))
   );
 };

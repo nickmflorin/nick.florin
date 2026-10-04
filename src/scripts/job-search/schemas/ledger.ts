@@ -57,7 +57,7 @@ export const RunEndings = ['aborted', 'budget', 'challenge', 'completed', 'logge
 
 export type RunEnding = (typeof RunEndings)[number];
 
-const PostingScoreSchema = z
+export const PostingScoreSchema = z
   .object({
     dealbreakers: z.array(TextSchema),
     dimensions: z
@@ -101,6 +101,7 @@ export const PostingSchema = z
     applyUrl: z.string().url().nullable().default(null),
     applyVia: z.enum(ApplicationSystems),
     company: TextSchema,
+    description: z.string().nullable().default(null),
     filterReason: TextSchema.nullable(),
     fingerprint: TextSchema,
     firstSeenAt: TimestampSchema,

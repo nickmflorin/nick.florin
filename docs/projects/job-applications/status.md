@@ -54,9 +54,10 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      all six searches, pooled 72 unique card survivors, opened the 19 most promising, and recorded
      16 postings as pending their score (8 Easy Apply, 3 Ashby, 2 Greenhouse, 1 Workday, 2 other)
      and 11 rejections; the day used 35 of 120 page views.
-4. **Judgment and orchestration** — the `job-screener` agent, the rest of the orchestrating skill
-   (per-run confirmation, review queue) and the guardrail rules. End to end through the review
-   queue, before anything touches a form.
+4. **Judgment and orchestration** — built 2026-10-04: descriptions saved to the ledger, the
+   `job-screener` agent, `jobs score record`, `jobs queue show`, `jobs review`, the skill's scoring
+   and review sections, and the guardrail rule. Next: describe and score the 16 pending postings,
+   then review the queue with Nick.
 5. **Applying** — Easy Apply filling, external-posting classification and answer packets, cover
    letters.
 6. **Learning** — search yield tracking, review reasons and proposed preference edits.

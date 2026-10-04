@@ -104,6 +104,33 @@ describe('triageCandidates()', () => {
     expect(result.records).toStrictEqual([]);
   });
 
+  it('filters a posting rejected earlier again, keeping when it was first seen', () => {
+    const result = triageCandidates({
+      ...Input,
+      candidates: [Rejected],
+      recorded: [
+        posting({
+          firstSeenAt: '2026-10-01T09:00:00.000Z',
+          id: '4000000002',
+          status: 'filtered',
+        }),
+      ],
+    });
+    expect(result.duplicates).toStrictEqual([]);
+    expect(result.records.map(({ firstSeenAt, id }) => ({ firstSeenAt, id }))).toStrictEqual([
+      { firstSeenAt: '2026-10-01T09:00:00.000Z', id: '4000000002' },
+    ]);
+  });
+
+  it('lets a posting rejected earlier through once the preferences admit it', () => {
+    const result = triageCandidates({
+      ...Input,
+      candidates: [Survivor],
+      recorded: [posting({ id: '4000000001', status: 'filtered' })],
+    });
+    expect(result.survivors).toStrictEqual([Survivor]);
+  });
+
   it('skips a result card matching a recorded posting by fingerprint alone', () => {
     const result = triageCandidates({
       ...Input,

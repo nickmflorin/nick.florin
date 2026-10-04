@@ -68,16 +68,20 @@ its own branch/PR.
       description.
 - [ ] **Track search yield** in the ledger — postings found, and how many scored into the queue —
       and retire searches that stay barren. (v1)
-- [ ] **Learn from review.** Record an optional short reason with each approve or skip, and
+- [x] **Learn from review.** Record an optional short reason with each approve or skip, and
       periodically propose individual `preferences.yaml` edits from the reasons and yields. (v1)
-
-- [ ] **Settle the DC-area hybrid locations.** The hybrid search's rejections were mostly roles in
+      Partly landed 2026-10-04: `jobs review` records a reason with each decision; proposing
+      preference edits from them is stage 6.
+- [x] **Settle the DC-area hybrid locations.** The hybrid search's rejections were mostly roles in
       Arlington, McLean, Bethesda, Tysons, Reston and other suburbs, which `Washington DC` does not
-      match. Nick to decide which belong in `hard.locations`.
-- [ ] **Settle the level-numbered and staff-style titles.** "Software Engineer III" and "Software
+      match. Nick to decide which belong in `hard.locations`. Settled 2026-10-04: hybrid anywhere
+      within about an hour of DC; 38 city-and-state locations added.
+- [x] **Settle the level-numbered and staff-style titles.** "Software Engineer III" and "Software
       Engineer 3" (often senior), and "Member of Technical Staff" (senior at many AI companies) are
       rejected by the title filter, while the include term `staff engineer` admits "Staff Backend
-      Engineer" and "Member of Technical Staff, Forward Deployed Engineer". Nick to decide.
+      Engineer" and "Member of Technical Staff, Forward Deployed Engineer". Nick to decide. Settled
+      2026-10-04: Software Engineer III/3/IV/4, Software Development Engineer III, Member of
+      Technical Staff, Tech Lead, Technical Lead and Lead Engineer added; `staff engineer` kept.
 - [ ] **Rank the openings deterministically.** The pooling, deduplication and ranking of card
       survivors were done by the agent in a scratch file; a `jobs triage` mode that pools a run's
       card survivors and returns them ranked would make the cap and the order reproducible.
@@ -110,17 +114,18 @@ its own branch/PR.
 
 ## Agent, Skill and Rules
 
-- [ ] **Store the posting text for scoring.** Discovery reads only the facts the detail stage needs;
+- [x] **Store the posting text for scoring.** Discovery reads only the facts the detail stage needs;
       the scoring agent needs the description. Either record the description when a posting is
       opened (`job-detail` returns it, at about four times the text) or re-open pending postings at
-      scoring time (a page view each).
-
+      scoring time (a page view each). Landed 2026-10-04: saved through the browser server to
+      `build/job-search/` and moved into the ledger by `jobs posting describe`.
 - [x] **Derive the profile digest.** A cli command that condenses `src/documents/resume/fixtures/`
       into the compact summary the scoring agent reads (roles, competencies with years and
       proficiency). Landed 2026-10-03 as `jobs profile digest`.
-- [ ] **Add the `job-screener` agent** under a new `.claude/agents/` directory: Sonnet, structured
+- [x] **Add the `job-screener` agent** under a new `.claude/agents/` directory: Sonnet, structured
       output (score, dimensions, dealbreakers, gaps, flags, rationale), instructed to flag
-      label-versus-text contradictions. Thresholds read from `preferences.yaml`.
+      label-versus-text contradictions. Thresholds read from `preferences.yaml`. Landed 2026-10-04
+      in `.claude/agents/job-screener.md`, recording through `jobs score record`.
 - [ ] **Derive title variants in setup.** Title matching is word-based, so `frontend` does not match
       `Front-End` and `senior` does not match `Sr.`; since the include list is a hard filter, setup
       should write the spellings and abbreviations of each title it derives.
@@ -128,8 +133,9 @@ its own branch/PR.
       → review → apply. Treat any non-JSON output, or an exit code other than 0 or 2, from a
       `pnpm --silent jobs …` call as an error: argument errors are printed by the CLI framework
       before a command runs.
-- [ ] **Add the guardrail rules** — human submit, no invented answers, stop on a challenge, human
-      pace — under `.claude/rules/`, with their Copilot mirrors per the parity convention.
+- [x] **Add the guardrail rules** — human submit, no invented answers, stop on a challenge, human
+      pace — under `.claude/rules/`, with their Copilot mirrors per the parity convention. Landed
+      2026-10-04 in `.claude/rules/workflow/job-search.md` and its Copilot mirror.
 
 ## Browser
 

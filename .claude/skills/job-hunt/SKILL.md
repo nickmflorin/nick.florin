@@ -17,9 +17,8 @@ other than `0` or `2`, as an error: argument errors are printed by the CLI frame
 command runs. Exit code `2` with `"status": "refused"` is a correct, negative outcome — stop and
 report its `reason`, never retry around it.
 
-This skill performs **setup** and **discovery**. Scoring and applying land in later stages of the
-project; discovery ends with the surviving postings recorded as `pending`, and if asked to score or
-apply, say so rather than improvising it.
+This skill performs **setup**, **discovery**, **scoring** and **review**. Applying lands in a later
+stage of the project; once Nick has approved postings, say so rather than improvising it.
 
 ## Ground Rules
 
@@ -194,6 +193,17 @@ description contradicts LinkedIn's workplace label (an "On-site" role describing
 week), use the description's arrangement. Triage each source's opened postings at the detail stage;
 survivors are recorded as `pending`.
 
+Before leaving each opened posting, save its full text for scoring — the pane is already loaded, so
+this costs no page view — by running the `job-detail` script through `evaluate_script` with
+`filePath` set to `build/job-search/<id>.json`. After the source's detail-stage triage, move each
+saved text into its posting, which deletes the file:
+
+```bash
+pnpm --silent jobs posting describe --from build/job-search/<id>.json
+```
+
+The description reaches the scorer through the ledger, never through this conversation.
+
 **Take every page view as its own command.** Never chain `jobs budget take` after another command
 that can fail, or a page can load without having been budgeted; if one ever does, take the missing
 unit at once.
@@ -206,3 +216,44 @@ pnpm --silent jobs run finish <run-id> --ended-by completed
 
 Report the sources read, the page views used, what was rejected and why (grouped by reason), and the
 postings now pending their score.
+
+## Scoring
+
+Score every posting pending its score.
+
+1. **List them,** and describe any that lack their text:
+
+   ```bash
+   pnpm --silent jobs posting list --status pending
+   ```
+
+   For each with `described: false`: take a page view, navigate to
+   `https://www.linkedin.com/jobs/view/<id>/`, run the `job-detail` script with `filePath` set to
+   `build/job-search/<id>.json`, and run `jobs posting describe` on the file.
+
+2. **Launch `job-screener` agents in parallel,** about four posting ids each. They read the
+   postings, the preferences and the profile digest through the CLI, record each score with
+   `jobs score record`, and reply with one line per posting. Never score a posting yourself, and
+   never pass a description into an agent's prompt — it reads the description from the ledger.
+
+3. **Read the queue:**
+
+   ```bash
+   pnpm --silent jobs queue show
+   ```
+
+## Review
+
+Put the queue in front of Nick. The queue usually holds more than a handful of postings, so ask
+first whether he wants them all at once or one at a time. For each posting give the company, title,
+total, how it applies (Easy Apply or the applicant tracking system), the posting URL, and the flags
+and gaps that matter — never the rationale wholesale. Record each decision, with the reason he gave
+in a few words:
+
+```bash
+pnpm --silent jobs review <id> --decision approved
+pnpm --silent jobs review <id> --decision skipped --reason "too backend"
+```
+
+Approved postings wait for the applying stage. Report the decisions at the end: approved, skipped
+with their reasons, and what is left on the maybe list.

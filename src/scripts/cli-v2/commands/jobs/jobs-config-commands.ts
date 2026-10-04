@@ -9,6 +9,7 @@ import {
   writeConfigFile,
 } from '~/scripts/job-search/config-files';
 import { resolveConfiguredDataDirectory } from '~/scripts/job-search/configured-data-directory';
+import { resolveSessionContext } from '~/scripts/job-search/context';
 import { DataDirectoryMissingError } from '~/scripts/job-search/data-directory';
 
 import { zodValidator } from '../../args/zod-validator';
@@ -81,5 +82,22 @@ export class JobsConfigWriteCommand extends JsonCommand {
     const input = await text(this.context.stdin);
     const dataDirectory = await resolveConfiguredDataDirectory({ create: true });
     return { path: await writeConfigFile(dataDirectory, this.kind, input), status: 'written' };
+  }
+}
+
+/**
+ * Prints the saved preferences with every default applied, for the scoring agent to weigh postings
+ * against. The output is personal and is read by the agent, never written to the repository.
+ */
+export class JobsConfigShowCommand extends JsonCommand {
+  public static override paths = [['jobs', 'config', 'show']];
+  public static usage = Command.Usage({
+    category: 'Jobs',
+    description: 'Print the saved preferences, with every default applied.',
+    examples: [['Show the preferences', '$0 jobs config show']],
+  });
+
+  protected async run(): Promise<JsonResult> {
+    return { preferences: (await resolveSessionContext()).preferences, status: 'ok' };
   }
 }

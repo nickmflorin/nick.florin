@@ -16,6 +16,36 @@ Format:
 
 ---
 
+## 2026-10-04 — Scoring reads descriptions from the ledger; filtered postings are re-checked
+
+**Decision:**
+
+- **Descriptions bypass the conversation.** When a posting is opened, the `job-detail` script saves
+  its text through the browser server's `filePath` to `build/job-search/<id>.json` (gitignored, the
+  only place the server may write), and `jobs posting describe` moves it into the posting's ledger
+  record and deletes the file. Pending postings without text are re-opened by identifier, one page
+  view each. The `job-screener` agents read the text with `jobs posting show`.
+- **Scoring and review are CLI operations.** `jobs score record` validates the agent's structured
+  score and moves the posting to `queued`, `maybe` or `dropped` by the thresholds; `jobs queue show`
+  lists what awaits review, highest score first; `jobs review --decision approved|skipped --reason`
+  records Nick's decision, an approval keeping the posting queued for applying.
+- **A filtered posting is not settled.** A posting rejected by a hard filter is filtered again on
+  every sighting — the filters cost nothing and the preferences change — keeping when it was first
+  seen; only scored or reviewed postings are skipped as duplicates.
+- **Guardrails are a rule.** `.claude/rules/workflow/job-search.md` (with its Copilot mirror) holds
+  the private-data, pacing and Nick-only guardrails in every session.
+
+**Why:** A description is several thousand characters; relaying it through the orchestrating agent
+into the CLI and back out to a scorer would cost it twice. Re-checking filtered postings made the
+2026-10-04 preference changes — the DC-area hybrid locations and the level-numbered, staff-style and
+lead titles — take effect on postings already rejected under the old ones.
+
+**Alternatives considered:** Passing the description through the conversation (twice the tokens).
+Re-opening every posting at scoring time (a page view each, on every scoring). Treating filtered
+postings as settled (preference changes would never reach them).
+
+---
+
 ## 2026-10-04 — Openings are pooled, capped and ranked; `open-card` is a page script
 
 **Decision:** Card-stage survivors are pooled across a run's sources, deduplicated by company and

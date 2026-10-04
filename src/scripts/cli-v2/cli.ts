@@ -3,10 +3,19 @@ import { Builtins, Cli, type CommandClass } from 'clipanion';
 import { ContentSyncCommand } from './commands/content-sync-command';
 import { JobsBudgetTakeCommand } from './commands/jobs/jobs-budget-take-command';
 import {
+  JobsConfigShowCommand,
   JobsConfigStatusCommand,
   JobsConfigWriteCommand,
 } from './commands/jobs/jobs-config-commands';
 import { JobsPageScriptCommand } from './commands/jobs/jobs-page-script-command';
+import {
+  JobsPostingDescribeCommand,
+  JobsPostingListCommand,
+  JobsPostingShowCommand,
+  JobsQueueShowCommand,
+  JobsReviewCommand,
+  JobsScoreRecordCommand,
+} from './commands/jobs/jobs-posting-commands';
 import { JobsProfileDigestCommand } from './commands/jobs/jobs-profile-digest-command';
 import { JobsResumeApproveCommand } from './commands/jobs/jobs-resume-approve-command';
 import { JobsRunFinishCommand, JobsRunStartCommand } from './commands/jobs/jobs-run-commands';
@@ -23,13 +32,20 @@ import { JobsTriageCommand } from './commands/jobs/jobs-triage-command';
 const Commands: readonly CommandClass[] = [
   ContentSyncCommand,
   JobsBudgetTakeCommand,
+  JobsConfigShowCommand,
   JobsConfigStatusCommand,
   JobsConfigWriteCommand,
   JobsPageScriptCommand,
+  JobsPostingDescribeCommand,
+  JobsPostingListCommand,
+  JobsPostingShowCommand,
   JobsProfileDigestCommand,
+  JobsQueueShowCommand,
   JobsResumeApproveCommand,
+  JobsReviewCommand,
   JobsRunFinishCommand,
   JobsRunStartCommand,
+  JobsScoreRecordCommand,
   JobsSearchUrlCommand,
   JobsTriageCommand,
 ];

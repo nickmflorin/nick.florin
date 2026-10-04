@@ -13,6 +13,7 @@ export const posting = (overrides: Partial<Posting> = {}): Posting => ({
   applyUrl: null,
   applyVia: 'easy-apply',
   company: 'Acme',
+  description: null,
   filterReason: null,
   fingerprint: 'acme|senior-frontend-engineer',
   firstSeenAt: '2026-10-03T14:00:00.000Z',

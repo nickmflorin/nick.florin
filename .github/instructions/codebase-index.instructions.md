@@ -216,9 +216,12 @@ that would be too expensive to keep in context permanently.
 
 | Skill                         | Contents                                                                      |
 | ----------------------------- | ----------------------------------------------------------------------------- |
+| `job-hunt`                    | LinkedIn job search: setup, discovery, scoring (`job-screener` agent), review |
 | `sync-ai-config`              | Audits or reconciles the `.claude/rules/` ↔ `.github/instructions/` parity    |
 | `vercel-react-best-practices` | 72 React/Next performance rules from Vercel Engineering (vendored, MIT)       |
 | `vercel-composition-patterns` | 8 component-composition and React 19 rules from Vercel Engineering (vendored) |
+
+Agents live in `.claude/agents/`: `job-screener` scores job postings for the `job-hunt` skill.
 
 The repo-local subsets of the two Vercel skills — only the rules that bite in this codebase — live
 in `.claude/rules/code-quality/react/` and load automatically.
