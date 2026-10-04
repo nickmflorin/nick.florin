@@ -41,17 +41,20 @@ its own branch/PR.
       back. (v1) Landed 2026-10-03: `jobs config status` reports `incomplete` with the paths of
       exactly the missing fields, and `invalid` separately, which the skill reports rather than
       overwrites.
-- [ ] **Confirm or override at the start of each run.** One-screen summary plus any queued
+- [x] **Confirm or override at the start of each run.** One-screen summary plus any queued
       learning-loop edits; run as saved, adjust for this run only (recorded on the run's ledger
-      entry, never written to the file), or update the saved preferences. (v1)
+      entry, never written to the file), or update the saved preferences. (v1) Landed with the run
+      commands: `jobs run start --override` records run-only adjustments, and the skill confirms the
+      preferences and the approved resume in one summary before each run.
 - [x] **Read LinkedIn's recommendations** (`/jobs/collections/recommended`) in the browser. (v1)
       Landed 2026-10-04: read through the `result-cards` page script; the recommendations page still
       links each card to its posting, so its cards carry identifiers.
-- [ ] **Generate and run searches.** Title × keyword combinations derived from the profile, carrying
+- [x] **Generate and run searches.** Title × keyword combinations derived from the profile, carrying
       LinkedIn's own filters as query parameters, stored in `preferences.yaml`. (v1) The URL builder
       landed 2026-10-03 as `jobs search url` (`src/scripts/job-search/discovery/search-urls.ts`):
       workplaces, posting age, experience levels and Easy Apply applied through LinkedIn's own
-      filters, newest first.
+      filters, newest first. Landed 2026-10-04: setup generated the searches, rewritten as query
+      phrases once LinkedIn's AI search proved to ignore URL filters.
 
   ```yaml
   searches:
@@ -66,8 +69,9 @@ its own branch/PR.
       by fingerprint and needs no identifier; survivors are opened one page view each and read with
       the `job-detail` script; an on-site label in an accepted hybrid city is deferred to the
       description.
-- [ ] **Track search yield** in the ledger — postings found, and how many scored into the queue —
-      and retire searches that stay barren. (v1)
+- [x] **Track search yield** in the ledger — postings found, and how many scored into the queue —
+      and retire searches that stay barren. (v1) Landed 2026-10-04 as `jobs learning report`,
+      computed from the ledger; barren searches are proposed for retirement, never retired unasked.
 - [x] **Learn from review.** Record an optional short reason with each approve or skip, and
       periodically propose individual `preferences.yaml` edits from the reasons and yields. (v1)
       Partly landed 2026-10-04: `jobs review` records a reason with each decision; proposing
@@ -82,9 +86,10 @@ its own branch/PR.
       Engineer" and "Member of Technical Staff, Forward Deployed Engineer". Nick to decide. Settled
       2026-10-04: Software Engineer III/3/IV/4, Software Development Engineer III, Member of
       Technical Staff, Tech Lead, Technical Lead and Lead Engineer added; `staff engineer` kept.
-- [ ] **Rank the openings deterministically.** The pooling, deduplication and ranking of card
+- [x] **Rank the openings deterministically.** The pooling, deduplication and ranking of card
       survivors were done by the agent in a scratch file; a `jobs triage` mode that pools a run's
-      card survivors and returns them ranked would make the cap and the order reproducible.
+      card survivors and returns them ranked would make the cap and the order reproducible. Landed
+      2026-10-04: `jobs triage --stage card` pools survivors and `jobs pool next` ranks them.
 
 ## Deterministic Commands
 
@@ -126,13 +131,16 @@ its own branch/PR.
       output (score, dimensions, dealbreakers, gaps, flags, rationale), instructed to flag
       label-versus-text contradictions. Thresholds read from `preferences.yaml`. Landed 2026-10-04
       in `.claude/agents/job-screener.md`, recording through `jobs score record`.
-- [ ] **Derive title variants in setup.** Title matching is word-based, so `frontend` does not match
+- [x] **Derive title variants in setup.** Title matching is word-based, so `frontend` does not match
       `Front-End` and `senior` does not match `Sr.`; since the include list is a hard filter, setup
-      should write the spellings and abbreviations of each title it derives.
-- [ ] **Add the orchestrating skill** under `.claude/skills/`, sequencing discover → filter → score
+      should write the spellings and abbreviations of each title it derives. Landed 2026-10-04 the
+      other way round: title matching normalizes spellings on both sides, so setup need not write
+      each variant.
+- [x] **Add the orchestrating skill** under `.claude/skills/`, sequencing discover → filter → score
       → review → apply. Treat any non-JSON output, or an exit code other than 0 or 2, from a
       `pnpm --silent jobs …` call as an error: argument errors are printed by the CLI framework
-      before a command runs.
+      before a command runs. Landed as `.claude/skills/job-hunt/`, now through applying, with an
+      Unattended Run section.
 - [x] **Add the guardrail rules** — human submit, no invented answers, stop on a challenge, human
       pace — under `.claude/rules/`, with their Copilot mirrors per the parity convention. Landed
       2026-10-04 in `.claude/rules/workflow/job-search.md` and its Copilot mirror.
@@ -143,8 +151,9 @@ its own branch/PR.
       `${HOME}/job-search/profiles/chrome`, and a README in `~/job-search/` explaining it. Landed
       2026-10-03, with usage statistics and CrUX lookups turned off; `~/job-search/README.md`
       created.
-- [ ] **Detect a logged-out session** and stop the run with a request to log in manually in the
-      job-search window.
+- [x] **Detect a logged-out session** and stop the run with a request to log in manually in the
+      job-search window. Landed: discovery checks each page's address, and the form reader reports
+      `signIn`, which the plan refuses.
 - [x] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1) Landed 2026-10-04 (stage 5b)
       as one generic form reader, planner and filler (`src/scripts/job-search/applying/`), driven
       step by step through `jobs apply start|plan|check|pause|discard`. Not yet run end to end.
@@ -154,11 +163,12 @@ its own branch/PR.
       location typeahead filled live.
 - [ ] **Fill the first approved applications end to end:** one Easy Apply, one Ashby and one
       Greenhouse posting, each left on its final step for him to submit, to confirm the resume
-      upload and the review-step check against live forms. (v1) Easy Apply done 2026-10-04; Ashby
-      and Greenhouse remain.
+      upload and the review-step check against live forms. (v1) Easy Apply done 2026-10-04. The
+      first Ashby submission was rejected as spam from the automation-mode browser, which led to
+      attaching to a normally launched one; Ashby and Greenhouse remain to be run through it.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
-      then a form with one is stopped and reported.
+      then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04.
 - [x] **Classify external postings by applicant tracking system.** Resolve the Apply button's
       redirect target and map its host to a system (`boards.greenhouse.io`, `jobs.lever.co`,
       `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1) Landed 2026-10-04 in
@@ -195,8 +205,9 @@ its own branch/PR.
       marked filled only once the form shows the approved resume attached. It is uploaded to every
       application rather than only when it differs from the last one sent, because Easy Apply
       preselects Nick's newest upload, whose content cannot be checked.
-- [ ] **Show the approved resume in the start-of-run summary**, noting, as information only, when
-      resume content has changed since approval.
+- [x] **Show the approved resume in the start-of-run summary**, noting, as information only, when
+      resume content has changed since approval. Landed 2026-10-04: `jobs run start` reports it,
+      with the resume sources changed since it was generated.
 - [x] **Enforce the new-account policy when applying.** Before filling a form on a path whose
       `AccountRequirements` entry is `yes` or `unknown`, stop under `ask` and wait for Nick; under
       `never`, leave the application as a packet for him. (v1) Landed 2026-10-04 in
@@ -213,6 +224,11 @@ its own branch/PR.
 - [x] **Render cover letters to PDF** for upload fields, reusing the headless-Chrome approach of
       `pnpm resume:generate`. (v1) Landed 2026-10-04: `jobs apply start` renders an approved letter
       beside the staged resume.
+- [ ] **Run the job hunt on a schedule.** A macOS LaunchAgent that launches the job-search browser
+      and runs the skill's Unattended Run headlessly (`claude -p`) on a cadence, with the tools it
+      needs allowed and nothing else. Waits on Nick's decision, since it runs an agent unattended on
+      his machine; until then, a run is started by asking for one, or with `CronCreate` inside an
+      open session.
 - [ ] **Add `voice.md`**, samples of Nick's own writing, to the data directory, so that drafts sound
       like him rather than like a plain default.
 

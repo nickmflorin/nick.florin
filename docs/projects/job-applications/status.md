@@ -74,6 +74,15 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      the agent submits fully verified applications under `applying.submit: verified`, defers the
      rest to one held list (`jobs apply defer|held`), and postings scored into the queue are
      approved automatically. Yes-or-no answers no longer answer inverted questions.
-   - Next: Nick's go-ahead to run `tsc` and Jest once, then the settings are switched on and the
-     remaining approved postings are applied to in an unattended run; then 5c, cover letters.
-6. **Learning** — search yield tracking, review reasons and proposed preference edits.
+   - Later the same day, in one pass: the jobs commands named by noun with an index barrel, and the
+     first `tsc`, Jest, ESLint and cspell runs (clean, 412 tests); account-system postings handed to
+     Nick with an answer packet and `submitted --by-hand`; sign-in detection; Ashby's yes-or-no
+     buttons and embedded boards; the browser server attached to a normally launched Chrome after
+     Ashby rejected the first agent submission (Valon, deferred) as spam from the automation-mode
+     window; title spellings normalized; the approved resume reported at run start; cover letters
+     drafted unattended and attached once Nick approves them; and the run pool ranked
+     deterministically.
+   - Next: Nick reloads VS Code so the browser server attaches; then the Ashby and Greenhouse
+     applications are run end to end; then the scheduling decision.
+6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
+   skip reasons), with proposals put to Nick at the end of each unattended run.
