@@ -30,13 +30,14 @@ export type ApplicationSystem = (typeof ApplicationSystems)[number];
 /**
  * Where a posting stands. `filtered` failed a hard filter and `dropped` scored below the maybe
  * threshold or hit a dealbreaker; both are kept so that the filters and thresholds can be tuned
- * against what they rejected.
+ * against what they rejected. `pending` passed every hard filter and awaits its score.
  */
 export const PostingStatuses = [
   'dropped',
   'filled',
   'filtered',
   'maybe',
+  'pending',
   'queued',
   'skipped',
   'submitted',
@@ -154,6 +155,7 @@ export const BudgetSchema = z
   .object({
     date: LocalDateSchema,
     easyApplyFills: CountSchema,
+    lastPageViewAt: TimestampSchema.nullable(),
     pageViews: CountSchema,
     runs: CountSchema,
   })

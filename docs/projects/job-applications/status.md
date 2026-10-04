@@ -21,6 +21,12 @@ Nothing has been built yet. Phase 1 is the v1 build.
   for each under `src/__tests__/unit/scripts/job-search/`. Verified the same day: `tsc`, ESLint and
   cspell clean, all unit suites passing, and the configured `JOBS_DATA_DIR` resolved end to end
   against the real environment. The `answers.yaml` shape was approved.
+- 2026-10-03: Stage 1 opened as draft PR #5. Stage 2 (deterministic commands) written on the same
+  branch: hard filters and triage, the daily budget with pacing and cooldowns, run start and finish,
+  the profile digest with derived years of experience, resume provenance captured at HTML emission
+  and carried into each PDF, `jobs resume approve`, and deny rules keeping approval from agents.
+  `tsc`, ESLint and cspell clean; all 23 unit suites (272 tests) pass; `jobs profile digest`, the
+  JSON error path and a full `resume:generate` run verified against the real environment.
 - 2026-10-03: Decided: the data folder moves to `job-search/ai/`; setup fills only missing fields
   and each run confirms or overrides; fit scoring by a Sonnet agent with tunable thresholds; daily
   limits and pacing enforced by the cli; the ledger is YAML files behind a storage port; a dedicated
@@ -36,9 +42,7 @@ Nothing has been built yet. Phase 1 is the v1 build.
 The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
 
 1. **Foundations** — done 2026-10-03.
-2. **Deterministic commands** — the `jobs` command group: hard filters, dedupe, the daily budget and
-   cooldown, the profile digest, `jobs resume approve` (with the provenance sidecar in
-   `resume:generate`).
+2. **Deterministic commands** — done 2026-10-03.
 3. **Browser and discovery** — the `job-search-browser` server; LinkedIn recommendations and
    generated searches, read in two passes; logged-out detection.
 4. **Judgment and orchestration** — the `job-screener` agent, the orchestrating skill (setup,

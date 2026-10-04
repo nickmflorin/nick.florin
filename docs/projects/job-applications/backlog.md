@@ -21,9 +21,12 @@ its own branch/PR.
       2026-10-03 in `src/scripts/job-search/schemas/answers.ts`: contact, links, work authorization,
       availability, compensation target, self-identification (declined by default), and a `custom`
       list grown from halted questions. Shape approved 2026-10-03.
-- [ ] **Implement the hard filters.** Title include/exclude, workplace and locations, compensation
+- [x] **Implement the hard filters.** Title include/exclude, workplace and locations, compensation
       floor with the unlisted policy, sponsorship, posting age, employee-count band with the unknown
-      policy, and the fuzzy-matched company block list.
+      policy, and the fuzzy-matched company block list. Landed 2026-10-03 in
+      `src/scripts/job-search/triage/hard-filters.ts`, staged: a fact a result card does not publish
+      is deferred at `card` and decided by its policy at `detail`. A range in a currency other than
+      the floor's is treated as unlisted.
 
 ## Discovery
 
@@ -56,33 +59,45 @@ its own branch/PR.
 
 ## Deterministic Commands
 
-- [ ] **Add a `jobs` command group to cli-v2.** Commands under `src/scripts/cli-v2/commands/`,
+- [x] **Add a `jobs` command group to cli-v2.** Commands under `src/scripts/cli-v2/commands/`,
       registered in `src/scripts/cli-v2/cli.ts`, following `ContentSyncCommand`: hard filters,
-      dedupe against the ledger, the daily budget and cooldown checks, and ledger reporting.
+      dedupe against the ledger, the daily budget and cooldown checks, and ledger reporting. Landed
+      2026-10-03: `jobs run start|finish`, `jobs budget take`, `jobs triage`, `jobs profile digest`
+      and `jobs resume approve`. Agent-facing commands extend `JsonCommand` and are called as
+      `pnpm --silent jobs …`.
 - [x] **Define the ledger schemas and store.** Zod schemas for posting, run and budget records, a
       storage port modeled on `ContentStore` in `src/database/content/`, and a YAML adapter over
       `JOBS_DATA_DIR/ledger/`, with deduplication on the LinkedIn job ID and the company-and-title
       fingerprint. Landed 2026-10-03 in `src/scripts/job-search/ledger/`: atomic writes, validation
       on read and write, iCloud placeholders and conflict copies reported as skipped, and the
       cooldown in its own `cooldown.yaml`, since a cooldown outlasts the day it starts on.
-- [ ] **Enforce the daily budget.** A command the agent calls before every LinkedIn page load,
+- [x] **Enforce the daily budget.** A command the agent calls before every LinkedIn page load,
       checking `limits` against the ledger's daily counters and any active cooldown; record a
-      cooldown when a run reports a challenge.
-- [ ] **Derive "years of experience with X" answers deterministically.** From roles and competencies
+      cooldown when a run reports a challenge. Landed 2026-10-03 as
+      `jobs budget take page-view|easy-apply-fill`; a page view blocks until the randomized delay
+      since the previous one has passed.
+- [x] **Derive "years of experience with X" answers deterministically.** From roles and competencies
       in `src/documents/resume/fixtures/`, alongside the existing `calculate-experience.ts`, so the
-      model never estimates them.
+      model never estimates them. Landed 2026-10-03 in
+      `src/scripts/job-search/profile/experience.ts` and the digest: months from the union of the
+      dates of every role listing the competency, rounded to years, with a competency's stated
+      `experience` taking precedence.
 
 ## Agent, Skill and Rules
 
-- [ ] **Derive the profile digest.** A cli command that condenses `src/documents/resume/fixtures/`
+- [x] **Derive the profile digest.** A cli command that condenses `src/documents/resume/fixtures/`
       into the compact summary the scoring agent reads (roles, competencies with years and
-      proficiency).
-
+      proficiency). Landed 2026-10-03 as `jobs profile digest`.
 - [ ] **Add the `job-screener` agent** under a new `.claude/agents/` directory: Sonnet, structured
       output (score, dimensions, dealbreakers, gaps, flags, rationale), instructed to flag
       label-versus-text contradictions. Thresholds read from `preferences.yaml`.
+- [ ] **Derive title variants in setup.** Title matching is word-based, so `frontend` does not match
+      `Front-End` and `senior` does not match `Sr.`; since the include list is a hard filter, setup
+      should write the spellings and abbreviations of each title it derives.
 - [ ] **Add the orchestrating skill** under `.claude/skills/`, sequencing discover → filter → score
-      → review → apply.
+      → review → apply. Treat any non-JSON output, or an exit code other than 0 or 2, from a
+      `pnpm --silent jobs …` call as an error: argument errors are printed by the CLI framework
+      before a command runs.
 - [ ] **Add the guardrail rules** — human submit, no invented answers, stop on a challenge, human
       pace — under `.claude/rules/`, with their Copilot mirrors per the parity convention.
 
@@ -101,15 +116,20 @@ its own branch/PR.
 
 ## Resume
 
-- [ ] **Write a provenance sidecar from `resume:generate`.** Beside each PDF in
-      `build/documents/resume/`, record the git commit and whether the working tree was dirty
-      (`src/scripts/generate-resume/pdf.ts`). (v1)
-- [ ] **Add `jobs resume approve`.** Interactive only: list the build PDFs, require an explicit
+- [x] **Write a provenance sidecar from `resume:generate`.** Landed 2026-10-03 in
+      `src/scripts/generate-resume/provenance.ts`. The source state (commit, and the uncommitted
+      files under the resume source paths) is captured when the HTML is emitted, written beside the
+      HTML directory, and carried into each PDF's sidecar with the PDF's hash, because the PDF step
+      prints whatever HTML is on disk. HTML with no record yields a PDF with no sidecar, which reads
+      as a draft; a git failure warns rather than failing generation.
+- [x] **Add `jobs resume approve`.** Interactive only: list the build PDFs, require an explicit
       choice, open it for inspection, confirm; flag a dirty-tree PDF and require its file name typed
       to proceed; copy it to `JOBS_DATA_DIR/resume/` under a clean name with a manifest of source,
-      provenance and hash. (v1)
-- [ ] **Keep approval human-only.** Deny the command to agents in `.claude/settings.json`, and state
-      it in the guardrail rules. (v1)
+      provenance and hash. (v1) Landed 2026-10-03; approved copies are also archived by hash under
+      `resume/archive/`.
+- [x] **Keep approval human-only.** Deny the command to agents in `.claude/settings.json`, and state
+      it in the guardrail rules. (v1) The deny rules landed 2026-10-03; the rule statement lands
+      with the guardrail rules in stage 4.
 - [ ] **Use the approved resume when applying.** Show it in the start-of-run summary (noting, as
       information only, when resume content has changed since approval); block filling without one;
       verify the copy's hash against the manifest before attaching; record the hash on each

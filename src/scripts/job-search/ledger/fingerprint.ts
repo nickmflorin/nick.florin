@@ -17,11 +17,19 @@ const LegalSuffixes = new Set([
   'plc',
 ]);
 
-const DiacriticalMarks = /[̀-ͯ]/gu;
+const DiacriticalMarks = /[\u0300-\u036f]/gu;
 
 const WordSeparators = /[^a-z0-9]+/u;
 
-const toWords = (value: string): string[] =>
+/**
+ * Splits text into the lowercase, diacritic-free words that every comparison in the job-search
+ * tooling is made over, so that punctuation and casing never decide a match.
+ *
+ * @param {string} value The text to split.
+ *
+ * @returns {string[]} The words, in order.
+ */
+export const toWords = (value: string): string[] =>
   value
     .normalize('NFKD')
     .replace(DiacriticalMarks, '')
@@ -34,6 +42,9 @@ const withoutLegalSuffixes = (words: readonly string[]): readonly string[] =>
     ? withoutLegalSuffixes(words.slice(0, -1))
     : words;
 
+export const companyNameWords = (name: string): readonly string[] =>
+  withoutLegalSuffixes(toWords(name));
+
 /**
  * Normalizes a company name for comparison: lowercased, stripped of diacritics and punctuation, and
  * without trailing legal suffixes, so that `Acme, Inc.` and `ACME` compare equal.
@@ -42,8 +53,7 @@ const withoutLegalSuffixes = (words: readonly string[]): readonly string[] =>
  *
  * @returns {string} The normalized name, its words joined by hyphens.
  */
-export const normalizeCompanyName = (name: string): string =>
-  withoutLegalSuffixes(toWords(name)).join('-');
+export const normalizeCompanyName = (name: string): string => companyNameWords(name).join('-');
 
 export const normalizeTitle = (title: string): string => toWords(title).join('-');
 

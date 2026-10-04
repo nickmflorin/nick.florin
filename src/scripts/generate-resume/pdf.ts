@@ -9,7 +9,8 @@ import { PDFDocument } from 'pdf-lib';
 
 import { stdout } from '~/support';
 
-import { OutputDir, SheetPages } from './config';
+import { HtmlDir, OutputDir, SheetPages } from './config';
+import { readSourceProvenance, writeResumeProvenance } from './provenance';
 import { pathExists } from './util';
 
 const execFileAsync = promisify(execFile);
@@ -63,6 +64,32 @@ const locateChrome = async (): Promise<string> => {
     );
   }
   return executable;
+};
+
+/**
+ * Records the provenance of the printed PDF, carried over from the HTML it was printed from.
+ *
+ * The provenance is the HTML's rather than the working tree's at print time, because the PDF is
+ * printed from whatever HTML is on disk: a PDF printed after the edits behind that HTML were
+ * reverted would otherwise be recorded as clean. When the HTML carries no provenance, the PDF is
+ * given none either, which marks it as a possible draft.
+ */
+const recordPdfProvenance = async (pdf: string, generatedAt: Date): Promise<void> => {
+  const source = await readSourceProvenance(HtmlDir);
+  if (source === null) {
+    stdout.warn(
+      'The emitted HTML carries no record of the source it was rendered from, so the PDF is ' +
+        'recorded without provenance and will be treated as a draft.',
+    );
+  } else if (source.uncommitted.length > 0) {
+    await writeResumeProvenance(pdf, generatedAt, source);
+    stdout.warn(
+      `The resume was rendered from ${source.uncommitted.length} uncommitted source file(s), so ` +
+        'it is recorded as a draft.',
+    );
+  } else {
+    await writeResumeProvenance(pdf, generatedAt, source);
+  }
 };
 
 /**
@@ -168,6 +195,8 @@ export const generatePdf = async (generatedAt: Date): Promise<string> => {
   } finally {
     await fs.rm(scratch, { force: true, recursive: true });
   }
+
+  await recordPdfProvenance(target, generatedAt);
 
   stdout.complete(`Wrote the resume PDF to '${target}'.`);
   return target;

@@ -16,6 +16,56 @@ Format:
 
 ---
 
+## 2026-10-03 — Resume provenance is captured when the HTML is emitted
+
+**Decision:** The state of the resume sources — the commit, and the uncommitted files under
+`public/documents`, `src/documents`, `src/scripts/generate-resume` and `src/styles/document` — is
+captured when `resume:generate` emits the HTML and recorded beside the HTML directory. The PDF step
+copies that record into the PDF's sidecar, adding the PDF's hash. HTML with no record produces a PDF
+with no sidecar, which `jobs resume approve` treats as a possible draft; a failure to run git warns
+instead of failing generation.
+
+**Why:** The PDF step prints whatever HTML is on disk, so capturing the working tree at print time
+records the wrong state: edit, emit the HTML, revert, print, and the PDF would read as clean while
+containing the abandoned edits. The renderer's imports and stylesheets stay within the four source
+paths, apart from CLI plumbing that does not affect output.
+
+**Alternatives considered:** Capturing at print time (the first version; wrong for a PDF-only run).
+A bare dirty flag for the whole working tree (unrelated work in progress would mark every resume a
+draft).
+
+---
+
+## 2026-10-03 — Agent-facing commands speak JSON on a clean standard output
+
+**Decision:** Every command the agent calls extends a `JsonCommand` base that writes exactly one
+JSON document to standard output. A correct-but-negative outcome — a spent budget, an active
+cooldown — has the status `refused` and the abort exit code (2); a failure has the status `error`
+and exit code 1. The CLI entry routes `console.log`, `info` and `debug` to standard error before
+loading any command, and a `pnpm jobs` script runs the CLI without the `node:validate` step, so that
+nothing else reaches standard output:
+
+```bash
+pnpm --silent jobs budget take page-view
+```
+
+`jobs budget take page-view` blocks until the randomized delay since the previous page load has
+passed, under a lock in the system temporary directory, so pacing holds however many callers there
+are. Triage takes the same lock. Postings that pass every hard filter at the `detail` stage are
+recorded with a new `pending` status until scored.
+
+**Why:** Smoke-testing the first version showed the Node version check and the Prisma client's
+import-time logging writing into standard output ahead of the document, which breaks parsing.
+Blocking on the delay, rather than returning a delay for the caller to honor, keeps pacing enforced
+by code. The lock is local because the data directory is synced and a lock is meaningful only on the
+machine that holds it.
+
+**Alternatives considered:** Parsing the last line of standard output (fragile, and a log line on
+the last line breaks it). Returning the delay for the agent to wait out (pacing would depend on the
+agent's discipline).
+
+---
+
 ## 2026-10-03 — v1 attaches one explicitly approved resume; versions and tailoring are future work
 
 **Decision:** Every v1 application attaches a single resume that the human has explicitly approved

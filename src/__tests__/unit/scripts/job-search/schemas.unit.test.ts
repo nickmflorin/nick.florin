@@ -11,7 +11,7 @@ describe('preferences schema', () => {
       hard: {
         companies: { block: [], currentEmployer: 'Initech' },
         companySize: { bands: [...CompanySizeBands], whenUnknown: 'pass' },
-        compensation: { floor: 150000, whenUnlisted: 'pass' },
+        compensation: { currency: 'USD', floor: 150000, whenUnlisted: 'pass' },
         locations: [],
         postedWithinDays: 14,
         sponsorshipRequired: false,

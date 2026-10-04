@@ -57,9 +57,12 @@ export const listDirectory = async (directory: string): Promise<string[]> => {
  * directory is atomic, so the synced file is only ever the previous version or the complete new
  * one. The temporary file's leading dot keeps it out of directory listings that read records.
  */
-export const writeFileAtomically = async (file: string, contents: string): Promise<void> => {
+export const writeFileAtomically = async (
+  file: string,
+  contents: string | Uint8Array,
+): Promise<void> => {
   const temporary = path.join(path.dirname(file), `.${path.basename(file)}.${process.pid}.tmp`);
   await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(temporary, contents, 'utf-8');
+  await fs.writeFile(temporary, contents);
   await fs.rename(temporary, file);
 };

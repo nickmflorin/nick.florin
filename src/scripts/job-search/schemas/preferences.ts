@@ -79,6 +79,10 @@ const HardFiltersSchema = z
       .default({}),
     compensation: z
       .object({
+        currency: z
+          .string()
+          .regex(/^[A-Z]{3}$/)
+          .default('USD'),
         floor: z.number().int().nonnegative(),
         whenUnlisted: z.enum(UnlistedPolicies).default('pass'),
       })

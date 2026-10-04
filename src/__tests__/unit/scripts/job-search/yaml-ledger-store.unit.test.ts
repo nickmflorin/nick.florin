@@ -115,7 +115,13 @@ describe('yaml ledger store', () => {
     it('keys the day of activity by its date', async () => {
       expect.hasAssertions();
       const store = new YamlLedgerStore(sandbox);
-      const budget = { date: '2026-10-03', easyApplyFills: 2, pageViews: 41, runs: 1 };
+      const budget = {
+        date: '2026-10-03',
+        easyApplyFills: 2,
+        lastPageViewAt: '2026-10-03T14:00:00.000Z',
+        pageViews: 41,
+        runs: 1,
+      };
       await store.putBudget(budget);
       await expect(store.getBudget('2026-10-03')).resolves.toStrictEqual(budget);
     });

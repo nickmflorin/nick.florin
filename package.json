@@ -33,6 +33,7 @@
     "prettier:format": "pnpm exec prettier . --write --ignore-path ./.prettierignore --ignore-unknown",
     "cspell": "pnpm exec cspell lint --no-progress --show-suggestions .",
     "cli": "pnpm run node:validate && pnpm run env:setup:dev -- pnpm exec tsx --tsconfig ./tsconfig.json src/scripts/cli-v2/run.ts",
+    "jobs": "pnpm run --silent env:setup:dev -- pnpm exec tsx --tsconfig ./tsconfig.json src/scripts/cli-v2/run.ts jobs",
     "test": "pnpm run node:validate && jest --watchAll --silent=false",
     "test:run": "pnpm run node:validate && jest",
     "test:unit": "pnpm run node:validate && jest --selectProjects unit-tests",

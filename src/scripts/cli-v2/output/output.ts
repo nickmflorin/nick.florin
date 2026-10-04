@@ -165,6 +165,25 @@ export class Output {
     clack.log.success(styled('added', message));
   }
 
+  /**
+   * Asks for free text, throwing rather than blocking when the run is not interactive.
+   *
+   * It takes no flag that answers it up front, because the commands that ask for text use it to
+   * require a person at the keyboard, such as typing a file name to confirm a consequential choice.
+   */
+  public async text(question: string): Promise<string> {
+    if (!this.interactive) {
+      throw new OutputAbortedError(
+        `The terminal is not interactive, so '${question}' cannot be asked.`,
+      );
+    }
+    const answer = await clack.text({ message: question });
+    if (clack.isCancel(answer)) {
+      throw new OutputAbortedError('Cancelled; nothing was written.');
+    }
+    return answer;
+  }
+
   public warn(message: string): void {
     clack.log.warn(styled('warning', message));
   }
@@ -177,5 +196,13 @@ export class Output {
    */
   public write(content: string): void {
     process.stdout.write(`${content}\n`);
+  }
+
+  /**
+   * Whether a person can answer prompts, which a command that must only ever be run by a person
+   * checks before doing anything else.
+   */
+  public get isInteractive(): boolean {
+    return this.interactive;
   }
 }

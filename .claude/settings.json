@@ -1,6 +1,14 @@
 {
   "permissions": {
-    "allow": ["Bash(pnpm run:*)", "Edit(/.claude/skills/sync-ai-config/**)"]
+    "allow": ["Bash(pnpm run:*)", "Edit(/.claude/skills/sync-ai-config/**)"],
+    "deny": [
+      "Bash(pnpm cli jobs resume approve:*)",
+      "Bash(pnpm run cli jobs resume approve:*)",
+      "Bash(pnpm --silent cli jobs resume approve:*)",
+      "Bash(pnpm jobs resume approve:*)",
+      "Bash(pnpm run jobs resume approve:*)",
+      "Bash(pnpm --silent jobs resume approve:*)"
+    ]
   },
   "enabledPlugins": {
     "nextjs@nextjs-marketplace": true,
