@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import {
   readResumeProvenance,
+  resumeSourcesChangedSince,
   type ResumeProvenance,
   ResumeProvenanceSchema,
   sha256OfFile,
@@ -187,4 +188,49 @@ export const readApprovedResume = async (dataDirectory: string): Promise<Approve
   return (await pathExists(file)) && (await sha256OfFile(file)) === manifest.sha256
     ? { file, manifest, status: 'approved' }
     : { manifest, status: 'mismatched' };
+};
+
+export type ApprovedResumeSummary =
+  | {
+      readonly approvedAt: string;
+      /**
+       * The resume source files changed since the approved resume was generated — information
+       * only: the approved resume is what is sent until Nick approves another. `null` when the
+       * approval carries no provenance to compare against.
+       */
+      readonly changedSince: null | string[];
+      readonly fileName: string;
+      readonly sourceFile: string;
+      readonly status: 'approved';
+    }
+  | { readonly status: 'mismatched' | 'missing' };
+
+/**
+ * Summarizes the approved resume for the start of a run: which one is sent, since when, and which
+ * resume sources have changed since it was generated.
+ *
+ * @param {string} dataDirectory The job-search data directory.
+ * @param {string} repository The root of the repository holding the resume sources.
+ *
+ * @returns {Promise<ApprovedResumeSummary>} The summary, or why there is no approved resume.
+ */
+export const summarizeApprovedResume = async (
+  dataDirectory: string,
+  repository: string,
+): Promise<ApprovedResumeSummary> => {
+  const resume = await readApprovedResume(dataDirectory);
+  if (resume.status !== 'approved') {
+    return { status: resume.status };
+  }
+  const { approvedAt, fileName, provenance, sourceFile } = resume.manifest;
+  return {
+    approvedAt,
+    changedSince:
+      provenance === null
+        ? null
+        : await resumeSourcesChangedSince(repository, provenance.commit).catch(() => null),
+    fileName,
+    sourceFile,
+    status: 'approved',
+  };
 };

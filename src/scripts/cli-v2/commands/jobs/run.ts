@@ -2,6 +2,7 @@ import { Command, Option } from 'clipanion';
 import { z } from 'zod';
 
 import { resolveSessionContext } from '~/scripts/job-search/context';
+import { summarizeApprovedResume } from '~/scripts/job-search/resume/approved-resume';
 import { RunEndings } from '~/scripts/job-search/schemas';
 import { finishRun, startRun } from '~/scripts/job-search/session';
 
@@ -20,7 +21,9 @@ export class JobsRunStartCommand extends JsonCommand {
     details: `
       Refused, with the abort exit code, while a cooldown is active or once the day's runs are
       spent. Each \`--override\` is recorded on the run as given, so that every posting the run
-      produces can be traced to the preferences in force when it was scored.
+      produces can be traced to the preferences in force when it was scored. Reports the approved
+      resume the run will attach, with the resume sources changed since it was generated, for the
+      start-of-run summary.
     `,
     examples: [
       ['Start a run with the saved preferences', '$0 jobs run start'],
@@ -32,7 +35,12 @@ export class JobsRunStartCommand extends JsonCommand {
   });
 
   protected async run(): Promise<JsonResult> {
-    return startRun(await resolveSessionContext(), this.overrides ?? []);
+    const context = await resolveSessionContext();
+    const [started, resume] = await Promise.all([
+      startRun(context, this.overrides ?? []),
+      summarizeApprovedResume(context.dataDirectory, process.cwd()),
+    ]);
+    return { ...started, resume };
   }
 }
 

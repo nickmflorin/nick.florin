@@ -150,6 +150,10 @@ update the saved file — then start the run, passing each run-only adjustment a
 pnpm --silent jobs run start --override "Onsite in Boston is fine"
 ```
 
+The result's `resume` names the approved resume the run will attach. Mention it in the summary, and
+when `changedSince` lists files, note that the resume sources have changed since it was generated —
+as information only: the approved resume is attached until Nick approves another.
+
 ### 2. Read each source's result cards
 
 The sources are the recommendations page (`https://www.linkedin.com/jobs/collections/recommended/`)

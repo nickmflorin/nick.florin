@@ -97,6 +97,20 @@ describe('applyHardFilters()', () => {
       ).toBeNull();
     });
 
+    it.each([
+      ['Sr. Front-End Engineer', 'senior frontend engineer'],
+      ['Senior Full Stack Engineer II', 'sr. fullstack engineer 2'],
+      ['Back End Dev, Senior', 'senior backend developer'],
+    ])('matches %j to the included term %j whatever their spellings', (title, term) => {
+      expect(
+        applyHardFilters(
+          candidate({ title }),
+          { ...Defaults, titles: { exclude: [], include: [term] } },
+          Card,
+        ),
+      ).toBeNull();
+    });
+
     it('rejects a title matching none of the included titles', () => {
       expect(applyHardFilters(candidate({ title: 'Data Analyst' }), Defaults, Card)).toBe(
         "The title 'Data Analyst' matches none of the included titles.",

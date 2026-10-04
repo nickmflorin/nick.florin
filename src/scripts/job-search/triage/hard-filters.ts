@@ -26,12 +26,59 @@ type HardFilter = (
 ) => null | string;
 
 /**
+ * Words that job titles spell more than one way, by the one spelling titles are compared in.
+ */
+const TitleSynonyms = new Map([
+  ['dev', 'developer'],
+  ['eng', 'engineer'],
+  ['engr', 'engineer'],
+  ['ii', '2'],
+  ['iii', '3'],
+  ['iv', '4'],
+  ['jr', 'junior'],
+  ['mgr', 'manager'],
+  ['sr', 'senior'],
+]);
+
+/**
+ * Compounds that job titles write as one word or two, by the one word they are compared as.
+ */
+const TitleCompounds = new Map([
+  ['back end', 'backend'],
+  ['front end', 'frontend'],
+  ['full stack', 'fullstack'],
+]);
+
+/**
+ * Splits a job title, or a configured title term, into the words titles are compared in:
+ * abbreviations and roman numerals take one spelling and split compounds are joined, so that
+ * `Sr. Front-End Engineer II` and `senior frontend engineer 2` have the same words.
+ */
+const titleWords = (text: string): string[] =>
+  toWords(text)
+    .map(word => TitleSynonyms.get(word) ?? word)
+    .reduce<string[]>((words, word) => {
+      const compound = TitleCompounds.get(`${words.at(-1) ?? ''} ${word}`);
+      return compound === undefined ? [...words, word] : [...words.slice(0, -1), compound];
+    }, []);
+
+/**
  * Whether every word of a configured term appears among the words of a text, in any order, so that
- * the term `senior software engineer` matches the title `Software Engineer, Senior`.
+ * the location `Arlington VA` matches `Arlington, VA`.
  */
 const containsAllWords = (text: string, term: string): boolean => {
   const words = new Set(toWords(text));
   return toWords(term).every(word => words.has(word));
+};
+
+/**
+ * Whether every word of a configured title term appears among the words of a title, in any order
+ * and whatever its spelling, so that the term `senior software engineer` matches the title
+ * `Software Engineer, Sr.`.
+ */
+const titleContains = (title: string, term: string): boolean => {
+  const words = new Set(titleWords(title));
+  return titleWords(term).every(word => words.has(word));
 };
 
 /**
@@ -66,11 +113,11 @@ const filterBlockedCompany: HardFilter = ({ company }, { companies }) => {
 };
 
 const filterTitle: HardFilter = ({ title }, { titles }) => {
-  const excluded = titles.exclude.find(term => containsAllWords(title, term));
+  const excluded = titles.exclude.find(term => titleContains(title, term));
   if (excluded !== undefined) {
     return `The title '${title}' matches the excluded term '${excluded}'.`;
   }
-  return titles.include.some(term => containsAllWords(title, term))
+  return titles.include.some(term => titleContains(title, term))
     ? null
     : `The title '${title}' matches none of the included titles.`;
 };

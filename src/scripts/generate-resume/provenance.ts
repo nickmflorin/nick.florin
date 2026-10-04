@@ -112,6 +112,30 @@ export const captureSourceProvenance = async (repository: string): Promise<Sourc
   return SourceProvenanceSchema.parse({ commit: commit.trim(), uncommitted });
 };
 
+/**
+ * Lists the resume source files that have changed since a commit: those changed in the commits
+ * since, and those changed in the working tree now.
+ *
+ * @param {string} repository The root of the repository's working tree.
+ * @param {string} commit The commit the comparison starts from.
+ *
+ * @throws {Error} If git cannot be run in the repository, or does not know the commit.
+ *
+ * @returns {Promise<string[]>} The changed resume source files, each listed once.
+ */
+export const resumeSourcesChangedSince = async (
+  repository: string,
+  commit: string,
+): Promise<string[]> => {
+  const [committed, uncommitted] = await Promise.all([
+    git(repository, ['diff', '--name-only', commit, 'HEAD', '--', ...ResumeSourcePaths]),
+    uncommittedResumeSources(repository),
+  ]);
+  return [
+    ...new Set([...committed.split('\n').filter(line => line.trim() !== ''), ...uncommitted]),
+  ];
+};
+
 const readProvenance = async <T>(
   file: string,
   schema: z.ZodType<T, z.ZodTypeDef, unknown>,
