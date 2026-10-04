@@ -2,6 +2,10 @@ import { Builtins, Cli, type CommandClass } from 'clipanion';
 
 import { ContentSyncCommand } from './commands/content-sync-command';
 import { JobsBudgetTakeCommand } from './commands/jobs/jobs-budget-take-command';
+import {
+  JobsConfigStatusCommand,
+  JobsConfigWriteCommand,
+} from './commands/jobs/jobs-config-commands';
 import { JobsProfileDigestCommand } from './commands/jobs/jobs-profile-digest-command';
 import { JobsResumeApproveCommand } from './commands/jobs/jobs-resume-approve-command';
 import { JobsRunFinishCommand, JobsRunStartCommand } from './commands/jobs/jobs-run-commands';
@@ -18,6 +22,8 @@ import { JobsTriageCommand } from './commands/jobs/jobs-triage-command';
 const Commands: readonly CommandClass[] = [
   ContentSyncCommand,
   JobsBudgetTakeCommand,
+  JobsConfigStatusCommand,
+  JobsConfigWriteCommand,
   JobsProfileDigestCommand,
   JobsResumeApproveCommand,
   JobsRunFinishCommand,

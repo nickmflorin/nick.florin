@@ -1,12 +1,6 @@
-import path from 'node:path';
-
+import { configFileIn } from './config-files';
 import { readYamlRecord } from './ledger/yaml-records';
 import { type Preferences, PreferencesSchema } from './schemas';
-
-export const PreferencesFileName = 'preferences.yaml';
-
-export const preferencesFileIn = (dataDirectory: string): string =>
-  path.join(dataDirectory, PreferencesFileName);
 
 /**
  * Reads and validates `preferences.yaml` from the data directory.
@@ -20,7 +14,7 @@ export const preferencesFileIn = (dataDirectory: string): string =>
  * @returns {Promise<Preferences>} The preferences, with every default applied.
  */
 export const requirePreferences = async (dataDirectory: string): Promise<Preferences> => {
-  const file = preferencesFileIn(dataDirectory);
+  const file = configFileIn(dataDirectory, 'preferences');
   const preferences = await readYamlRecord(file, PreferencesSchema);
   if (preferences === null) {
     throw new Error(

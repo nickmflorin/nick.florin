@@ -28,6 +28,12 @@ const WithoutRepositoryRedirection = { GIT_DIR: undefined, GIT_WORK_TREE: undefi
  */
 export class DataDirectoryError extends Error {}
 
+/**
+ * The error raised when the configured job-search data directory does not exist yet, which is the
+ * expected state before the job-search setup has run.
+ */
+export class DataDirectoryMissingError extends DataDirectoryError {}
+
 export interface DataDirectoryOptions {
   /**
    * Whether a directory that does not exist yet is created, rather than reported as missing. Only
@@ -126,7 +132,7 @@ export const resolveDataDirectory = async (
   if (exists && !(await fs.stat(target)).isDirectory()) {
     throw new DataDirectoryError(`The job-search data directory '${target}' is not a directory.`);
   } else if (!exists && options.create !== true) {
-    throw new DataDirectoryError(
+    throw new DataDirectoryMissingError(
       `The job-search data directory '${target}' does not exist. It is created by the job-search ` +
         'setup once its location has been confirmed.',
     );

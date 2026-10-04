@@ -30,11 +30,17 @@ its own branch/PR.
 
 ## Discovery
 
-- [ ] **Run setup when `preferences.yaml` is missing.** Derive titles, keywords, stack and seniority
+- [x] **Run setup when `preferences.yaml` is missing.** Derive titles, keywords, stack and seniority
       from `src/documents/resume/fixtures/`; ask only for the compensation floor, workplace,
-      locations, sponsorship and companies to avoid; write the file after approval. (v1)
-- [ ] **Ask only for missing fields** when the file fails schema validation, and write the answers
-      back. (v1)
+      locations, sponsorship and companies to avoid; write the file after approval. (v1) The
+      machinery landed 2026-10-03: `jobs config status|write` for both configuration files and the
+      setup procedure in `.claude/skills/job-hunt/SKILL.md`, which also covers `answers.yaml` —
+      contact and links from the public profile fixture, work authorization, notice period and
+      target compensation asked once.
+- [x] **Ask only for missing fields** when the file fails schema validation, and write the answers
+      back. (v1) Landed 2026-10-03: `jobs config status` reports `incomplete` with the paths of
+      exactly the missing fields, and `invalid` separately, which the skill reports rather than
+      overwrites.
 - [ ] **Confirm or override at the start of each run.** One-screen summary plus any queued
       learning-loop edits; run as saved, adjust for this run only (recorded on the run's ledger
       entry, never written to the file), or update the saved preferences. (v1)

@@ -46,8 +46,8 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
 3. **Browser, setup and discovery**, split so nothing touches LinkedIn before preferences exist:
    - 3a — done 2026-10-03: the `job-search-browser` server, `~/job-search/` and its README, and
      `jobs search url`.
-   - 3b — setup: derive the preferences from the career content, ask the personal constraints, write
-     `preferences.yaml`.
+   - 3b — the setup machinery is done 2026-10-03 (`jobs config status|write`, the `job-hunt` skill's
+     setup procedure); running the setup with Nick, which writes both files, is next.
    - 3c — live discovery: restart the session to load the browser server, log into LinkedIn by hand
      in its window, then read recommendations and generated searches in two passes, with logged-out
      detection.
