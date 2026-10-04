@@ -224,11 +224,9 @@ its own branch/PR.
 - [x] **Render cover letters to PDF** for upload fields, reusing the headless-Chrome approach of
       `pnpm resume:generate`. (v1) Landed 2026-10-04: `jobs apply start` renders an approved letter
       beside the staged resume.
-- [ ] **Run the job hunt on a schedule.** A macOS LaunchAgent that launches the job-search browser
-      and runs the skill's Unattended Run headlessly (`claude -p`) on a cadence, with the tools it
-      needs allowed and nothing else. Waits on Nick's decision, since it runs an agent unattended on
-      his machine; until then, a run is started by asking for one, or with `CronCreate` inside an
-      open session.
+- [ ] **Run the job hunt on a schedule.** Decided 2026-10-04: on demand for now. The three ways to
+      start a run — on demand, a schedule inside a session, and a macOS LaunchAgent running
+      `claude -p` headlessly — are written up in [running.md](./running.md), ready to switch to.
 - [ ] **Add `voice.md`**, samples of Nick's own writing, to the data directory, so that drafts sound
       like him rather than like a plain default.
 

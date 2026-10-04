@@ -5,7 +5,8 @@ an agent, rules and deterministic CLI commands — that finds jobs on LinkedIn, 
 worth applying to against a configured set of preferences, and applies to them unattended, setting
 aside for a human whatever it cannot finish from his data. It exists so that any session (human or
 AI) can pick up exactly where the last one left off. **Read this file first, then
-[status.md](./status.md).**
+[status.md](./status.md).** To start a run — on demand, on a schedule in a session, or in the
+background — see [running.md](./running.md).
 
 ## What This Project Is
 
