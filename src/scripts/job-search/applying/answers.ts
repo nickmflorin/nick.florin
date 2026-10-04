@@ -96,6 +96,7 @@ const BenignQualifier = /\bwithout (?:any )?restrictions?\b/gi;
  * An authorization question asked the other way round: whether Nick needs authorization, rather
  * than whether he has it.
  */
+// cspell:disable-next-line
 const AuthorizationNeeded = /\b(?:require|need)s?\b.*\bauthori[sz]ation\b/i;
 
 const isInverted = (label: string): boolean =>

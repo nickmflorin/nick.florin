@@ -4,9 +4,9 @@ import path from 'node:path';
 import { z } from 'zod';
 
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
+import { listDirectory } from '../fs';
 import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
-import { listDirectory } from '../fs';
 import { stageApprovedResume, unstageResume } from '../resume/staging';
 import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas';
 import { type SessionContext } from '../session';
@@ -401,7 +401,7 @@ export const checkReading = async (
  *   If no application was started, the resume was never seen attached, the approved resume changed
  *   since the application started, or a planned value was never seen in the form.
  *
- * @returns {Promise<ApplicationDraft>} The verified draft.
+ * @returns {Promise<ApplicationDraft>} The draft, with every value and the resume seen in the form.
  */
 export const requireVerifiedDraft = async (
   dataDirectory: string,
@@ -437,7 +437,7 @@ export const requireVerifiedDraft = async (
  *
  * @throws {Error} If the draft is not verified, something blocks it, or it was deferred to Nick.
  *
- * @returns {Promise<ApplicationDraft>} The submittable draft.
+ * @returns {Promise<ApplicationDraft>} The draft, cleared for the agent to submit.
  */
 export const requireSubmittableDraft = async (
   dataDirectory: string,

@@ -162,6 +162,7 @@ describe('application drafts', () => {
       await start();
       await recordPlan(context(), Id, Plan, filledReading);
       await expect(checkReading(context(), Id, filledReading)).resolves.toStrictEqual({
+        blockers: [],
         mismatches: [],
         pending: [],
         resumeVerified: true,

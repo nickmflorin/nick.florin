@@ -6,9 +6,6 @@ import {
   JobsAnswersResolveCommand,
   JobsApplicationFilledCommand,
   JobsApplicationSubmittedCommand,
-  JobsPacketBuildCommand,
-} from './commands/jobs/jobs-apply-commands';
-import {
   JobsApplyCheckCommand,
   JobsApplyDeferCommand,
   JobsApplyDiscardCommand,
@@ -16,27 +13,25 @@ import {
   JobsApplyPauseCommand,
   JobsApplyPlanCommand,
   JobsApplyStartCommand,
-} from './commands/jobs/jobs-apply-flow-commands';
-import { JobsBudgetTakeCommand } from './commands/jobs/jobs-budget-take-command';
-import {
+  JobsBudgetTakeCommand,
   JobsConfigShowCommand,
   JobsConfigStatusCommand,
   JobsConfigWriteCommand,
-} from './commands/jobs/jobs-config-commands';
-import { JobsPageScriptCommand } from './commands/jobs/jobs-page-script-command';
-import {
+  JobsPacketBuildCommand,
+  JobsPageScriptCommand,
   JobsPostingDescribeCommand,
   JobsPostingListCommand,
   JobsPostingShowCommand,
+  JobsProfileDigestCommand,
   JobsQueueShowCommand,
+  JobsResumeApproveCommand,
   JobsReviewCommand,
+  JobsRunFinishCommand,
+  JobsRunStartCommand,
   JobsScoreRecordCommand,
-} from './commands/jobs/jobs-posting-commands';
-import { JobsProfileDigestCommand } from './commands/jobs/jobs-profile-digest-command';
-import { JobsResumeApproveCommand } from './commands/jobs/jobs-resume-approve-command';
-import { JobsRunFinishCommand, JobsRunStartCommand } from './commands/jobs/jobs-run-commands';
-import { JobsSearchUrlCommand } from './commands/jobs/jobs-search-url-command';
-import { JobsTriageCommand } from './commands/jobs/jobs-triage-command';
+  JobsSearchUrlCommand,
+  JobsTriageCommand,
+} from './commands/jobs';
 
 /**
  * Every command the CLI exposes.

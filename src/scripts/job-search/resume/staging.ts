@@ -21,7 +21,8 @@ export const ResumeStagingDirectoryName = 'job-search-resume';
  * Copies the approved resume, under its attachment name, into the application's staging directory,
  * and verifies that the copy is the file that was approved.
  *
- * @param {Extract<ApprovedResumeState, { status: 'approved' }>} resume The approved resume.
+ * @param {Extract<ApprovedResumeState, { status: 'approved' }>} resume
+ *   The resume Nick approved: its file in the data directory, and its manifest.
  * @param {{ readonly id: string; readonly temporaryDirectory: string }} staging
  *   The job identifier of the posting applied to, and the operating system's temporary directory.
  *

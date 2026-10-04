@@ -125,12 +125,12 @@ const isAutoApproved = (
   policy: Preferences['applying']['autoApprove'],
 ): boolean => {
   switch (policy) {
+    case 'maybe':
+      return status !== 'dropped';
     case 'never':
       return false;
     case 'queued':
       return status === 'queued';
-    case 'maybe':
-      return status !== 'dropped';
   }
 };
 

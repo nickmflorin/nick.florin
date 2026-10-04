@@ -19,7 +19,7 @@ describe('form scripts', () => {
 
   it('compiles the choose-option script with quotes and hints in the value', () => {
     expect(
-      compile(chooseOptionScript(`O'Hare, "IL"`, ['Illinois', 'United States'])),
+      compile(chooseOptionScript('O\'Hare, "IL"', ['Illinois', 'United States'])),
     ).toBeInstanceOf(Script);
   });
 

@@ -68,6 +68,10 @@ export class JobsPageScriptCommand extends JsonCommand {
     description: 'The option to choose, for `choose-option`.',
   });
 
+  protected run(): Promise<JsonResult> {
+    return Promise.resolve({ function: this.script(), status: 'ok' });
+  }
+
   private script(): string {
     switch (this.name) {
       case 'choose-option':
@@ -88,9 +92,5 @@ export class JobsPageScriptCommand extends JsonCommand {
         }
         return openCardScript({ company: this.company, title: this.title });
     }
-  }
-
-  protected run(): Promise<JsonResult> {
-    return Promise.resolve({ function: this.script(), status: 'ok' });
   }
 }

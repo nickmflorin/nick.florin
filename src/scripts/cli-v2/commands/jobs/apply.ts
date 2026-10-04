@@ -17,9 +17,9 @@ import {
 import { planFill } from '~/scripts/job-search/applying/fill-plan';
 import {
   chooseOptionScript,
+  formFillScript,
   type FormReading,
   FormReadingSchema,
-  formFillScript,
   type PlannedFill,
 } from '~/scripts/job-search/applying/form-scripts';
 import { typeaheadQuery } from '~/scripts/job-search/applying/places';
