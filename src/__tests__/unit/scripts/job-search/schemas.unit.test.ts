@@ -36,6 +36,11 @@ describe('preferences schema', () => {
       },
       scoring: { maybeAt: 50, queueAt: 70 },
       searches: [],
+      signIn: {
+        automatic: false,
+        emailVariable: 'JOBS_LINKEDIN_EMAIL',
+        passwordVariable: 'JOBS_LINKEDIN_PASSWORD',
+      },
       soft: {
         companies: { prefer: [], stages: [] },
         domains: { avoid: [], prefer: [] },

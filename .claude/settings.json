@@ -13,7 +13,11 @@
       "Bash(pnpm --silent cli jobs cover-letter approve:*)",
       "Bash(pnpm jobs cover-letter approve:*)",
       "Bash(pnpm run jobs cover-letter approve:*)",
-      "Bash(pnpm --silent jobs cover-letter approve:*)"
+      "Bash(pnpm --silent jobs cover-letter approve:*)",
+      "Read(./.env.local)",
+      "Read(./.env.*.local)",
+      "Bash(cat .env.local:*)",
+      "Bash(cat ./.env.local:*)"
     ]
   },
   "enabledPlugins": {

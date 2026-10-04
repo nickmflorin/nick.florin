@@ -73,7 +73,12 @@ run with `jobs run finish … --ended-by challenge` or `logged-out`. Never try t
   confirmation never appears is deferred to Nick, never retried. Under `applying.submit: nick`, it
   never clicks one.
 - **Approving a resume.** `jobs resume approve` is reserved for him and denied to agents.
-- **Signing into LinkedIn.** Never type or store his credentials.
+- **Signing into LinkedIn, unless he has turned automatic sign-in on.** With `signIn.automatic` on
+  in the preferences, `pnpm --silent jobs linkedin sign-in` signs in with the credentials the
+  environment variables named by `signIn.emailVariable` and `signIn.passwordVariable` hold in the
+  gitignored `.env.local`, typing them itself so they never pass through the agent. Never read,
+  print, type or store the credentials yourself, and never open `.env.local`. With the setting off,
+  a variable unset, or any security check after signing in, Nick signs in by hand.
 - **Answering a question the data does not answer.** Never invent an answer. Ask him, or, in an
   unattended run, defer the application with `jobs apply defer` so the question reaches him in the
   run's report.

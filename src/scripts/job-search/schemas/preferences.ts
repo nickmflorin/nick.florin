@@ -174,6 +174,26 @@ const ApplyingSchema = z
   .strict()
   .default({});
 
+/**
+ * The name of an environment variable, as `.env.local` declares it.
+ */
+const EnvironmentVariableName = z.string().regex(/^[A-Z][A-Z0-9_]*$/);
+
+/**
+ * Whether the job-search Chrome signs into LinkedIn by itself when its session has lapsed, and the
+ * environment variables, set in the gitignored `.env.local`, that hold the credentials it signs in
+ * with. Off by default: Nick signs in by hand, and he does whenever automatic sign-in is off, a
+ * variable is unset, or LinkedIn asks for any security check.
+ */
+const SignInSchema = z
+  .object({
+    automatic: z.boolean().default(false),
+    emailVariable: EnvironmentVariableName.default('JOBS_LINKEDIN_EMAIL'),
+    passwordVariable: EnvironmentVariableName.default('JOBS_LINKEDIN_PASSWORD'),
+  })
+  .strict()
+  .default({});
+
 const CoverLettersSchema = z
   .object({ optionalAt: ScoreSchema.default(80) })
   .strict()
@@ -248,6 +268,7 @@ export const PreferencesSchema = z
     limits: LimitsSchema,
     scoring: ScoringSchema,
     searches: SearchesSchema,
+    signIn: SignInSchema,
     soft: SoftSignalsSchema,
   })
   .strict();
