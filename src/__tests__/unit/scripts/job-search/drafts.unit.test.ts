@@ -5,6 +5,8 @@ import path from 'node:path';
 import { markFilled, markSubmitted } from '~/scripts/job-search/applying/applications';
 import {
   checkReading,
+  deferApplication,
+  listHeldApplications,
   readDraft,
   recordPlan,
   startApplication,
@@ -24,16 +26,21 @@ const dataDirectory = (): string => path.join(sandbox, 'data');
 
 const temporaryDirectory = (): string => path.join(sandbox, 'tmp');
 
-const context = (): SessionContext => ({
+const context = (applying: object = {}): SessionContext => ({
   clock: {
     now: () => new Date('2026-10-04T12:00:00.000Z'),
     random: () => 0,
     sleep: () => Promise.resolve(),
   },
   dataDirectory: dataDirectory(),
-  preferences: PreferencesSchema.parse(MinimalPreferences),
+  preferences: PreferencesSchema.parse({ ...MinimalPreferences, applying }),
   store: new YamlLedgerStore(dataDirectory()),
 });
+
+/**
+ * The settings under which the agent submits a verified application itself.
+ */
+const AgentSubmits = { submit: 'verified' };
 
 const Id = '4012345678';
 
@@ -153,7 +160,7 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await approveAResume();
       await start();
-      await recordPlan(context(), Id, Plan);
+      await recordPlan(context(), Id, Plan, filledReading);
       await expect(checkReading(context(), Id, filledReading)).resolves.toStrictEqual({
         mismatches: [],
         pending: [],
@@ -165,7 +172,7 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await approveAResume();
       await start();
-      await recordPlan(context(), Id, Plan);
+      await recordPlan(context(), Id, Plan, filledReading);
       await expect(
         checkReading(context(), Id, reading([field({ key: 'f0', label: 'Email', value: '' })])),
       ).resolves.toMatchObject({
@@ -201,7 +208,7 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await approveAResume();
       await start();
-      await recordPlan(context(), Id, Plan);
+      await recordPlan(context(), Id, Plan, filledReading);
       await expect(markFilled(context(), Id, { byHand: false })).rejects.toThrow(
         'has not been seen attached',
       );
@@ -211,13 +218,120 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await approveAResume();
       await start();
-      await recordPlan(context(), Id, Plan);
+      await recordPlan(context(), Id, Plan, filledReading);
       await checkReading(context(), Id, filledReading);
       await expect(markFilled(context(), Id, { byHand: false })).resolves.toMatchObject({
         status: 'filled',
       });
-      await markSubmitted(context(), Id);
+      await markSubmitted(context(), Id, { by: 'nick' });
       await expect(readDraft(dataDirectory(), Id)).resolves.toBeNull();
+    });
+  });
+
+  describe('blockers and deferral', () => {
+    it('records what blocks a step, and replaces it when the step is planned again', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await start();
+      await recordPlan(
+        context(),
+        Id,
+        {
+          ...Plan,
+          unanswered: [{ current: null, key: 'f3', label: 'Describe a bug', required: true }],
+        },
+        filledReading,
+      );
+      await recordPlan(context(), Id, Plan, filledReading);
+      await expect(readDraft(dataDirectory(), Id)).resolves.toMatchObject({ blockers: [] });
+    });
+
+    it('records a required field that no plan covered', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await start();
+      await recordPlan(context(), Id, Plan, filledReading);
+      await expect(
+        checkReading(
+          context(),
+          Id,
+          reading([...filledReading.fields, field({ key: 'f4', label: 'Years in Rust' })]),
+        ),
+      ).resolves.toMatchObject({
+        blockers: [{ kind: 'unplanned', label: 'Years in Rust', step: 'form' }],
+      });
+    });
+
+    it('lists a deferred application, with why, for Nick', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await start();
+      await deferApplication(context(), Id, 'Two screening questions need Nick');
+      await expect(listHeldApplications(context())).resolves.toStrictEqual([
+        {
+          blockers: [],
+          company: posting().company,
+          id: Id,
+          reason: 'Two screening questions need Nick',
+          title: posting().title,
+        },
+      ]);
+    });
+  });
+
+  describe("recording the agent's submission", () => {
+    const fillVerified = async (): Promise<void> => {
+      await approveAResume();
+      await start();
+      await recordPlan(context(), Id, Plan, filledReading);
+      await checkReading(context(), Id, filledReading);
+      await markFilled(context(), Id, { byHand: false });
+    };
+
+    it('refuses while the settings leave submitting to Nick', async () => {
+      expect.hasAssertions();
+      await fillVerified();
+      await expect(markSubmitted(context(), Id, { by: 'agent' })).rejects.toThrow(
+        'leave submitting to Nick',
+      );
+    });
+
+    it('refuses an application with something blocking it', async () => {
+      expect.hasAssertions();
+      await fillVerified();
+      await recordPlan(
+        context(),
+        Id,
+        {
+          fills: [],
+          interactive: [],
+          kept: [{ current: 'Green', key: 'f5', label: 'Color', required: false }],
+          needsOptions: [],
+          unanswered: [],
+          uploads: [],
+        },
+        reading([]),
+      );
+      await expect(markSubmitted(context(AgentSubmits), Id, { by: 'agent' })).rejects.toThrow(
+        'needs Nick first',
+      );
+    });
+
+    it('refuses an application deferred to Nick', async () => {
+      expect.hasAssertions();
+      await fillVerified();
+      await deferApplication(context(), Id, 'No confirmation appeared');
+      await expect(markSubmitted(context(AgentSubmits), Id, { by: 'agent' })).rejects.toThrow(
+        'deferred to Nick',
+      );
+    });
+
+    it("records a verified, unblocked submission as the agent's", async () => {
+      expect.hasAssertions();
+      await fillVerified();
+      await expect(
+        markSubmitted(context(AgentSubmits), Id, { by: 'agent' }),
+      ).resolves.toMatchObject({ application: { submittedBy: 'agent' }, status: 'submitted' });
     });
   });
 });

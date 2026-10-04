@@ -78,6 +78,29 @@ const competencyNamed = (
   );
 };
 
+/**
+ * Wording that inverts or qualifies a yes-or-no question — "able to work without sponsorship",
+ * "not authorized" — whose answer is then the opposite of the category's, or not a plain yes or no.
+ * Such a question is left for Nick rather than answered from the category: one wrong answer to a
+ * work-authorization question is an automatic rejection, where an unanswered one costs a question.
+ */
+const InvertedWording = /\b(?:without|not|no longer|never|unable)\b|n['’]t\b/i;
+
+/**
+ * Qualifiers that read as negations but do not invert the question: "authorized to work without
+ * restriction" asks the plain question.
+ */
+const BenignQualifier = /\bwithout (?:any )?restrictions?\b/gi;
+
+/**
+ * An authorization question asked the other way round: whether Nick needs authorization, rather
+ * than whether he has it.
+ */
+const AuthorizationNeeded = /\b(?:require|need)s?\b.*\bauthori[sz]ation\b/i;
+
+const isInverted = (label: string): boolean =>
+  InvertedWording.test(label.replace(BenignQualifier, ''));
+
 const YearsOfExperience = /years?\b.*\bexperience\b.*\b(?:with|in|using|of)\b(.+)$/i;
 
 const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentification']])[] = [
@@ -105,13 +128,16 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   ],
   [
     /sponsor/i,
-    (_label, { preferences }) => from('preferences', yesNo(preferences.hard.sponsorshipRequired)),
+    (label, { preferences }) =>
+      isInverted(label) ? null : from('preferences', yesNo(preferences.hard.sponsorshipRequired)),
   ],
   [
     // cspell:disable-next-line
     /authori[sz]ed to work|legally (?:able|eligible|permitted) to work|work authori[sz]ation|eligible to work/i,
-    (_label, { answers }) =>
-      from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
+    (label, { answers }) =>
+      isInverted(label) || AuthorizationNeeded.test(label)
+        ? null
+        : from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
   ],
   [/e-?mail/i, (_label, { answers }) => from('answers', answers.contact.email)],
   [/phone|mobile/i, (_label, { answers }) => from('answers', answers.contact.phone)],

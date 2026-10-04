@@ -48,6 +48,13 @@ export type PostingStatus = (typeof PostingStatuses)[number];
 
 export const ReviewDecisions = ['approved', 'skipped'] as const;
 
+/**
+ * Who submitted an application: Nick, or the agent under the `verified` submit policy.
+ */
+export const Submitters = ['agent', 'nick'] as const;
+
+export type Submitter = (typeof Submitters)[number];
+
 export type ReviewDecision = (typeof ReviewDecisions)[number];
 
 /**
@@ -96,6 +103,7 @@ export const PostingSchema = z
       .object({
         resumeSha256: z.string().regex(/^[a-f0-9]{64}$/),
         submittedAt: TimestampSchema.nullable(),
+        submittedBy: z.enum(Submitters).nullable().default(null),
       })
       .strict()
       .nullable(),

@@ -7,7 +7,9 @@ import { Command, Option } from 'clipanion';
 import { loadAnswerContext } from '~/scripts/job-search/applying/answer-context';
 import {
   checkReading,
+  deferApplication,
   discardDraft,
+  listHeldApplications,
   readDraft,
   recordPlan,
   startApplication,
@@ -127,7 +129,7 @@ export class JobsApplyPlanCommand extends JsonCommand {
     ]);
     const plan = planFill(reading, answerContext, draft?.resume.stagedFile ?? null);
     if (!this.preview) {
-      await recordPlan(context, this.id, plan);
+      await recordPlan(context, this.id, plan, reading);
     }
     return {
       ...plan,
@@ -151,8 +153,10 @@ export class JobsApplyCheckCommand extends JsonCommand {
     details: `
       Reads the \`form-read\` page script's result, taken after filling, from standard input, and
       records which planned values the form shows. Prints the values it shows differently, those
-      not yet seen, and whether the approved resume has been seen attached. An application can be
-      recorded as filled only once nothing is pending and the resume is verified.
+      not yet seen, whether the approved resume has been seen attached, and the blockers that keep
+      the agent from submitting it — including any required field no plan covered. An application
+      can be recorded as filled only once nothing is pending and the resume is verified, and
+      submitted by the agent only once, in addition, nothing blocks it.
     `,
     examples: [['Check a filled form', '$0 jobs apply check 4012345678 < reading.json']],
   });
@@ -201,5 +205,54 @@ export class JobsApplyDiscardCommand extends JsonCommand {
   protected async run(): Promise<JsonResult> {
     const { dataDirectory } = await resolveSessionContext();
     return { status: (await discardDraft(dataDirectory, this.id)) ? 'discarded' : 'none' };
+  }
+}
+
+/**
+ * Sets an application aside for Nick.
+ */
+export class JobsApplyDeferCommand extends JsonCommand {
+  public static override paths = [['jobs', 'apply', 'defer']];
+  public static usage = Command.Usage({
+    category: 'Jobs',
+    description: 'Set an application aside for Nick, and move on to the next.',
+    details: `
+      For an application the agent cannot finish unattended: a question only Nick can answer, an
+      account to approve, a CAPTCHA, or a submission whose confirmation never appeared. Removes the
+      staged resume and keeps the draft, which \`jobs apply held\` lists for Nick. Starting the
+      application again later begins a fresh draft.
+    `,
+    examples: [
+      [
+        'Defer an application',
+        '$0 jobs apply defer 4012345678 --reason "Two screening questions need Nick"',
+      ],
+    ],
+  });
+  public id = Option.String({ name: 'id', required: true });
+  public reason = Option.String('--reason', {
+    description: 'Why the application is set aside.',
+    required: true,
+  });
+
+  protected async run(): Promise<JsonResult> {
+    const draft = await deferApplication(await resolveSessionContext(), this.id, this.reason);
+    return { blockers: draft.blockers, id: draft.id, status: 'deferred' };
+  }
+}
+
+/**
+ * Lists the applications waiting on Nick.
+ */
+export class JobsApplyHeldCommand extends JsonCommand {
+  public static override paths = [['jobs', 'apply', 'held']];
+  public static usage = Command.Usage({
+    category: 'Jobs',
+    description: 'List the applications waiting on Nick, with what each needs from him.',
+    examples: [['List held applications', '$0 jobs apply held']],
+  });
+
+  protected async run(): Promise<JsonResult> {
+    return { held: await listHeldApplications(await resolveSessionContext()), status: 'ok' };
   }
 }

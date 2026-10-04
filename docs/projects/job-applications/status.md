@@ -70,6 +70,10 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      under run `2026-10-04-1` — every step planned, filled and verified, the approved resume
      uploaded and seen selected, the follow checkbox cleared — and left on its review step for Nick
      to submit.
-   - Next: the first Ashby and Greenhouse fills, then the remaining approved postings one at a time,
-     each submitted by Nick; then 5c, cover letters.
+   - The same day, after Nick submitted that first application himself, applying became unattended:
+     the agent submits fully verified applications under `applying.submit: verified`, defers the
+     rest to one held list (`jobs apply defer|held`), and postings scored into the queue are
+     approved automatically. Yes-or-no answers no longer answer inverted questions.
+   - Next: Nick's go-ahead to run `tsc` and Jest once, then the settings are switched on and the
+     remaining approved postings are applied to in an unattended run; then 5c, cover letters.
 6. **Learning** — search yield tracking, review reasons and proposed preference edits.

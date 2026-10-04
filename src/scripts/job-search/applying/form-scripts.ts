@@ -434,6 +434,40 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
 }`;
 
 /**
+ * Reads the page after Submit was clicked, waiting up to ten seconds for a confirmation: Easy
+ * Apply's "Your application was sent", Greenhouse's and Ashby's thanks. Without one it reports the
+ * page's visible errors and text instead. It never clicks: an unconfirmed submission is deferred to
+ * Nick rather than retried, because a retry after a success that went unseen sends a duplicate.
+ */
+const SubmissionResultScript = `async () => {${FormHelpers}
+  const Confirmed = new RegExp(
+    'your application was sent|application (?:was )?(?:submitted|sent|received)|' +
+      'thank(?:s| you) for (?:applying|your application|your interest)|' +
+      'we(?:\\'|’)ve received your application|successfully submitted',
+    'i',
+  );
+  const scope = () =>
+    [...document.querySelectorAll('dialog[open], [role="dialog"]')].filter(visible).pop() ||
+    document.body;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const match = Confirmed.exec(scope().innerText);
+    if (match) return { confirmed: true, matched: match[0], url: window.location.href };
+    await wait(500);
+  }
+  const errors = [...document.querySelectorAll('[role="alert"], [aria-invalid="true"] ~ *')]
+    .filter(visible)
+    .map((el) => clean(el.innerText))
+    .filter(Boolean)
+    .slice(0, 10);
+  return {
+    confirmed: false,
+    errors,
+    text: scope().innerText.slice(0, 1500),
+    url: window.location.href,
+  };
+}`;
+
+/**
  * Builds the {@link ChooseOptionScriptTemplate} script for one value, embedded as JSON.
  *
  * @param {string} value The option to choose, as the plan states it.
@@ -463,4 +497,5 @@ export const formFillScript = (fills: readonly PlannedFill[]): string =>
 export const FormScripts = {
   'combobox-options': ComboboxOptionsScript,
   'form-read': FormReadScript,
+  'submission-result': SubmissionResultScript,
 } as const;

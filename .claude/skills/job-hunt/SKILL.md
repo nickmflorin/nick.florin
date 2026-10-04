@@ -2,9 +2,9 @@
 name: job-hunt
 description:
   Run Nick's LinkedIn job search — set up the job-search preferences and application answers when
-  they are missing or incomplete, find, filter and score postings, and fill the applications Nick
-  approved for him to submit. Use when Nick says "job hunt", "set up the job search", "find me
-  jobs", "run the job search", "apply to the approved jobs", or invokes /job-hunt.
+  they are missing or incomplete, find, filter and score postings, and apply to the approved ones,
+  unattended. Use when Nick says "job hunt", "set up the job search", "find me jobs", "run the job
+  search", "apply to the approved jobs", or invokes /job-hunt.
 argument-hint: '[setup]'
 disable-model-invocation: true
 ---
@@ -32,8 +32,10 @@ Nick.
 - **Never invent an answer.** Every value in `answers.yaml` is either derived from the public career
   fixtures or given by Nick. If neither, ask.
 - **Never approve a resume.** `jobs resume approve` is reserved for Nick and is denied to agents.
-- **Never submit.** Applications are filled and left open for Nick to submit. Never click a
-  "Submit", "Submit application" or "Send" button, on LinkedIn or any other site.
+- **Submit only what qualifies, and only once.** Click a "Submit" button only when `applying.submit`
+  is `verified` and `jobs apply check` shows the application verified with no blockers, as step 4 of
+  Applying describes. Click it once: a submission whose confirmation never appears is deferred to
+  Nick, never retried. Under `applying.submit: nick`, never click it.
 - **Every LinkedIn page load is budgeted.** Run `pnpm --silent jobs budget take page-view` before
   every navigation and before opening every result card, in the `job-search-browser` tab only, one
   at a time. A refusal ends the run.
@@ -264,15 +266,20 @@ pnpm --silent jobs review <id> --decision skipped --reason "too backend"
 Approved postings wait for the applying stage. Report the decisions at the end: approved, skipped
 with their reasons, and what is left on the maybe list.
 
+Postings that score into the band `applying.autoApprove` names are approved at scoring, with a
+reason beginning `auto:`, and need no review; only the rest are put in front of Nick.
+
 ## Applying
 
-Fill the applications to the postings Nick approved, one at a time: fill one, hand it to Nick, and
-move to the next only once he has submitted or dropped it. List them with
-`jobs posting list --status queued` and take the approved ones.
+Apply to every approved posting (`jobs posting list --status queued`), one at a time,
+**unattended**: Nick is not watching, so never stop to ask him anything during the run. Whatever
+needs him — a question the data does not answer, an account to approve, a form the tooling cannot
+finish — is set aside with `jobs apply defer` and the run moves on to the next posting. He gets one
+report at the end.
 
-An approved resume is required. If `jobs apply start` fails because none is approved, stop and tell
-Nick to generate one with `pnpm resume:generate` and approve it with `pnpm cli jobs resume approve`.
-Easy Apply applications happen inside a run (`jobs run start`), so that a challenge can end it.
+An approved resume is required. If `jobs apply start` fails because none is approved, end the run
+and report it. Easy Apply applications happen inside a run (`jobs run start`), so that a challenge
+can end it; the daily `easy-apply-fill` budget caps how many go out.
 
 ### 1. Start the application
 
@@ -280,20 +287,20 @@ Easy Apply applications happen inside a run (`jobs run start`), so that a challe
 pnpm --silent jobs apply start <id>
 ```
 
-A refusal means the application system needs an account Nick has not approved: ask him, and start
-again with `--account-approved` only if he agrees. The result gives `applyAt`, where the form lives,
-and `resume`, the staged copy of the approved resume to upload.
+A refusal means the application system needs an account Nick has not approved: note the posting for
+the report and move on. Start it with `--account-approved` only once he has approved it. The result
+gives `applyAt`, where the form lives, and `resume`, the staged copy of the approved resume.
 
 ### 2. Open the form
 
 - **Easy Apply:** take a page view, navigate to `applyAt`, take an `easy-apply-fill` unit, then
   click the posting's "Easy Apply" button. The form opens in a dialog of several steps.
 - **Ashby, Greenhouse and other boards:** navigate to `applyAt`; these pages draw on no LinkedIn
-  budget. A sign-in or account-creation page means the account policy applies: stop and ask.
+  budget. A sign-in or account-creation page means the account policy applies: defer the posting.
 
 ### 3. Fill each step
 
-Repeat for each Easy Apply step, or once for a single-page form:
+Repeat for each Easy Apply step — the review step included — or once for a single-page form:
 
 1. **Read** the form with the `form-read` script, and **plan** from the reading:
 
@@ -304,30 +311,32 @@ Repeat for each Easy Apply step, or once for a single-page form:
    JSON
    ```
 
-2. **Resolve what the plan cannot fill yet**, then read and plan again:
-   - `needsOptions`: a combobox whose options appear only when opened. Take one snapshot of the step
-     to find each one's uid by its label, click it with `mcp__job-search-browser__click`, and run
-     the `combobox-options` script, which records its options and closes it.
-   - `unanswered`: a required question the data does not answer. Ask Nick, all of the step's
-     questions at once, and save each answer with `jobs answers add` so no later form asks again.
-     Never fill one yourself.
-   - `unsupported`: a control the tooling cannot fill. Stop and tell Nick which one.
+2. **Probe** each `needsOptions` combobox — take one snapshot of the step to find its uid by its
+   label, click it with `mcp__job-search-browser__click`, and run the `combobox-options` script,
+   which records its options and closes it — then read and plan again.
 
-3. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
+3. **Defer what only Nick can resolve.** A plan with `unanswered`, `kept` or `unsupported` entries
+   cannot be finished unattended: the plan has recorded them as blockers. Defer the posting and move
+   on; never fill an unanswered question yourself.
+
+   ```bash
+   pnpm --silent jobs apply defer <id> --reason "Questions only Nick can answer"
+   ```
+
+4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
    entry: a combobox is clicked open by its uid; a typeahead is focused by script and its `typeText`
    typed with `mcp__job-search-browser__type_text`, which needs no snapshot; either way its
-   `chooseFunction` then picks the option. A `chosen: null` result lists the options; show them to
-   Nick.
+   `chooseFunction` then picks the option. A `chosen: null` result means no option fits: defer.
 
-4. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
+5. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
    "Upload resume" button that opens it. Easy Apply's resume step has no file input: upload through
    its "Upload resume" button, whose uid a snapshot of that step gives. The step preselects Nick's
    newest upload, which is never assumed to be the approved resume; the plan leaves the picker
    alone, and the check confirms the approved resume is the one selected.
 
-5. **Check** the step: read it again and pass the reading to the check, re-filling anything it
-   reports, until its `status` is `ok`:
+6. **Check** the step: read it again and pass the reading to the check, re-filling anything it
+   reports as a mismatch, until its `status` is `ok`:
 
    ```bash
    pnpm --silent jobs apply check <id> <<'JSON'
@@ -335,38 +344,53 @@ Repeat for each Easy Apply step, or once for a single-page form:
    JSON
    ```
 
-6. **Move on.** Run `jobs apply pause`, then click "Next", "Continue" or "Review". Never "Submit".
+   The check also records, as a blocker, any required field no plan covered. Any blocker defers the
+   posting.
 
-A reading whose `challenge` is `true` is refused by the plan: stop at once, and on LinkedIn finish
-the run with `--ended-by challenge`.
+7. **Move on.** Run `jobs apply pause`, then click "Next", "Continue" or "Review".
 
-### 4. Hand it to Nick
+A reading whose `challenge` is `true` is refused by the plan. On LinkedIn, stop at once and finish
+the run with `--ended-by challenge`. On an employer's site, defer the posting and continue.
 
-Easy Apply's review step is a step like the others: read, plan, fill and check it, because it
-carries the "Follow {company}" checkbox, pre-checked, which appears nowhere earlier. A single-page
-form is checked once more after its last fill. When nothing is `pending` and `resumeVerified` is
-`true`, record the application as filled:
+### 4. Submit
+
+On Easy Apply's review step, or once a single-page form is filled, the final check must show nothing
+`pending`, `resumeVerified: true` and no `blockers`. Then record the application as filled:
 
 ```bash
 pnpm --silent jobs application filled <id>
 ```
 
-Tell Nick the application is ready in the browser tab, with any values the plan `kept` from an
-earlier application and the answers he gave. Leave the tab on the form.
+**Under `applying.submit: verified`:** click "Submit application" (or the form's "Submit") once,
+then run the `submission-result` script.
 
-### 5. Record the outcome
+- `confirmed: true` — record the agent's submission, which the cli refuses unless the draft
+  qualifies:
 
-When Nick says he submitted it, record the submission, which also removes the staged resume:
+  ```bash
+  pnpm --silent jobs application submitted <id> --by-agent
+  ```
 
-```bash
-pnpm --silent jobs application submitted <id>
-```
+- `confirmed: false` — never click Submit again: a retry after a success that went unseen sends a
+  duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
+- A CAPTCHA after the click: defer the posting, and on LinkedIn end the run as a challenge.
 
-If he drops the application instead, discard it:
+**Under `applying.submit: nick`:** leave the form open and tell Nick it is ready; record his
+submission with `jobs application submitted <id>` once he says so. Fill nothing else in the tab
+until he has.
 
-```bash
-pnpm --silent jobs apply discard <id>
-```
+### 5. Report
+
+At the end of the run, give Nick one report:
+
+- the applications submitted;
+- `jobs apply held` — each deferred application, with its blockers (the questions to answer, the
+  remembered values to confirm or clear) and reasons;
+- the postings refused for an account he has not approved;
+- the maybe list awaiting his review.
+
+He answers questions with `jobs answers add`; a deferred posting is then started afresh on the next
+run. A posting he drops is discarded with `jobs apply discard <id>`.
 
 A posting whose system the tooling does not fill — Workday, or an unrecognized board — gets an
 answer packet instead (`jobs packet build <id>`). Nick applies from it by hand; record the

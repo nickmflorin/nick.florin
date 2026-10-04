@@ -2,9 +2,10 @@
 
 This folder is the persistent working context for the job-applications project: a process — skills,
 an agent, rules and deterministic CLI commands — that finds jobs on LinkedIn, decides which ones are
-worth applying to against a configured set of preferences, and fills in the applications for a human
-to review and submit. It exists so that any session (human or AI) can pick up exactly where the last
-one left off. **Read this file first, then [status.md](./status.md).**
+worth applying to against a configured set of preferences, and applies to them unattended, setting
+aside for a human whatever it cannot finish from his data. It exists so that any session (human or
+AI) can pick up exactly where the last one left off. **Read this file first, then
+[status.md](./status.md).**
 
 ## What This Project Is
 
@@ -44,8 +45,11 @@ These hold regardless of how the open questions resolve.
   outside the repository and are located through a path in `.env.local`, which is already
   gitignored. Nothing personal is ever written to a tracked file, including test fixtures and
   examples in these docs.
-- **A human clicks Submit.** The process fills an application and stops at the final step. It never
-  submits on its own.
+- **Only a fully verified application is submitted unattended.** Under `applying.submit: verified`
+  the agent submits an application only when every field was answered from Nick's data and read back
+  from the form, and the approved resume was seen attached; anything else is deferred to him. Under
+  `applying.submit: nick`, a human clicks Submit. (Revised 2026-10-04; see
+  [decisions.md](./decisions.md).)
 - **A human approves the resume.** Only a resume explicitly approved through an interactive command
   is ever attached. No agent can approve one, and regenerating the resume never changes what is
   sent.

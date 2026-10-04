@@ -7,11 +7,11 @@ import { configFileIn, writeConfigFile } from '../config-files';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord } from '../ledger/yaml-records';
-import { type Answers, AnswersSchema, type Posting } from '../schemas';
+import { type Answers, AnswersSchema, type Posting, type Submitter } from '../schemas';
 import { type SessionContext } from '../session';
 
 import { type ResolvedAnswer } from './answers';
-import { discardDraft, requireVerifiedDraft } from './drafts';
+import { discardDraft, requireSubmittableDraft, requireVerifiedDraft } from './drafts';
 import { requireApprovedResume, requirePosting } from './requirements';
 
 /**
@@ -54,7 +54,7 @@ export const markFilled = (
     }
     const filled: Posting = {
       ...posting,
-      application: { resumeSha256: resume.manifest.sha256, submittedAt: null },
+      application: { resumeSha256: resume.manifest.sha256, submittedAt: null, submittedBy: null },
       status: 'filled',
     };
     await context.store.putPosting(filled);
@@ -62,25 +62,46 @@ export const markFilled = (
   });
 
 /**
- * Records that Nick has submitted a filled application, and discards its draft and staged resume.
- * Only Nick submits; this records his word that he has.
+ * Records that a filled application has been submitted, and by whom, and discards its draft and
+ * staged resume.
  *
- * @param {SessionContext} context The ledger, the clock and the data directory.
+ * Nick's word that he submitted is recorded as given. The agent's submission is recorded only under
+ * the `verified` submit policy, and only for an application whose draft is verified, unblocked and
+ * not deferred — the same conditions under which it may click Submit at all.
+ *
+ * @param {SessionContext} context The ledger, the preferences, the clock and the data directory.
  * @param {string} id The job identifier of the posting.
+ * @param {{ readonly by: Submitter }} submission Who submitted the application.
  *
- * @throws {Error} If the posting's application has not been filled.
+ * @throws {Error}
+ *   If the application has not been filled, or the agent submitted it without the policy allowing
+ *   it or with a draft that does not qualify.
  *
  * @returns {Promise<Posting>} The posting, now `submitted`.
  */
-export const markSubmitted = (context: SessionContext, id: string): Promise<Posting> =>
+export const markSubmitted = (
+  context: SessionContext,
+  id: string,
+  { by }: { readonly by: Submitter },
+): Promise<Posting> =>
   withLedgerLock(context.dataDirectory, async () => {
     const posting = await requirePosting(context, id);
     if (posting.status !== 'filled' || posting.application === null) {
       throw new Error(`The posting '${id}' has no filled application to submit.`);
+    } else if (by === 'agent') {
+      if (context.preferences.applying.submit !== 'verified') {
+        throw new Error("The settings leave submitting to Nick ('applying.submit: nick').");
+      }
+      const resume = await requireApprovedResume(context.dataDirectory);
+      await requireSubmittableDraft(context.dataDirectory, id, resume.manifest.sha256);
     }
     const submitted: Posting = {
       ...posting,
-      application: { ...posting.application, submittedAt: context.clock.now().toISOString() },
+      application: {
+        ...posting.application,
+        submittedAt: context.clock.now().toISOString(),
+        submittedBy: by,
+      },
       status: 'submitted',
     };
     await context.store.putPosting(submitted);

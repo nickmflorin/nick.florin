@@ -65,8 +65,20 @@ run with `jobs run finish … --ended-by challenge` or `logged-out`. Never try t
 
 ## What Only Nick Does
 
-- **Submitting an application.** Forms are filled and left for Nick to submit; never click a
-  "Submit", "Submit application" or "Send" button on any site.
+- **Deciding to submit.** The agent clicks "Submit" only when `applying.submit` is `verified` and
+  the application's draft is verified, unblocked and not deferred — the conditions
+  `jobs application submitted --by-agent` enforces — and clicks it once: a submission whose
+  confirmation never appears is deferred to Nick, never retried. Under `applying.submit: nick`, it
+  never clicks one.
 - **Approving a resume.** `jobs resume approve` is reserved for him and denied to agents.
 - **Signing into LinkedIn.** Never type or store his credentials.
-- **Answering a question the data does not answer.** Ask him; never invent an answer.
+- **Answering a question the data does not answer.** Never invent an answer. Ask him, or, in an
+  unattended run, defer the application with `jobs apply defer` so the question reaches him in the
+  run's report.
+
+```bash
+# Correct: the application is set aside and the run moves on; the question reaches Nick at the end.
+pnpm --silent jobs apply defer 4012345678 --reason "Screening questions only Nick can answer"
+
+# Disallowed: a plausible answer typed into a field the plan reported as unanswered.
+```

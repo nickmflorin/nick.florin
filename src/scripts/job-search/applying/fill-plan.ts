@@ -78,7 +78,7 @@ const DocumentFileOption = /\.(?:pdf|docx?|rtf|txt)\b/i;
  * Whether a choice field picks among uploaded documents rather than asking a question. The resume
  * upload, and the check that the approved resume is shown selected, cover it, so it is not planned.
  */
-const isDocumentPicker = ({ options, type }: ReadField): boolean =>
+export const isDocumentPicker = ({ options, type }: ReadField): boolean =>
   type !== 'file' &&
   options !== null &&
   options.length > 0 &&

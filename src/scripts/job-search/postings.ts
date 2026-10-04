@@ -117,8 +117,29 @@ export const statusForScore = (
 };
 
 /**
+ * Whether a scored status is approved for applying without review under Nick's auto-approval
+ * setting.
+ */
+const isAutoApproved = (
+  status: ReturnType<typeof statusForScore>,
+  policy: Preferences['applying']['autoApprove'],
+): boolean => {
+  switch (policy) {
+    case 'never':
+      return false;
+    case 'queued':
+      return status === 'queued';
+    case 'maybe':
+      return status !== 'dropped';
+  }
+};
+
+/**
  * Records the scoring agent's assessment of a pending posting, and moves it to the queue, the maybe
  * list or the dropped postings by the configured thresholds.
+ *
+ * A posting that scores into a band Nick has set to be approved automatically is approved here,
+ * with a reason that begins `auto:` so that the learning loop can tell it from his own reviews.
  *
  * @param {SessionContext} context The ledger, the preferences and the data directory.
  * @param {string} id The job identifier of the posting.
@@ -142,11 +163,21 @@ export const recordScore = (
     if (posting.status !== 'pending') {
       throw new Error(`The posting '${id}' is ${posting.status}, not pending its score.`);
     }
-    const scored: Posting = {
-      ...posting,
-      score: parsed.data,
-      status: statusForScore(parsed.data, context.preferences.scoring),
-    };
+    const { applying, scoring } = context.preferences;
+    const status = statusForScore(parsed.data, scoring);
+    const threshold = status === 'queued' ? scoring.queueAt : scoring.maybeAt;
+    const scored: Posting = isAutoApproved(status, applying.autoApprove)
+      ? {
+          ...posting,
+          review: {
+            decision: 'approved',
+            reason: `auto: score ${parsed.data.total} ≥ ${threshold}`,
+            reviewedAt: context.clock.now().toISOString(),
+          },
+          score: parsed.data,
+          status: 'queued',
+        }
+      : { ...posting, score: parsed.data, status };
     await context.store.putPosting(scored);
     return scored;
   });

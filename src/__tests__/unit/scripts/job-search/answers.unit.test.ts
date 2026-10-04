@@ -116,6 +116,17 @@ describe('resolveAnswer()', () => {
     ).toMatchObject({ source: 'answers', value: 'Yes' });
   });
 
+  it.each([
+    'Are you able to work in the US without sponsorship?',
+    'Do you require work authorization to work in the US?',
+    'Are you not authorized to work in the US?',
+    "Aren't you eligible to work in the US?",
+  ])('leaves %j, whose wording inverts the question, for Nick', label => {
+    expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject({
+      unanswered: true,
+    });
+  });
+
   it('falls through to the next matching category when an answer does not fit the options', () => {
     expect(
       resolveAnswer(

@@ -17,6 +17,7 @@ const ScriptNames = [
   'combobox-options',
   'form-read',
   'open-card',
+  'submission-result',
 ] as const;
 
 /**
@@ -37,7 +38,8 @@ export class JobsPageScriptCommand extends JsonCommand {
       \`form-read\` reads the application form or Easy Apply step in view without changing it.
       \`combobox-options\` reads the options of the combobox whose menu was just opened through the
       browser server, and \`choose-option\` chooses the option reading \`--value\` from the open
-      menu.
+      menu. \`submission-result\` waits for the confirmation that a submitted application went
+      through, and reports the page's errors when none appears.
 
       Pass the printed \`function\` to the browser server's \`evaluate_script\` tool.
     `,
@@ -75,6 +77,7 @@ export class JobsPageScriptCommand extends JsonCommand {
         return chooseOptionScript(this.value);
       case 'combobox-options':
       case 'form-read':
+      case 'submission-result':
         return FormScripts[this.name];
       case 'job-detail':
       case 'result-cards':

@@ -6,11 +6,12 @@ import { z } from 'zod';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
+import { listDirectory } from '../fs';
 import { stageApprovedResume, unstageResume } from '../resume/staging';
-import { type ApplicationSystem, TimestampSchema } from '../schemas';
+import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas';
 import { type SessionContext } from '../session';
 
-import { type FillPlan } from './fill-plan';
+import { type FillPlan, isDocumentPicker } from './fill-plan';
 import {
   type FieldValue,
   FieldValueSchema,
@@ -41,15 +42,47 @@ const DraftEntrySchema = z
 type DraftEntry = z.infer<typeof DraftEntrySchema>;
 
 /**
+ * Why the agent may not submit an application until Nick acts on it: a required question the data
+ * does not answer, a combobox whose options were never probed, a control the tooling cannot fill, a
+ * value the form remembered from an earlier application rather than took from Nick's data, or a
+ * required field no plan covered.
+ */
+export const BlockerKinds = [
+  'kept',
+  'needs-options',
+  'unanswered',
+  'unplanned',
+  'unsupported',
+] as const;
+
+/**
+ * One blocker, with the step of the form it was found on — an Easy Apply step's progress, or
+ * `form` for a single-page form — so that planning a step again replaces what was found on it
+ * before.
+ */
+const BlockerSchema = z
+  .object({ kind: z.enum(BlockerKinds), label: z.string(), step: z.string() })
+  .strict();
+
+export type Blocker = z.infer<typeof BlockerSchema>;
+
+/**
  * The record of an application being filled: every value planned into the form, whether a later
  * reading of the form showed it took, and the approved resume staged for it.
  *
  * An application may be marked filled only once every planned value has been seen in the form and
  * the approved resume has been seen attached, so that a value a form silently dropped, or the
- * resume a form chose by default, is caught before Nick is asked to submit.
+ * resume a form chose by default, is caught before anyone submits. The agent may submit it only
+ * when, in addition, nothing blocks it; an application it cannot finish is deferred to Nick.
  */
 export const ApplicationDraftSchema = z
   .object({
+    blockers: z.array(BlockerSchema).default([]),
+    deferral: z
+      .object({ deferredAt: TimestampSchema, reason: TextSchema })
+      .strict()
+      .nullable()
+      .default(null),
     entries: z.array(DraftEntrySchema),
     id: z.string(),
     resume: z
@@ -153,6 +186,8 @@ export const startApplication = async (
     await unstageResume(previous.resume.stagedFile);
   }
   const draft: ApplicationDraft = {
+    blockers: [],
+    deferral: null,
     entries: [],
     id,
     resume: {
@@ -175,13 +210,17 @@ export const startApplication = async (
   };
 };
 
+const stepOf = ({ progress }: FormReading): string => progress ?? 'form';
+
 /**
  * Records a plan's values in the application's draft, unverified, replacing any earlier plan for
- * the same fields.
+ * the same fields, and what blocks the step from being submitted unattended, replacing what was
+ * found on the step before.
  *
  * @param {SessionContext} context The data directory.
  * @param {string} id The job identifier of the posting.
  * @param {FillPlan} plan The plan for one reading of the form.
+ * @param {FormReading} reading The reading the plan was made from.
  *
  * @throws {Error} If no application to the posting has been started.
  *
@@ -191,8 +230,16 @@ export const recordPlan = async (
   { dataDirectory }: SessionContext,
   id: string,
   plan: FillPlan,
+  reading: FormReading,
 ): Promise<ApplicationDraft> => {
   const draft = await requireDraft(dataDirectory, id);
+  const step = stepOf(reading);
+  const blockers: Blocker[] = [
+    ...plan.unanswered.map(({ label }) => ({ kind: 'unanswered' as const, label, step })),
+    ...plan.needsOptions.map(({ label }) => ({ kind: 'needs-options' as const, label, step })),
+    ...plan.kept.map(({ label }) => ({ kind: 'kept' as const, label, step })),
+    ...reading.unsupported.map(label => ({ kind: 'unsupported' as const, label, step })),
+  ];
   const planned: DraftEntry[] = [
     ...[...plan.fills, ...plan.interactive].map(fill => ({ ...fill, verified: false })),
     ...plan.uploads.map(({ key, label }) => ({
@@ -206,6 +253,7 @@ export const recordPlan = async (
   ];
   const updated: ApplicationDraft = {
     ...draft,
+    blockers: [...draft.blockers.filter(blocker => blocker.step !== step), ...blockers],
     entries: [
       ...draft.entries.filter(entry => !planned.some(({ key }) => key === entry.key)),
       ...planned,
@@ -252,6 +300,10 @@ const resumeShownIn = ({ fields }: FormReading, fileName: string): boolean =>
   );
 
 export interface DraftCheck {
+  /**
+   * Everything that keeps the application from being submitted unattended, across its steps.
+   */
+  readonly blockers: Blocker[];
   readonly mismatches: {
     readonly actual: FieldValue | null;
     readonly expected: FieldValue;
@@ -267,7 +319,8 @@ export interface DraftCheck {
 /**
  * Checks a reading of the form, taken after it was filled, against the values planned for the
  * fields it shows, and records which took. A field the reading does not show — one on another
- * step — keeps what was recorded for it.
+ * step — keeps what was recorded for it. A required field that no plan covered and no blocker
+ * already names is recorded as a blocker.
  *
  * @param {SessionContext} context The data directory.
  * @param {string} id The job identifier of the posting.
@@ -276,8 +329,8 @@ export interface DraftCheck {
  * @throws {Error} If no application to the posting has been started.
  *
  * @returns {Promise<DraftCheck>}
- *   The values the form does not show as planned, the values still unseen, and whether the resume
- *   has been seen attached.
+ *   The values the form does not show as planned, the values still unseen, whether the resume has
+ *   been seen attached, and what blocks an unattended submission.
  */
 export const checkReading = async (
   { dataDirectory }: SessionContext,
@@ -302,13 +355,34 @@ export const checkReading = async (
         : { actual: field.value, expected: entry.value, label: entry.label },
     };
   });
+  const step = stepOf(reading);
+  const named = new Set(
+    draft.blockers
+      .filter(blocker => blocker.step === step && blocker.kind !== 'unplanned')
+      .map(({ label }) => label),
+  );
+  const unplanned: Blocker[] = reading.fields
+    .filter(
+      field =>
+        field.required &&
+        field.type !== 'file' &&
+        !isDocumentPicker(field) &&
+        !draft.entries.some(({ key }) => key === field.key) &&
+        !named.has(field.label),
+    )
+    .map(({ label }) => ({ kind: 'unplanned' as const, label, step }));
   const updated: ApplicationDraft = {
     ...draft,
+    blockers: [
+      ...draft.blockers.filter(blocker => blocker.step !== step || blocker.kind !== 'unplanned'),
+      ...unplanned,
+    ],
     entries: checked.map(({ entry }) => entry),
     resume: { ...draft.resume, verified: draft.resume.verified || resumeShown },
   };
   await writeDraft(dataDirectory, updated);
   return {
+    blockers: updated.blockers,
     mismatches: checked.flatMap(({ mismatch }) => (mismatch === null ? [] : [mismatch])),
     pending: updated.entries.filter(({ verified }) => !verified).map(({ label }) => label),
     resumeVerified: updated.resume.verified,
@@ -351,6 +425,98 @@ export const requireVerifiedDraft = async (
     );
   }
   return draft;
+};
+
+/**
+ * Reads an application's draft, requiring that the agent may submit it unattended: verified as
+ * {@link requireVerifiedDraft} requires, with nothing blocking it and no deferral.
+ *
+ * @param {string} dataDirectory The job-search data directory.
+ * @param {string} id The job identifier of the posting.
+ * @param {string} sha256 The hash of the resume approved now.
+ *
+ * @throws {Error} If the draft is not verified, something blocks it, or it was deferred to Nick.
+ *
+ * @returns {Promise<ApplicationDraft>} The submittable draft.
+ */
+export const requireSubmittableDraft = async (
+  dataDirectory: string,
+  id: string,
+  sha256: string,
+): Promise<ApplicationDraft> => {
+  const draft = await requireVerifiedDraft(dataDirectory, id, sha256);
+  if (draft.deferral !== null) {
+    throw new Error(`The application was deferred to Nick: ${draft.deferral.reason}`);
+  } else if (draft.blockers.length > 0) {
+    throw new Error(
+      `The application needs Nick first: ${draft.blockers
+        .map(({ kind, label }) => `${label} (${kind})`)
+        .join('; ')}.`,
+    );
+  }
+  return draft;
+};
+
+/**
+ * Sets an application aside for Nick — a question only he can answer, a submission whose
+ * confirmation never appeared — and removes its staged resume, keeping the draft, with its
+ * blockers, for {@link listHeldApplications}.
+ *
+ * @param {SessionContext} context The data directory and the clock.
+ * @param {string} id The job identifier of the posting.
+ * @param {string} reason Why the application is set aside.
+ *
+ * @throws {Error} If no application to the posting has been started.
+ *
+ * @returns {Promise<ApplicationDraft>} The deferred draft.
+ */
+export const deferApplication = async (
+  { clock, dataDirectory }: SessionContext,
+  id: string,
+  reason: string,
+): Promise<ApplicationDraft> => {
+  const draft = await requireDraft(dataDirectory, id);
+  await unstageResume(draft.resume.stagedFile);
+  const deferred: ApplicationDraft = {
+    ...draft,
+    deferral: { deferredAt: clock.now().toISOString(), reason: reason.trim() },
+  };
+  await writeDraft(dataDirectory, deferred);
+  return deferred;
+};
+
+export interface HeldApplication {
+  readonly blockers: Blocker[];
+  readonly company: string;
+  readonly id: string;
+  readonly reason: null | string;
+  readonly title: string;
+}
+
+/**
+ * Lists the applications waiting on Nick: those deferred to him, and those whose drafts hold
+ * blockers — the one list an unattended run hands him, in place of interrupting it.
+ *
+ * @param {SessionContext} context The ledger and the data directory.
+ *
+ * @returns {Promise<HeldApplication[]>} Each held application, with why it is held.
+ */
+export const listHeldApplications = async (context: SessionContext): Promise<HeldApplication[]> => {
+  const drafts = await Promise.all(
+    (await listDirectory(path.join(context.dataDirectory, DraftDirectoryName)))
+      .filter(name => name.endsWith('.yaml'))
+      .map(name => readDraft(context.dataDirectory, name.replace(/\.yaml$/, ''))),
+  );
+  const held = drafts.filter(
+    (draft): draft is ApplicationDraft =>
+      draft !== null && (draft.deferral !== null || draft.blockers.length > 0),
+  );
+  return Promise.all(
+    held.map(async ({ blockers, deferral, id }) => {
+      const { company, title } = await requirePosting(context, id);
+      return { blockers, company, id, reason: deferral?.reason ?? null, title };
+    }),
+  );
 };
 
 /**

@@ -142,15 +142,34 @@ export const NewAccountPolicies = ['allow', 'ask', 'never'] as const;
 export type NewAccountPolicy = (typeof NewAccountPolicies)[number];
 
 /**
+ * Which scored postings are approved for applying without Nick's review: none, those scored into
+ * the queue, or those on the maybe list as well. Postings left unapproved wait for his review.
+ */
+export const AutoApprovals = ['never', 'queued', 'maybe'] as const;
+
+export type AutoApproval = (typeof AutoApprovals)[number];
+
+/**
+ * Who submits a filled application. `nick` leaves every filled form for him. `verified` lets the
+ * agent submit an application whose every field was answered from Nick's data and seen in the form,
+ * with the approved resume attached; anything less is deferred to him.
+ */
+export const SubmitPolicies = ['nick', 'verified'] as const;
+
+export type SubmitPolicy = (typeof SubmitPolicies)[number];
+
+/**
  * How applications are filled. `followCompany` and `markTopChoice` set the checkboxes LinkedIn adds
  * to an Easy Apply form — following the company, which it pre-checks, and marking the posting a top
  * choice, of which it allows a few a month — so that neither is left to the form's default.
  */
 const ApplyingSchema = z
   .object({
+    autoApprove: z.enum(AutoApprovals).default('never'),
     followCompany: z.boolean().default(false),
     markTopChoice: z.boolean().default(false),
     newAccounts: z.enum(NewAccountPolicies).default('ask'),
+    submit: z.enum(SubmitPolicies).default('nick'),
   })
   .strict()
   .default({});

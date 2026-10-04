@@ -10,7 +10,9 @@ import {
 } from './commands/jobs/jobs-apply-commands';
 import {
   JobsApplyCheckCommand,
+  JobsApplyDeferCommand,
   JobsApplyDiscardCommand,
+  JobsApplyHeldCommand,
   JobsApplyPauseCommand,
   JobsApplyPlanCommand,
   JobsApplyStartCommand,
@@ -50,7 +52,9 @@ const Commands: readonly CommandClass[] = [
   JobsApplicationFilledCommand,
   JobsApplicationSubmittedCommand,
   JobsApplyCheckCommand,
+  JobsApplyDeferCommand,
   JobsApplyDiscardCommand,
+  JobsApplyHeldCommand,
   JobsApplyPauseCommand,
   JobsApplyPlanCommand,
   JobsApplyStartCommand,

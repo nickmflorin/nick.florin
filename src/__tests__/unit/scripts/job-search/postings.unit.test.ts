@@ -108,6 +108,35 @@ describe('posting operations', () => {
       });
     });
 
+    it('approves a queued posting without review when the settings say so', async () => {
+      expect.hasAssertions();
+      const autoApproving: SessionContext = {
+        ...context(),
+        preferences: PreferencesSchema.parse({
+          ...MinimalPreferences,
+          applying: { autoApprove: 'queued' },
+        }),
+      };
+      await expect(recordScore(autoApproving, '4012345678', score())).resolves.toMatchObject({
+        review: { decision: 'approved', reason: 'auto: score 78 ≥ 70' },
+        status: 'queued',
+      });
+    });
+
+    it('leaves a maybe posting for review when only queued postings are approved', async () => {
+      expect.hasAssertions();
+      const autoApproving: SessionContext = {
+        ...context(),
+        preferences: PreferencesSchema.parse({
+          ...MinimalPreferences,
+          applying: { autoApprove: 'queued' },
+        }),
+      };
+      await expect(
+        recordScore(autoApproving, '4012345678', score({ total: 60 })),
+      ).resolves.toMatchObject({ review: { decision: null }, status: 'maybe' });
+    });
+
     it('refuses an invalid score', async () => {
       expect.hasAssertions();
       await expect(

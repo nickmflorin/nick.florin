@@ -16,6 +16,52 @@ Format:
 
 ---
 
+## 2026-10-04 — The agent submits fully verified applications; high scorers skip review
+
+**Decision:** Supersedes "A human submits every application" (2026-10-02). Two settings in
+`preferences.yaml`, `applying.submit` (`nick` | `verified`) and `applying.autoApprove` (`never` |
+`queued` | `maybe`), both defaulting to the old behavior; Nick chose `verified` and `queued`:
+
+- **Submission.** The agent clicks Submit only on an application whose draft is verified — every
+  planned value read back from the form, the approved resume seen attached — and holds no blockers.
+  A blocker is a required question the data does not answer, a combobox never probed, a control the
+  tooling cannot fill, a value the form remembered from an earlier application rather than took from
+  Nick's data, or a required field no plan covered. `jobs application submitted --by-agent` refuses
+  anything else, and records `submittedBy: agent` on the posting.
+- **Once only.** Submit is clicked once. When the `submission-result` script sees no confirmation,
+  the application is deferred, never retried: a retry after a success that went unseen sends a
+  duplicate.
+- **Unattended runs.** Nothing interrupts a run. An application that needs Nick is set aside with
+  `jobs apply defer`, and `jobs apply held` gives him one list at the end: the questions to answer,
+  the remembered values to confirm, the unconfirmed submissions and the accounts to approve.
+- **Review.** A posting that scores into the queue is approved at scoring, with a reason beginning
+  `auto:`; the maybe list still waits for Nick.
+- **Inverted questions.** The yes-or-no categories leave a question whose wording inverts it — "able
+  to work without sponsorship", "do you require work authorization" — unanswered rather than answer
+  it from the category, because the plain answer to the inverted question is the wrong one, and a
+  wrong work-authorization answer is an automatic rejection.
+
+```bash
+pnpm --silent jobs application filled 4012345678
+# click Submit once, then run the submission-result script
+pnpm --silent jobs application submitted 4012345678 --by-agent   # refused unless it qualifies
+pnpm --silent jobs apply defer 4012345678 --reason "Submitted; no confirmation appeared"
+pnpm --silent jobs apply held
+```
+
+**Why:** After the first filled application waited for him, Nick said the point of the project is to
+apply in the background while he does other things, without clicking Submit on each one. The
+original decision's protections are kept where they matter: nothing is submitted that was not
+answered from his data and verified in the form, and the daily Easy Apply budget and pacing still
+bound how much LinkedIn sees. The account risk that decision weighed is accepted by Nick in exchange
+for throughput.
+
+**Alternatives considered:** Auto-submitting Easy Apply only (leaves a third of the postings, on
+employer sites, waiting for him). One batch approval of all filled applications (still a per-run
+interruption, and filled forms cannot all stay open in one LinkedIn tab).
+
+---
+
 ## 2026-10-04 — Forms are filled by one generic reader and filler, and verified before "filled"
 
 **Decision:** Stage 5b fills Easy Apply, Ashby and Greenhouse forms with one set of page scripts
@@ -719,6 +765,9 @@ manual). All three single-page systems in v1 (delays the first usable version). 
 including Workday (open-ended, brittle).
 
 ## 2026-10-02 — A human submits every application
+
+_Superseded 2026-10-04 by "The agent submits fully verified applications; high scorers skip
+review"._
 
 **Decision:** The process discovers, filters, scores and fills applications, then stops at the final
 step for a human to review the filled form and click Submit. It never submits on its own.

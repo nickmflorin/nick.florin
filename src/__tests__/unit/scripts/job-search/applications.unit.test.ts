@@ -92,7 +92,7 @@ describe('applications', () => {
       expect.hasAssertions();
       await approveAResume();
       await markFilled(context(), '4012345678', { byHand: true });
-      await expect(markSubmitted(context(), '4012345678')).resolves.toMatchObject({
+      await expect(markSubmitted(context(), '4012345678', { by: 'nick' })).resolves.toMatchObject({
         application: { submittedAt: '2026-10-04T12:00:00.000Z' },
         status: 'submitted',
       });
@@ -100,7 +100,9 @@ describe('applications', () => {
 
     it('refuses an application that was never filled', async () => {
       expect.hasAssertions();
-      await expect(markSubmitted(context(), '4012345678')).rejects.toThrow('no filled application');
+      await expect(markSubmitted(context(), '4012345678', { by: 'nick' })).rejects.toThrow(
+        'no filled application',
+      );
     });
   });
 
