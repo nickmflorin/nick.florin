@@ -431,7 +431,8 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
       }
       setValue(el, option.value);
     } else if (fill.type === 'radio' && pressButtons(el).length > 1) {
-      const button = pressButtons(el).find((candidate) => clean(candidate.innerText) === fill.value);
+      const button = pressButtons(el)
+        .find((candidate) => clean(candidate.innerText) === fill.value);
       if (!button) {
         results.push({ key: fill.key, ok: false, reason: 'No option reads ' + fill.value + '.' });
         continue;
