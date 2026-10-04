@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  CompensationSchema,
   CountSchema,
   LinkedInJobIdPattern,
   LocalDateSchema,
@@ -101,6 +102,7 @@ export const PostingSchema = z
     applyUrl: z.string().url().nullable().default(null),
     applyVia: z.enum(ApplicationSystems),
     company: TextSchema,
+    compensation: CompensationSchema.nullable().default(null),
     description: z.string().nullable().default(null),
     filterReason: TextSchema.nullable(),
     fingerprint: TextSchema,

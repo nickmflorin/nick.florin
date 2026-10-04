@@ -38,6 +38,7 @@ describe('triageCandidates()', () => {
     expect(records).toStrictEqual([
       posting({
         company: 'Hooli',
+        compensation: { currency: 'USD', maximum: 200000, minimum: 170000 },
         fingerprint: 'hooli|senior-software-engineer',
         firstSeenAt: '2026-10-03T12:00:00.000Z',
         id: '4000000001',

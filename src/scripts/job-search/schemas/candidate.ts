@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { LinkedInJobIdPattern, TextSchema, TimestampSchema } from './common';
+import { CompensationSchema, LinkedInJobIdPattern, TextSchema, TimestampSchema } from './common';
 import { ApplicationSystems } from './ledger';
 import { CompanySizeBands, Workplaces } from './preferences';
 
@@ -11,23 +11,6 @@ import { CompanySizeBands, Workplaces } from './preferences';
 export const TriageStages = ['card', 'detail'] as const;
 
 export type TriageStage = (typeof TriageStages)[number];
-
-const CompensationSchema = z
-  .object({
-    currency: z
-      .string()
-      .regex(/^[A-Z]{3}$/)
-      .default('USD'),
-    maximum: z.number().int().positive().nullable(),
-    minimum: z.number().int().positive().nullable(),
-  })
-  .strict()
-  .refine(({ maximum, minimum }) => maximum !== null || minimum !== null, {
-    message: 'A compensation range must have at least one bound.',
-  })
-  .refine(({ maximum, minimum }) => maximum === null || minimum === null || minimum <= maximum, {
-    message: 'The minimum compensation must not exceed the maximum.',
-  });
 
 /**
  * Where a candidate was found. The run it was found in is supplied by the command that records it,

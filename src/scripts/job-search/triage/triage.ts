@@ -74,7 +74,7 @@ const toPosting = (
     status,
   }: { readonly filterReason: null | string; readonly status: PostingStatus },
 ): Posting => ({
-  ...pick(candidate, ['applyUrl', 'company', 'id', 'title']),
+  ...pick(candidate, ['applyUrl', 'company', 'compensation', 'id', 'title']),
   application: null,
   applyVia:
     candidate.applyVia === 'unresolved' && candidate.applyUrl !== null

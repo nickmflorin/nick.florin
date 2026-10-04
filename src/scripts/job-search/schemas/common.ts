@@ -39,3 +39,24 @@ export const TextSchema = z.string().trim().min(1);
 export const TermsSchema = z.array(TextSchema).default([]);
 
 export const TimestampSchema = z.string().datetime();
+
+/**
+ * A compensation range as a posting states it, in whole units of its currency, with at least one
+ * bound.
+ */
+export const CompensationSchema = z
+  .object({
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/)
+      .default('USD'),
+    maximum: z.number().int().positive().nullable(),
+    minimum: z.number().int().positive().nullable(),
+  })
+  .strict()
+  .refine(({ maximum, minimum }) => maximum !== null || minimum !== null, {
+    message: 'A compensation range must have at least one bound.',
+  })
+  .refine(({ maximum, minimum }) => maximum === null || minimum === null || minimum <= maximum, {
+    message: 'The minimum compensation must not exceed the maximum.',
+  });

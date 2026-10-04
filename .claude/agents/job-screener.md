@@ -46,9 +46,13 @@ The `total` is the weighted sum, rounded: `stack` 0.30, `seniority` 0.25, `domai
 0.10, `notes` 0.20.
 
 - **`dealbreakers`** — only a hard preference the posting's text breaks and its card could not show:
-  an office requirement in a city outside the accepted locations, compensation stated below the
-  floor, a security clearance or citizenship requirement, contract-only work. Any dealbreaker drops
-  the posting.
+  an office requirement in a city outside the accepted locations, a security clearance or
+  citizenship requirement, contract-only work, or compensation whose stated **maximum** is strictly
+  below `hard.compensation.floor`. A range reaching the floor is not a dealbreaker, however low its
+  minimum: compensation is filtered by code before scoring, and the scorer only catches a range the
+  card did not show. Any dealbreaker drops the posting.
+- **Compensation** — the posting's `compensation`, when not `null`, is the range read from its card
+  or text; use it, and never call compensation unlisted when it is there.
 - **`flags`** — anything Nick should see before deciding: a label the text contradicts ("Remote"
   with office days), a recruiter posting that hides the client, an unusual requirement, relocation,
   a level mismatch between title and description.

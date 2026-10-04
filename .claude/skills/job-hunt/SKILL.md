@@ -204,9 +204,11 @@ pnpm --silent jobs posting describe --from build/job-search/<id>.json
 
 The description reaches the scorer through the ledger, never through this conversation.
 
-**Take every page view as its own command.** Never chain `jobs budget take` after another command
-that can fail, or a page can load without having been budgeted; if one ever does, take the missing
-unit at once.
+**Take every page view as its own command, and wait for it.** Never chain `jobs budget take` after
+another command that can fail, or a page can load without having been budgeted; if one ever does,
+take the missing unit at once. Never issue the budget call in the same batch of parallel tool calls
+as the navigation or click it pays for: parallel calls run concurrently, so the page would load
+while the budget is still waiting out the delay. The grant comes back first; then the browser acts.
 
 ### 4. Finish the run
 
