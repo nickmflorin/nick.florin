@@ -16,6 +16,27 @@ Format:
 
 ---
 
+## 2026-10-03 — Setup precedes live discovery; the agent reads pages for v1
+
+**Decision:** Stage 3 is split so that nothing touches LinkedIn before the preferences exist: 3a
+adds the `job-search-browser` server, the `~/job-search/` directory and a search-URL builder, with
+no LinkedIn traffic; 3b is the setup step that writes `preferences.yaml` (brought forward from stage
+4); 3c is live discovery, after a session restart loads the browser server and a manual LinkedIn
+login in its window. Postings are read from LinkedIn's pages by the agent: it reads the page's
+accessibility snapshot and writes the candidate JSON, which `jobs triage` validates against the
+candidate schema.
+
+**Why:** Discovery depends on the preferences, so setup has to come first. An agent reading the
+snapshot survives LinkedIn's frequent markup changes, and the schema check bounds what it can
+produce; a fixed extractor cannot be written until real pages have been studied, and breaks silently
+when the markup moves.
+
+**Alternatives considered:** A fixed DOM extraction script run in the page (fast, no per-page model
+cost, but brittle against obfuscated, frequently changing markup; deferred to a future improvement
+for the result pages, once real sessions show which fields are stable).
+
+---
+
 ## 2026-10-03 — Resume provenance is captured when the HTML is emitted
 
 **Decision:** The state of the resume sources — the commit, and the uncommitted files under

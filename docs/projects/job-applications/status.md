@@ -43,11 +43,17 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
 
 1. **Foundations** — done 2026-10-03.
 2. **Deterministic commands** — done 2026-10-03.
-3. **Browser and discovery** — the `job-search-browser` server; LinkedIn recommendations and
-   generated searches, read in two passes; logged-out detection.
-4. **Judgment and orchestration** — the `job-screener` agent, the orchestrating skill (setup,
-   per-run confirmation, review queue) and the guardrail rules. End to end through the review queue,
-   before anything touches a form.
+3. **Browser, setup and discovery**, split so nothing touches LinkedIn before preferences exist:
+   - 3a — done 2026-10-03: the `job-search-browser` server, `~/job-search/` and its README, and
+     `jobs search url`.
+   - 3b — setup: derive the preferences from the career content, ask the personal constraints, write
+     `preferences.yaml`.
+   - 3c — live discovery: restart the session to load the browser server, log into LinkedIn by hand
+     in its window, then read recommendations and generated searches in two passes, with logged-out
+     detection.
+4. **Judgment and orchestration** — the `job-screener` agent, the rest of the orchestrating skill
+   (per-run confirmation, review queue) and the guardrail rules. End to end through the review
+   queue, before anything touches a form.
 5. **Applying** — Easy Apply filling, external-posting classification and answer packets, cover
    letters.
 6. **Learning** — search yield tracking, review reasons and proposed preference edits.

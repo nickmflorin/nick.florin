@@ -40,7 +40,10 @@ its own branch/PR.
       entry, never written to the file), or update the saved preferences. (v1)
 - [ ] **Read LinkedIn's recommendations** (`/jobs/collections/recommended`) in the browser. (v1)
 - [ ] **Generate and run searches.** Title × keyword combinations derived from the profile, carrying
-      LinkedIn's own filters as query parameters, stored in `preferences.yaml`. (v1)
+      LinkedIn's own filters as query parameters, stored in `preferences.yaml`. (v1) The URL builder
+      landed 2026-10-03 as `jobs search url` (`src/scripts/job-search/discovery/search-urls.ts`):
+      workplaces, posting age, experience levels and Easy Apply applied through LinkedIn's own
+      filters, newest first.
 
   ```yaml
   searches:
@@ -103,8 +106,10 @@ its own branch/PR.
 
 ## Browser
 
-- [ ] **Add the `job-search-browser` server** to `.mcp.json`, with `--userDataDir` at
-      `${HOME}/job-search/profiles/chrome`, and a README in `~/job-search/` explaining it.
+- [x] **Add the `job-search-browser` server** to `.mcp.json`, with `--userDataDir` at
+      `${HOME}/job-search/profiles/chrome`, and a README in `~/job-search/` explaining it. Landed
+      2026-10-03, with usage statistics and CrUX lookups turned off; `~/job-search/README.md`
+      created.
 - [ ] **Detect a logged-out session** and stop the run with a request to log in manually in the
       job-search window.
 - [ ] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1)
@@ -166,3 +171,8 @@ Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./d
 - [ ] **Per-posting generated resumes** — competencies and bullets selected and reordered for each
       description. The largest build, and a new document to review with every application; worth
       revisiting only if named versions prove too coarse.
+- [ ] **A fixed extraction script for LinkedIn result pages.** A JS extractor run in the page
+      through the browser server, returning candidate JSON without a model reading the snapshot —
+      faster, and free per page. Deferred until real sessions show which fields LinkedIn's
+      obfuscated markup keeps stable; the agent-read snapshot stays as the fallback when the
+      extractor's output fails the candidate schema.

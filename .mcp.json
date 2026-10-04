@@ -3,6 +3,16 @@
     "chrome-devtools": {
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@latest"]
+    },
+    "job-search-browser": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--userDataDir=${HOME}/job-search/profiles/chrome",
+        "--no-usage-statistics",
+        "--no-performance-crux"
+      ]
     }
   }
 }

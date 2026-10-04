@@ -5,6 +5,7 @@ import { JobsBudgetTakeCommand } from './commands/jobs/jobs-budget-take-command'
 import { JobsProfileDigestCommand } from './commands/jobs/jobs-profile-digest-command';
 import { JobsResumeApproveCommand } from './commands/jobs/jobs-resume-approve-command';
 import { JobsRunFinishCommand, JobsRunStartCommand } from './commands/jobs/jobs-run-commands';
+import { JobsSearchUrlCommand } from './commands/jobs/jobs-search-url-command';
 import { JobsTriageCommand } from './commands/jobs/jobs-triage-command';
 
 /**
@@ -21,6 +22,7 @@ const Commands: readonly CommandClass[] = [
   JobsResumeApproveCommand,
   JobsRunFinishCommand,
   JobsRunStartCommand,
+  JobsSearchUrlCommand,
   JobsTriageCommand,
 ];
 
