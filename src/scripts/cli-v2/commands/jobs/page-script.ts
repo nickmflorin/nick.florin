@@ -15,6 +15,7 @@ const ScriptNames = [
   ...PageScriptNames,
   'choose-option',
   'combobox-options',
+  'embedded-board',
   'form-read',
   'open-card',
   'submission-result',
@@ -38,7 +39,8 @@ export class JobsPageScriptCommand extends JsonCommand {
       \`form-read\` reads the application form or Easy Apply step in view without changing it.
       \`combobox-options\` reads the options of the combobox whose menu was just opened through the
       browser server, and \`choose-option\` chooses the option reading \`--value\` from the open
-      menu. \`submission-result\` waits for the confirmation that a submitted application went
+      menu. \`embedded-board\` finds the direct link to an application form embedded in an
+      employer's careers page. \`submission-result\` waits for the confirmation that a submitted application went
       through, and reports the page's errors when none appears.
 
       Pass the printed \`function\` to the browser server's \`evaluate_script\` tool.
@@ -80,6 +82,7 @@ export class JobsPageScriptCommand extends JsonCommand {
         }
         return chooseOptionScript(this.value);
       case 'combobox-options':
+      case 'embedded-board':
       case 'form-read':
       case 'submission-result':
         return FormScripts[this.name];

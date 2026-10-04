@@ -107,6 +107,10 @@ const FormHelpers = String.raw`
     );
     return following[0] || listboxes[listboxes.length - 1] || null;
   };
+  const pressButtons = (input) =>
+    input.type === 'checkbox' && input.parentElement
+      ? [...input.parentElement.querySelectorAll('button[aria-pressed]')]
+      : [];
   const optionsIn = (listbox) => {
     const roleOptions = [...listbox.querySelectorAll('[role="option"]')];
     return roleOptions.length > 0 ? roleOptions : [...listbox.querySelectorAll('button, li')];
@@ -127,6 +131,10 @@ const FormHelpers = String.raw`
  * container that holds no other control, as LinkedIn's location typeahead needs. A field is
  * required when it is marked so, or when its label carries a `*`, a `required` class, or a `*`
  * drawn by CSS.
+ *
+ * A checkbox that sits beside `aria-pressed` buttons — Ashby's yes-or-no questions — is reported as
+ * a choice among the buttons, with the pressed one as its value, since the checkbox's own state
+ * cannot tell an unanswered question from a "No".
  *
  * A combobox's options are known only once its menu has been opened, so a combobox not yet probed
  * by the {@link ComboboxOptionsScript} is reported with `options: null`. One with a short label
@@ -154,11 +162,12 @@ const FormReadScript = `() => {${FormHelpers}
     (getComputedStyle(el, '::after').content || '').includes('*'));
   const nearbyLabel = (el, group) => {
     let node = el.parentElement;
+    let fallback = null;
     for (let depth = 0; node && depth < 7; depth += 1) {
       const foreign = [...node.querySelectorAll('input, select, textarea')]
         .filter((other) => !group.includes(other) && other.type !== 'hidden' &&
           other.getAttribute('aria-hidden') !== 'true');
-      if (foreign.length > 0) return null;
+      if (foreign.length > 0) break;
       const candidates = [...node.querySelectorAll(
         'label, legend, h3, h4, [role="heading"], [id$="-label"], [class*="label"], ' +
           '[class*="question"]',
@@ -174,15 +183,15 @@ const FormReadScript = `() => {${FormHelpers}
         });
       const closest = candidates[candidates.length - 1];
       if (closest) return { el: closest, text: stripMarker(closest.innerText) };
-      const firstLine = group.length === 1 && el.tagName !== 'SELECT'
+      const firstLine = !fallback && group.length === 1 && el.tagName !== 'SELECT'
         ? (node.innerText || '').split('\\n').map(clean).find(Boolean)
         : undefined;
       if (firstLine && firstLine.length < 200 && !GenericLabel.test(stripMarker(firstLine))) {
-        return { el: null, starred: /\\*$/.test(firstLine), text: stripMarker(firstLine) };
+        fallback = { el: null, starred: /\\*$/.test(firstLine), text: stripMarker(firstLine) };
       }
       node = node.parentElement;
     }
-    return null;
+    return fallback;
   };
   const labelOf = (el, group) => {
     const container = group.length > 1 ? el.closest(GroupContainer) : null;
@@ -259,6 +268,10 @@ const FormReadScript = `() => {${FormHelpers}
     } else if (el.type === 'file') {
       return { ...base, options: [], type: 'file',
         value: [...(el.files || [])].map((file) => file.name), widget: 'file' };
+    } else if (pressButtons(el).length > 1) {
+      const pressed = pressButtons(el).find((b) => b.getAttribute('aria-pressed') === 'true');
+      return { ...base, options: pressButtons(el).map((b) => clean(b.innerText)), type: 'radio',
+        value: pressed ? clean(pressed.innerText) : null, widget: 'native' };
     } else if (el.type === 'radio') {
       const checked = group.find((member) => member.checked);
       return { ...base, options: group.map(optionText), type: 'radio',
@@ -417,6 +430,13 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
         continue;
       }
       setValue(el, option.value);
+    } else if (fill.type === 'radio' && pressButtons(el).length > 1) {
+      const button = pressButtons(el).find((candidate) => clean(candidate.innerText) === fill.value);
+      if (!button) {
+        results.push({ key: fill.key, ok: false, reason: 'No option reads ' + fill.value + '.' });
+        continue;
+      }
+      if (button.getAttribute('aria-pressed') !== 'true') button.click();
     } else if (fill.type === 'radio') {
       const member = members.find((candidate) => optionText(candidate) === fill.value);
       if (!member) {
@@ -475,6 +495,26 @@ const SubmissionResultScript = `async () => {${FormHelpers}
 }`;
 
 /**
+ * Finds the direct link to an application form embedded in an employer's own careers page — the
+ * `ashby_jid` or `gh_jid` in the page's address names the job — among the page's links and frames
+ * on the application system's own host, where the form can be read and filled.
+ */
+const EmbeddedBoardScript = `async () => {${FormHelpers}
+  const params = new URLSearchParams(window.location.search);
+  const job = params.get('ashby_jid') || params.get('gh_jid');
+  if (!job) return { href: null, reason: 'The address names no embedded job.' };
+  const Hosts = /^https:\\/\\/(?:jobs\\.ashbyhq\\.com|(?:job-)?boards\\.greenhouse\\.io)\\//;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const found = [...document.querySelectorAll('a[href], iframe[src]')]
+      .map((el) => el.href || el.src)
+      .find((url) => Hosts.test(url) && url.includes(job));
+    if (found) return { href: found };
+    await wait(500);
+  }
+  return { href: null, reason: 'No link on the page leads to the job on its board.' };
+}`;
+
+/**
  * Builds the {@link ChooseOptionScriptTemplate} script for one value, embedded as JSON.
  *
  * @param {string} value The option to choose, as the plan states it.
@@ -503,6 +543,7 @@ export const formFillScript = (fills: readonly PlannedFill[]): string =>
  */
 export const FormScripts = {
   'combobox-options': ComboboxOptionsScript,
+  'embedded-board': EmbeddedBoardScript,
   'form-read': FormReadScript,
   'submission-result': SubmissionResultScript,
 } as const;

@@ -303,6 +303,10 @@ Start it with `--account-approved` only once he has approved the account. Otherw
   click the posting's "Easy Apply" button. The form opens in a dialog of several steps.
 - **Ashby, Greenhouse and other boards:** navigate to `applyAt`; these pages draw on no LinkedIn
   budget. A sign-in or account-creation page means the account policy applies: defer the posting.
+- **A board embedded in the employer's site** — an `applyAt` on the employer's own domain with an
+  `ashby_jid` or `gh_jid` in it — sits in a frame the scripts cannot reach. Run the `embedded-board`
+  script there and navigate to the `href` it returns, adding `/application` to an Ashby job's
+  address, which opens its form. Without an `href`, hand the posting to Nick.
 
 ### 3. Fill each step
 
