@@ -1,0 +1,206 @@
+import { toWords } from '../ledger/fingerprint';
+import { type DigestCompetency } from '../profile/digest';
+import { type Answers, type Preferences } from '../schemas';
+
+/**
+ * The kinds of field an application form asks through, as the form reader reports them.
+ */
+export const FormFieldTypes = [
+  'checkbox',
+  'number',
+  'radio',
+  'select',
+  'text',
+  'textarea',
+] as const;
+
+export type FormFieldType = (typeof FormFieldTypes)[number];
+
+export interface FormQuestion {
+  readonly label: string;
+  /**
+   * The choices of a select, radio group or checkbox group; empty for a free-text field.
+   */
+  readonly options: string[];
+  readonly type: FormFieldType;
+}
+
+/**
+ * Where an answer came from. Every answer has a source in Nick's data; a question none of them
+ * answers is returned unanswered, never guessed.
+ */
+export const AnswerSources = ['answers', 'custom', 'digest', 'preferences', 'profile'] as const;
+
+export type AnswerSource = (typeof AnswerSources)[number];
+
+export type ResolvedAnswer =
+  | { readonly label: string; readonly source: AnswerSource; readonly value: string }
+  | { readonly label: string; readonly unanswered: true };
+
+export interface AnswerContext {
+  readonly answers: Answers;
+  readonly competencies: readonly DigestCompetency[];
+  readonly preferences: Preferences;
+  readonly profile: { readonly firstName: string; readonly lastName: string };
+}
+
+type Candidate = { readonly source: AnswerSource; readonly value: string } | null;
+
+type Resolver = (label: string, context: AnswerContext) => Candidate;
+
+/**
+ * Options that decline to answer a voluntary self-identification question.
+ */
+const DeclineOption =
+  /decline|prefer not|don.?t wish|do not wish|choose not|not to (?:say|answer)/i;
+
+const normalized = (text: string): string => toWords(text).join(' ');
+
+const yesNo = (value: boolean): string => (value ? 'Yes' : 'No');
+
+const from = (source: AnswerSource, value: string | undefined): Candidate =>
+  value === undefined ? null : { source, value };
+
+/**
+ * Finds the competency a "years of experience with …" question asks about, by its label or its
+ * label's words, preferring the longest match so that `React Native` is not answered as `React`.
+ */
+const competencyNamed = (
+  subject: string,
+  competencies: readonly DigestCompetency[],
+): DigestCompetency | null => {
+  const wanted = ` ${normalized(subject)} `;
+  return (
+    [...competencies]
+      .filter(({ label }) => normalized(label) !== '')
+      .sort((a, b) => b.label.length - a.label.length)
+      .find(({ label }) => wanted.includes(` ${normalized(label)} `)) ?? null
+  );
+};
+
+const YearsOfExperience = /years?\b.*\bexperience\b.*\b(?:with|in|using|of)\b(.+)$/i;
+
+const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentification']])[] = [
+  [/gender|sex\b|pronoun/i, 'gender'],
+  [/race|ethnic|hispanic|latin/i, 'ethnicity'],
+  [/veteran|military/i, 'veteranStatus'],
+  [/disability|disabilities/i, 'disability'],
+];
+
+/**
+ * The question categories answered from Nick's data, in the order they are tried. Each pattern is
+ * matched against the question's label; the first that matches and yields a value answers it.
+ */
+const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
+  [/first name/i, (_label, { profile }) => from('profile', profile.firstName)],
+  [/last name|surname|family name/i, (_label, { profile }) => from('profile', profile.lastName)],
+  [
+    /^(?:full |legal )?name\b/i,
+    (_label, { profile }) => from('profile', `${profile.firstName} ${profile.lastName}`),
+  ],
+  [/e-?mail/i, (_label, { answers }) => from('answers', answers.contact.email)],
+  [/phone|mobile/i, (_label, { answers }) => from('answers', answers.contact.phone)],
+  [/linkedin/i, (_label, { answers }) => from('answers', answers.links.linkedin)],
+  [/github/i, (_label, { answers }) => from('answers', answers.links.github)],
+  [
+    /website|portfolio|personal (?:site|url)/i,
+    (_label, { answers }) => from('answers', answers.links.website),
+  ],
+  [
+    /\bcity\b|location|where .*(?:live|located|based)/i,
+    (_label, { answers }) => from('answers', `${answers.contact.city}, ${answers.contact.region}`),
+  ],
+  [
+    /^(?:state|province|region)\b|state\s*\/\s*province/i,
+    (_label, { answers }) => from('answers', answers.contact.region),
+  ],
+  [/country/i, (_label, { answers }) => from('answers', answers.contact.country)],
+  [
+    /sponsor/i,
+    (_label, { preferences }) => from('preferences', yesNo(preferences.hard.sponsorshipRequired)),
+  ],
+  [
+    // cspell:disable-next-line
+    /authori[sz]ed to work|legally (?:able|eligible|permitted) to work|work authori[sz]ation|eligible to work/i,
+    (_label, { answers }) =>
+      from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
+  ],
+  [
+    /notice period|start date|when can you start|available to start|earliest .*start/i,
+    (_label, { answers }) =>
+      from(
+        'answers',
+        answers.availability.noticePeriodWeeks === 0
+          ? 'Immediately'
+          : `${answers.availability.noticePeriodWeeks} weeks`,
+      ),
+  ],
+  [
+    /salary|compensation|pay expectation|desired pay|expected pay/i,
+    (_label, { answers }) => from('answers', String(answers.compensation.target)),
+  ],
+  [
+    YearsOfExperience,
+    (label, { competencies }) => {
+      const subject = YearsOfExperience.exec(label)?.[1];
+      const competency = subject === undefined ? null : competencyNamed(subject, competencies);
+      return competency === null ? null : from('digest', String(competency.years));
+    },
+  ],
+  [/how did you (?:hear|find|learn)/i, () => from('answers', 'LinkedIn')],
+  ...SelfIdentification.map(([pattern, key]): readonly [RegExp, Resolver] => [
+    pattern,
+    (_label, { answers }) => from('answers', answers.selfIdentification[key]),
+  ]),
+];
+
+/**
+ * Fits an answer to a choice field: the option equal to it, then the option containing it, and for
+ * a decline the option that declines. A free-text field takes the answer as it is.
+ */
+const fitToOptions = (value: string, { options }: FormQuestion): null | string => {
+  if (options.length === 0) {
+    return value;
+  }
+  const wanted = normalized(value);
+  const declining = wanted === 'decline';
+  return (
+    options.find(option => normalized(option) === wanted) ??
+    options.find(option => !declining && normalized(option).startsWith(`${wanted} `)) ??
+    (declining ? options.find(option => DeclineOption.test(option)) : undefined) ??
+    null
+  );
+};
+
+const customAnswer = (label: string, { answers }: AnswerContext): Candidate => {
+  const match = answers.custom.find(({ question }) => normalized(question) === normalized(label));
+  return match === undefined ? null : { source: 'custom', value: match.answer };
+};
+
+/**
+ * Answers one application-form question from Nick's data, or reports it unanswered.
+ *
+ * An answer saved for this exact question takes precedence; then the question categories are
+ * tried in order. For a choice field the answer must fit one of its options, so a question whose
+ * category is known but whose options do not admit the answer is reported unanswered rather than
+ * forced.
+ *
+ * @param {FormQuestion} question The question as the form reader reported it.
+ * @param {AnswerContext} context The answers, preferences, profile and competencies.
+ *
+ * @returns {ResolvedAnswer} The answer and its source, or the question marked unanswered.
+ */
+export const resolveAnswer = (question: FormQuestion, context: AnswerContext): ResolvedAnswer => {
+  const label = question.label.trim();
+  const candidate =
+    customAnswer(label, context) ??
+    Resolvers.reduce<Candidate>(
+      (found, [pattern, resolve]) =>
+        found ?? (pattern.test(label) ? resolve(label, context) : null),
+      null,
+    );
+  const value = candidate === null ? null : fitToOptions(candidate.value, question);
+  return candidate === null || value === null
+    ? { label, unanswered: true }
+    : { label, source: candidate.source, value };
+};

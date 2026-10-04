@@ -16,6 +16,30 @@ Format:
 
 ---
 
+## 2026-10-04 — Answers are resolved deterministically; Ashby and Greenhouse filling moves into v1
+
+**Decision:** Application-form questions are answered by `jobs answers resolve`
+(`src/scripts/job-search/applying/answers.ts`), which matches each question's label against known
+categories — name, contact, links, location, work authorization, sponsorship, start date,
+compensation, years of experience with a named competency, voluntary self-identification — and
+answers from `answers.yaml`, the preferences, the profile fixture and the profile digest. A saved
+answer to the exact question takes precedence. A choice field's answer must fit one of its options.
+Anything else comes back `unanswered`, and Nick answers it; `jobs answers add` saves his answer so
+that no question is asked twice. Postings applied to by hand get a packet (`jobs packet build`).
+`jobs application filled` requires an approved resume and records its hash;
+`jobs application submitted` records Nick's word that he submitted. Form filling for Ashby and
+Greenhouse, deferred to v2 on 2026-10-02, is part of v1, through the same form reader and filler as
+Easy Apply, navigating to the employer's form directly rather than through LinkedIn's interstitial.
+
+**Why:** "Never invent an answer" is enforceable only if the answering is code: a model asked to
+fill a form will fill every field. Five of the first fifteen approved postings apply through Ashby
+or Greenhouse, which made deferring them expensive.
+
+**Alternatives considered:** The agent answering from the data itself (cannot guarantee it never
+guesses). Keeping Ashby and Greenhouse as packets (leaves a third of the approved postings manual).
+
+---
+
 ## 2026-10-04 — No new accounts without asking; account-funnel job boards are blocked
 
 **Decision:** Two settings in `preferences.yaml`:

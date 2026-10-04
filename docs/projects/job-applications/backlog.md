@@ -151,11 +151,16 @@ its own branch/PR.
       `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1) Landed 2026-10-04 in
       `src/scripts/job-search/discovery/apply-systems.ts`, unwrapping LinkedIn's `safety/go`
       interstitial; triage resolves `unresolved` from the posting's `applyUrl`.
-- [ ] **Prepare an answer packet for external postings** — drafted answers, the resume path, derived
-      experience figures and the link — so a manual application takes minutes. (v1)
+- [x] **Prepare an answer packet for external postings** — drafted answers, the resume path, derived
+      experience figures and the link — so a manual application takes minutes. (v1) Landed
+      2026-10-04 as `jobs packet build`, with answers from `jobs answers resolve`.
 
 ## Resume
 
+- [ ] **Run resume generation through the CLI.** Move `pnpm resume:generate` (and its `--steps`
+      variants) onto the cli-v2 engine as a command such as `pnpm cli resume generate`, so that
+      generating a resume and approving it with `pnpm cli jobs resume approve` happen through the
+      same CLI, with its prompts, styled output and exit codes.
 - [x] **Write a provenance sidecar from `resume:generate`.** Landed 2026-10-03 in
       `src/scripts/generate-resume/provenance.ts`. The source state (commit, and the uncommitted
       files under the resume source paths) is captured when the HTML is emitted, written beside the
@@ -192,7 +197,7 @@ Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./d
 
 - [ ] **Fill Greenhouse, Lever and Ashby forms**, stopping before Submit. Greenhouse's public
       job-board API returns a posting's questions, so answers can be drafted before the browser
-      opens. (v2)
+      opens. (v2) Ashby and Greenhouse moved into v1 on 2026-10-04; Lever stays here.
 - [ ] **Discover from a company watchlist.** Read the public job-board APIs of Greenhouse, Lever and
       Ashby for a list of named companies, with plain HTTP from the cli and no browser — no LinkedIn
       activity, full descriptions, often earlier than LinkedIn, and the system is known in advance.
