@@ -11,6 +11,7 @@ describe('classifyApplyUrl()', () => {
     ['https://boards.greenhouse.io/hooli/jobs/123', 'greenhouse'],
     ['https://job-boards.greenhouse.io/hooli/jobs/123', 'greenhouse'],
     ['https://hooli.com/careers/openings?gh_jid=123', 'greenhouse'],
+    ['https://www.hooli.ai/about?ashby_jid=1a2b#careers', 'ashby'],
     ['https://jobs.lever.co/hooli/1a2b', 'lever'],
     ['https://jobs.ashbyhq.com/hooli/1a2b', 'ashby'],
     ['https://hooli.wd5.myworkdayjobs.com/en-US/careers/job/123', 'workday'],

@@ -81,6 +81,89 @@ const JobDetailScript = `() => {
 }`;
 
 /**
+ * Opens one result card on a LinkedIn search page and reads what the detail-stage triage needs.
+ *
+ * Search results expose no job identifier until a card is opened, so the card is found by its
+ * title and company and clicked — the one action these scripts take, and one page view. It waits
+ * for the details pane to show the posting, then returns the job identifier, the posting's header,
+ * the external "Apply" link or Easy Apply, and the lines that mention compensation, company size,
+ * sponsorship or an office arrangement, for the agent to read in context.
+ */
+const OpenCardScriptTemplate = `async () => {
+  const want = __WANT__;
+  const labelOf = (el) => el.getAttribute('aria-label') || el.innerText || '';
+  const cardOf = (b) =>
+    (b.parentElement ? b.parentElement.closest('li, button, [role="button"]') : null);
+  const dismiss = [...document.querySelectorAll('main button, main [role="button"]')].find(
+    (b) =>
+      labelOf(b).trim().startsWith('Dismiss ' + want.title) &&
+      ((cardOf(b) || {}).innerText || '').includes(want.company),
+  );
+  if (!dismiss) return { found: false, url: window.location.href };
+  cardOf(dismiss).click();
+  const paneOf = () => {
+    const heading = [...document.querySelectorAll('h2')]
+      .find((el) => el.innerText.trim() === 'About the job');
+    let pane = heading ? heading.parentElement : null;
+    for (let depth = 0; pane && depth < 12; depth += 1) {
+      const complete = /About the company/.test(pane.innerText);
+      if (complete && pane.querySelector('a[href*="/jobs/view/"]')) break;
+      pane = pane.parentElement;
+    }
+    return pane;
+  };
+  let pane = null;
+  for (let attempt = 0; attempt < 40 && !pane; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const candidate = paneOf();
+    if (candidate && candidate.innerText.slice(0, 400).includes(want.company)) pane = candidate;
+  }
+  if (!pane) return { found: true, loaded: false, url: window.location.href };
+  const facts = pane.innerText
+    .split('\\n')
+    .map((line) => line.trim())
+    .filter((line) => /employees|\\$\\s?\\d|USD|salary|compensation|sponsor|visa/i.test(line)
+      || /hybrid|on-?site|in-office|office|relocate|relocation/i.test(line))
+    .slice(0, 20)
+    .map((line) => line.slice(0, 220));
+  const href = window.location.href;
+  const idMatch = /currentJobId=(\\d+)/.exec(href) || /\\/jobs\\/view\\/(\\d+)/.exec(href);
+  const nameOf = (el) =>
+    ((el.innerText || '') + ' ' + (el.getAttribute('aria-label') || '')).trim();
+  const apply = [...document.querySelectorAll('main a, main button')]
+    .find((el) => /^(Easy Apply|Apply)\\b/.test(nameOf(el)));
+  const easyApply = apply ? /Easy Apply/.test(nameOf(apply)) : false;
+  return {
+    applyUrl: apply && apply.tagName === 'A' && !easyApply ? apply.href : null,
+    easyApply,
+    facts,
+    found: true,
+    header: pane.innerText.slice(0, 300),
+    id: idMatch ? idMatch[1] : null,
+    loaded: true,
+    url: href,
+  };
+}`;
+
+/**
+ * Builds the {@link OpenCardScriptTemplate} script for one result card. The title and company are
+ * embedded as JSON, which is a valid JavaScript expression for any string they hold.
+ *
+ * @param {{ readonly company: string; readonly title: string }} want
+ *   The company and title of the card to open, as the result-card reader returned them.
+ *
+ * @returns {string} The script, for the browser server's `evaluate_script` tool.
+ */
+export const openCardScript = (want: {
+  readonly company: string;
+  readonly title: string;
+}): string =>
+  OpenCardScriptTemplate.replace(
+    '__WANT__',
+    JSON.stringify({ company: want.company.trim(), title: want.title.trim() }),
+  );
+
+/**
  * The read-only scripts the agent runs in LinkedIn's pages through the browser server's
  * `evaluate_script` tool, by name.
  */

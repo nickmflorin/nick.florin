@@ -166,16 +166,37 @@ pnpm --silent jobs triage --run <run-id> --stage card <<'JSON'
 JSON
 ```
 
-### 3. Open each survivor
+### 3. Pool the survivors, then open the most promising
 
-For each card-stage survivor: take a page view, open it (click its card in the results list, or
-navigate to `https://www.linkedin.com/jobs/view/<id>/` when the card carried an id), and run the
-`job-detail` script. Rebuild the candidate from the posting's text with every fact it publishes —
-`id` (required now), `companySize` from `N-M employees`, `compensation`, `postedAt`,
-`sponsorshipOffered: false` only when the text says no sponsorship, and `applyUrl` from the script.
-When the description contradicts LinkedIn's workplace label (an "On-site" role describing office
-days twice a week), use the description's arrangement. Triage the opened postings at the detail
-stage; survivors are recorded as `pending`.
+Card-stage survivors are not recorded, so the same posting surfacing in several searches survives
+each time. Keep a running pool across the run's sources, deduplicated by company and title, outside
+the repository (the session's scratch directory). A card pass typically lets most cards through —
+titles fit and few cards list compensation — so do not open every survivor:
+
+- **Cap the openings** at about 20 per run, leaving the day's page budget well clear of its limit.
+- **Open the most promising first:** listed compensation at or above the floor, then Easy Apply,
+  then the titles closest to the strongest recent work, then the most recent postings.
+- **Leave the rest unrecorded.** They surface again in a later run.
+
+Open them source by source, so each search page is loaded once: take a page view, navigate to the
+search, then for each target take a page view and run the `open-card` script built for it:
+
+```bash
+pnpm --silent jobs page-script open-card --company "<company>" --title "<title>"
+```
+
+A result of `found: false` means LinkedIn's results changed and the card is gone; skip it. From the
+`header`, `facts` and `applyUrl`, rebuild the candidate with every fact the posting publishes — `id`
+(required now), `companySize` from `N-M employees`, `compensation` from a stated range,
+`sponsorshipOffered: false` only when the text says no sponsorship, and `applyUrl` — and read the
+facts in context: "hybrid" in "hybrid mobile apps" is not an office arrangement. When the
+description contradicts LinkedIn's workplace label (an "On-site" role describing two office days a
+week), use the description's arrangement. Triage each source's opened postings at the detail stage;
+survivors are recorded as `pending`.
+
+**Take every page view as its own command.** Never chain `jobs budget take` after another command
+that can fail, or a page can load without having been budgeted; if one ever does, take the missing
+unit at once.
 
 ### 4. Finish the run
 

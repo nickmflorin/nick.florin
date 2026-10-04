@@ -16,6 +16,30 @@ Format:
 
 ---
 
+## 2026-10-04 — Openings are pooled, capped and ranked; `open-card` is a page script
+
+**Decision:** Card-stage survivors are pooled across a run's sources, deduplicated by company and
+title, and only the most promising — about 20 per run, ranked by listed compensation at or above the
+floor, Easy Apply, title focus and recency — are opened; the rest stay unrecorded and surface again
+later. Opening is the `open-card` page script (`jobs page-script open-card --company … --title …`),
+which clicks the card and returns the identifier, header, apply link and the lines mentioning
+compensation, company size, sponsorship or office arrangement. Each page view is budgeted as its own
+command. Embedded Ashby boards are recognized by `ashby_jid`, as embedded Greenhouse boards are by
+`gh_jid`.
+
+**Why:** The first full run read 7 sources and found 72 unique survivors among roughly 160 cards —
+the card pass rejects little, because titles fit and few cards list compensation — so opening all of
+them would spend most of the day's budget and tens of thousands of tokens. Opening 19 cost 25 page
+views and caught three compensation rejections the cards had hidden. The click-and-read function was
+improvised during that run and is now a tested script; a budget call chained after a failing command
+once let a page load unbudgeted, which was corrected at once and is now ruled out by the skill.
+
+**Alternatives considered:** Opening every survivor (budget and tokens). Reading the full detail
+pane (`job-detail`) for every opening (about four times the text for the same triage facts; it
+remains for when the full description is needed).
+
+---
+
 ## 2026-10-04 — Discovery adapted to LinkedIn's AI job search, from the first live session
 
 **Decision:** Four changes, each forced by what the first live session found:

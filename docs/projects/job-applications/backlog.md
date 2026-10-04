@@ -71,6 +71,17 @@ its own branch/PR.
 - [ ] **Learn from review.** Record an optional short reason with each approve or skip, and
       periodically propose individual `preferences.yaml` edits from the reasons and yields. (v1)
 
+- [ ] **Settle the DC-area hybrid locations.** The hybrid search's rejections were mostly roles in
+      Arlington, McLean, Bethesda, Tysons, Reston and other suburbs, which `Washington DC` does not
+      match. Nick to decide which belong in `hard.locations`.
+- [ ] **Settle the level-numbered and staff-style titles.** "Software Engineer III" and "Software
+      Engineer 3" (often senior), and "Member of Technical Staff" (senior at many AI companies) are
+      rejected by the title filter, while the include term `staff engineer` admits "Staff Backend
+      Engineer" and "Member of Technical Staff, Forward Deployed Engineer". Nick to decide.
+- [ ] **Rank the openings deterministically.** The pooling, deduplication and ranking of card
+      survivors were done by the agent in a scratch file; a `jobs triage` mode that pools a run's
+      card survivors and returns them ranked would make the cap and the order reproducible.
+
 ## Deterministic Commands
 
 - [x] **Add a `jobs` command group to cli-v2.** Commands under `src/scripts/cli-v2/commands/`,
@@ -98,6 +109,11 @@ its own branch/PR.
       `experience` taking precedence.
 
 ## Agent, Skill and Rules
+
+- [ ] **Store the posting text for scoring.** Discovery reads only the facts the detail stage needs;
+      the scoring agent needs the description. Either record the description when a posting is
+      opened (`job-detail` returns it, at about four times the text) or re-open pending postings at
+      scoring time (a page view each).
 
 - [x] **Derive the profile digest.** A cli command that condenses `src/documents/resume/fixtures/`
       into the compact summary the scoring agent reads (roles, competencies with years and

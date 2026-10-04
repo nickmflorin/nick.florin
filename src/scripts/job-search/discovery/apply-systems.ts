@@ -18,6 +18,15 @@ const SystemDomains = [
   ['workday', 'myworkdaysite.com'],
 ] as const satisfies readonly (readonly [ApplicationSystem, string])[];
 
+/**
+ * The query parameters that applicant tracking systems' embedded job boards add to posting links on
+ * an employer's own domain, which identify the system where the host cannot.
+ */
+const EmbeddedBoardParameters = [
+  ['ashby', 'ashby_jid'],
+  ['greenhouse', 'gh_jid'],
+] as const satisfies readonly (readonly [ApplicationSystem, string])[];
+
 const parseUrl = (value: string): null | URL => {
   try {
     return new URL(value);
@@ -48,8 +57,8 @@ export const resolveApplyDestination = (applyUrl: string): null | URL => {
 /**
  * Identifies the applicant tracking system an external "Apply" link leads to.
  *
- * Greenhouse is also recognized on an employer's own domain by its `gh_jid` parameter, which its
- * embedded job boards add to every posting link.
+ * A system is also recognized on an employer's own domain by the parameter its embedded job board
+ * adds to every posting link, such as Greenhouse's `gh_jid` or Ashby's `ashby_jid`.
  *
  * @param {string} applyUrl The link as it appears on the posting.
  *
@@ -59,12 +68,11 @@ export const classifyApplyUrl = (applyUrl: string): ApplicationSystem => {
   const destination = resolveApplyDestination(applyUrl);
   if (destination === null) {
     return 'other';
-  } else if (destination.searchParams.has('gh_jid')) {
-    return 'greenhouse';
   }
   const host = destination.hostname.toLowerCase();
   return (
     SystemDomains.find(([, domain]) => host === domain || host.endsWith(`.${domain}`))?.[0] ??
+    EmbeddedBoardParameters.find(([, parameter]) => destination.searchParams.has(parameter))?.[0] ??
     'other'
   );
 };
