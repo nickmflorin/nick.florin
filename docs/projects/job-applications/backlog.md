@@ -170,10 +170,11 @@ its own branch/PR.
 
 ## Resume
 
-- [ ] **Run resume generation through the CLI.** Move `pnpm resume:generate` (and its `--steps`
+- [x] **Run resume generation through the CLI.** Move `pnpm resume:generate` (and its `--steps`
       variants) onto the cli-v2 engine as a command such as `pnpm cli resume generate`, so that
       generating a resume and approving it with `pnpm cli jobs resume approve` happen through the
-      same CLI, with its prompts, styled output and exit codes.
+      same CLI, with its prompts, styled output and exit codes. Landed 2026-10-04 as
+      `pnpm cli resume generate --step …`; the `resume:generate*` scripts call it.
 - [x] **Write a provenance sidecar from `resume:generate`.** Landed 2026-10-03 in
       `src/scripts/generate-resume/provenance.ts`. The source state (commit, and the uncommitted
       files under the resume source paths) is captured when the HTML is emitted, written beside the

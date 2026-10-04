@@ -40,6 +40,7 @@ import {
   JobsSearchUrlCommand,
   JobsTriageCommand,
 } from './commands/jobs';
+import { ResumeGenerateCommand } from './commands/resume';
 
 /**
  * Every command the CLI exposes.
@@ -87,6 +88,7 @@ const Commands: readonly CommandClass[] = [
   JobsScoreRecordCommand,
   JobsSearchUrlCommand,
   JobsTriageCommand,
+  ResumeGenerateCommand,
 ];
 
 export const buildCli = (): Cli => {
