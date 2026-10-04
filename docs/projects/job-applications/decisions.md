@@ -16,6 +16,30 @@ Format:
 
 ---
 
+## 2026-10-04 — No new accounts without asking; account-funnel job boards are blocked
+
+**Decision:** Two settings in `preferences.yaml`:
+
+- **`hard.applyHosts.block`** — sites whose postings are rejected at the detail stage when the
+  external "Apply" link leads there, whichever company the posting names. `theladders.com` is the
+  first entry, and `Ladders` is on the company block list.
+- **`applying.newAccounts`** — `ask` (the default), `never` or `allow`. Each application path is
+  tagged with whether it needs an account (`AccountRequirements` in
+  `src/scripts/job-search/discovery/apply-systems.ts`): Easy Apply, Greenhouse, Lever and Ashby do
+  not; Workday does, one per employer; anything else is unknown and treated as needing one. Under
+  `ask`, an application that would create an account stops and asks Nick first. Enforcement lands
+  with applying, in stage 5.
+
+**Why:** Nick reviewed the first queue and found that Ladders postings read as bait for its own
+sign-up and email list rather than real roles, and he does not want accounts created across every
+system that posts through LinkedIn unless he approves each one.
+
+**Alternatives considered:** Blocking only the company name (misses postings Ladders publishes under
+a client's name). Refusing every path that might need an account (would exclude most external
+applications outright rather than asking).
+
+---
+
 ## 2026-10-04 — Scoring reads descriptions from the ledger; filtered postings are re-checked
 
 **Decision:**

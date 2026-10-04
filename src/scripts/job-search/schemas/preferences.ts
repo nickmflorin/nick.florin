@@ -61,6 +61,7 @@ const SearchNamePattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
  */
 const HardFiltersSchema = z
   .object({
+    applyHosts: z.object({ block: TermsSchema }).strict().default({}),
     companies: z
       .object({
         block: TermsSchema,
@@ -131,6 +132,20 @@ const ScoringSchema = z
     path: ['maybeAt'],
   });
 
+/**
+ * Whether an application may create an account on a system that requires one — a Workday tenant,
+ * a job board's own sign-up — before applying. `ask` stops the application and asks first; `never`
+ * leaves such applications for Nick to do himself.
+ */
+export const NewAccountPolicies = ['allow', 'ask', 'never'] as const;
+
+export type NewAccountPolicy = (typeof NewAccountPolicies)[number];
+
+const ApplyingSchema = z
+  .object({ newAccounts: z.enum(NewAccountPolicies).default('ask') })
+  .strict()
+  .default({});
+
 const CoverLettersSchema = z
   .object({ optionalAt: ScoreSchema.default(80) })
   .strict()
@@ -193,6 +208,7 @@ const SearchesSchema = z
  */
 export const PreferencesSchema = z
   .object({
+    applying: ApplyingSchema,
     coverLetters: CoverLettersSchema,
     hard: HardFiltersSchema,
     limits: LimitsSchema,

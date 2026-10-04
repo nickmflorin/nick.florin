@@ -61,3 +61,4 @@ yarn-error.log*
 
 # Private Project Notes
 /docs/projects/monorepo/
+docs/notes.md

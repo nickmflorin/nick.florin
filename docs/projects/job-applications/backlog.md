@@ -174,6 +174,9 @@ its own branch/PR.
       information only, when resume content has changed since approval); block filling without one;
       verify the copy's hash against the manifest before attaching; record the hash on each
       application; on Easy Apply, upload only when it differs from the last one sent. (v1)
+- [ ] **Enforce the new-account policy when applying.** Before filling a form on a path whose
+      `AccountRequirements` entry is `yes` or `unknown`, stop under `ask` and wait for Nick; under
+      `never`, leave the application as a packet for him. (v1)
 
 ## Cover Letters
 

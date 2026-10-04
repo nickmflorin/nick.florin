@@ -76,3 +76,18 @@ export const classifyApplyUrl = (applyUrl: string): ApplicationSystem => {
     'other'
   );
 };
+
+/**
+ * Whether applying through each system means creating an account on it. Easy Apply and the
+ * single-page boards take an application without one; Workday requires an account per employer;
+ * anything else is unknown until its form is seen, and is treated as requiring one.
+ */
+export const AccountRequirements = {
+  ashby: 'no',
+  'easy-apply': 'no',
+  greenhouse: 'no',
+  lever: 'no',
+  other: 'unknown',
+  unresolved: 'unknown',
+  workday: 'yes',
+} as const satisfies Record<ApplicationSystem, 'no' | 'unknown' | 'yes'>;

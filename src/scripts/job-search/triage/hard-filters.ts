@@ -1,3 +1,4 @@
+import { resolveApplyDestination } from '../discovery/apply-systems';
 import { companyNameWords, toWords } from '../ledger/fingerprint';
 import {
   type Candidate,
@@ -158,11 +159,28 @@ const filterCompanySize: HardFilter = ({ company, companySize }, filters, contex
 };
 
 /**
+ * Rejects a posting whose external "Apply" link leads to a blocked site — a job board that funnels
+ * applicants into its own sign-up — whichever company the posting names. A host matches a blocked
+ * domain itself or any of its subdomains.
+ */
+const filterApplyHost: HardFilter = ({ applyUrl }, { applyHosts }) => {
+  const host = applyUrl === null ? null : (resolveApplyDestination(applyUrl)?.hostname ?? null);
+  const blocked =
+    host === null
+      ? undefined
+      : applyHosts.block.find(domain => host === domain || host.endsWith(`.${domain}`));
+  return blocked === undefined
+    ? null
+    : `The posting applies through the blocked site '${blocked}'.`;
+};
+
+/**
  * Every hard filter, in the order they are applied. The cheapest and most decisive come first, so
  * that a rejection names the most fundamental reason a candidate fails.
  */
 const HardFilterSequence: readonly HardFilter[] = [
   filterBlockedCompany,
+  filterApplyHost,
   filterTitle,
   filterWorkplace,
   filterSponsorship,

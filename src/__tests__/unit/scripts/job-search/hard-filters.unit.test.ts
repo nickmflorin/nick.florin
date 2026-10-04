@@ -45,6 +45,36 @@ describe('applyHardFilters()', () => {
     });
   });
 
+  describe('apply hosts', () => {
+    const blockingLadders = filtersWith({ applyHosts: { block: ['theladders.com'] } });
+
+    it('rejects a posting applying through a blocked site behind the interstitial', () => {
+      expect(
+        applyHardFilters(
+          candidate({
+            applyUrl: `https://www.linkedin.com/safety/go/?url=${encodeURIComponent(
+              'https://www.theladders.com/linkedin/89096351',
+            )}`,
+            company: 'Hooli',
+          }),
+          blockingLadders,
+          Detail,
+        ),
+      ).toBe("The posting applies through the blocked site 'theladders.com'.");
+    });
+
+    it('passes a posting whose apply link is unknown or elsewhere', () => {
+      expect(applyHardFilters(candidate(), blockingLadders, Card)).toBeNull();
+      expect(
+        applyHardFilters(
+          candidate({ applyUrl: 'https://jobs.ashbyhq.com/hooli/1' }),
+          blockingLadders,
+          Detail,
+        ),
+      ).toBeNull();
+    });
+  });
+
   describe('titles', () => {
     it('rejects a title containing every word of an excluded term, in any order', () => {
       expect(

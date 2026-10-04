@@ -7,8 +7,10 @@ const SearchUrl = 'https://www.linkedin.com/jobs/search/?keywords=senior%20front
 describe('preferences schema', () => {
   it('applies every default to a file holding only the required fields', () => {
     expect(PreferencesSchema.parse(MinimalPreferences)).toStrictEqual({
+      applying: { newAccounts: 'ask' },
       coverLetters: { optionalAt: 80 },
       hard: {
+        applyHosts: { block: [] },
         companies: { block: [], currentEmployer: 'Initech' },
         companySize: { bands: [...CompanySizeBands], whenUnknown: 'pass' },
         compensation: { currency: 'USD', floor: 150000, whenUnlisted: 'pass' },
