@@ -269,7 +269,10 @@ describe('application drafts', () => {
       expect.hasAssertions();
       await approveAResume();
       await start();
-      await deferApplication(context(), Id, 'Two screening questions need Nick');
+      await deferApplication(context(), Id, {
+        notSubmitted: false,
+        reason: 'Two screening questions need Nick',
+      });
       await expect(listHeldApplications(context())).resolves.toStrictEqual([
         {
           blockers: [],
@@ -340,10 +343,26 @@ describe('application drafts', () => {
     it('refuses an application deferred to Nick', async () => {
       expect.hasAssertions();
       await fillVerified();
-      await deferApplication(context(), Id, 'No confirmation appeared');
+      await deferApplication(context(), Id, {
+        notSubmitted: false,
+        reason: 'No confirmation appeared',
+      });
       await expect(markSubmitted(context(AgentSubmits), Id, { by: 'agent' })).rejects.toThrow(
         'deferred to Nick',
       );
+    });
+
+    it('puts a submission the site refused back in the queue, to start again', async () => {
+      expect.hasAssertions();
+      await fillVerified();
+      await deferApplication(context(), Id, {
+        notSubmitted: true,
+        reason: 'Flagged as possible spam',
+      });
+      await expect(context().store.getPosting(Id)).resolves.toMatchObject({
+        application: null,
+        status: 'queued',
+      });
     });
 
     it("records a verified, unblocked submission as the agent's", async () => {

@@ -78,7 +78,7 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      first `tsc`, Jest, ESLint and cspell runs (clean, 412 tests); account-system postings handed to
      Nick with an answer packet and `submitted --by-hand`; sign-in detection; Ashby's yes-or-no
      buttons and embedded boards; the browser server attached to a normally launched Chrome after
-     Ashby rejected the first agent submission (Valon, deferred) as spam from the automation-mode
+     Ashby rejected the first agent submission (deferred) as spam from the automation-mode
      window; title spellings normalized; the approved resume reported at run start; cover letters
      drafted unattended and attached once Nick approves them; and the run pool ranked
      deterministically.

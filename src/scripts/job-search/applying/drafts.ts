@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { z } from 'zod';
 
+import { withLedgerLock } from '../budget/lock';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { listDirectory } from '../fs';
 import { toWords } from '../ledger/fingerprint';
@@ -477,20 +478,35 @@ export const requireSubmittableDraft = async (
  * confirmation never appeared — and removes its staged resume, keeping the draft, with its
  * blockers, for {@link listHeldApplications}.
  *
- * @param {SessionContext} context The data directory and the clock.
+ * A submission the site explicitly refused — "We couldn't submit your application" — was not
+ * sent, so the posting is put back from `filled` to `queued`, where a later run may start it
+ * again. A submission whose outcome is merely unseen leaves the posting `filled`, for Nick to
+ * check, since retrying it could send a duplicate.
+ *
+ * @param {SessionContext} context The ledger, the data directory and the clock.
  * @param {string} id The job identifier of the posting.
- * @param {string} reason Why the application is set aside.
+ * @param {{ readonly notSubmitted: boolean; readonly reason: string }} deferral
+ *   Why the application is set aside, and whether the site explicitly refused its submission.
  *
  * @throws {Error} If no application to the posting has been started.
  *
  * @returns {Promise<ApplicationDraft>} The deferred draft.
  */
 export const deferApplication = async (
-  { clock, dataDirectory }: SessionContext,
+  context: SessionContext,
   id: string,
-  reason: string,
+  { notSubmitted, reason }: { readonly notSubmitted: boolean; readonly reason: string },
 ): Promise<ApplicationDraft> => {
+  const { clock, dataDirectory } = context;
   const draft = await requireDraft(dataDirectory, id);
+  if (notSubmitted) {
+    await withLedgerLock(dataDirectory, async () => {
+      const posting = await requirePosting(context, id);
+      if (posting.status === 'filled') {
+        await context.store.putPosting({ ...posting, application: null, status: 'queued' });
+      }
+    });
+  }
   await unstageResume(draft.resume.stagedFile);
   const deferred: ApplicationDraft = {
     ...draft,

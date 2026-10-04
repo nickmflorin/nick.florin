@@ -406,8 +406,10 @@ then run the `submission-result` script.
   pnpm --silent jobs application submitted <id> --by-agent
   ```
 
-- `confirmed: false` — never click Submit again: a retry after a success that went unseen sends a
-  duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
+- `confirmed: false` — never click Submit again in this run: a retry after a success that went
+  unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
+  When the page states plainly that the application was not submitted — "We couldn't submit your
+  application" — add `--not-submitted`, which puts the posting back in the queue for a later run.
 - A CAPTCHA after the click: defer the posting, and on LinkedIn end the run as a challenge.
 
 **Under `applying.submit: nick`:** leave the form open and tell Nick it is ready; record his

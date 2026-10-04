@@ -234,7 +234,9 @@ export class JobsApplyDeferCommand extends JsonCommand {
       For an application the agent cannot finish unattended: a question only Nick can answer, an
       account to approve, a CAPTCHA, or a submission whose confirmation never appeared. Removes the
       staged resume and keeps the draft, which \`jobs apply held\` lists for Nick. Starting the
-      application again later begins a fresh draft.
+      application again later begins a fresh draft. Pass \`--not-submitted\` only when the site
+      explicitly refused a submission — it puts a filled posting back in the queue — never when its
+      outcome is merely unseen.
     `,
     examples: [
       [
@@ -244,13 +246,19 @@ export class JobsApplyDeferCommand extends JsonCommand {
     ],
   });
   public id = Option.String({ name: 'id', required: true });
+  public notSubmitted = Option.Boolean('--not-submitted', false, {
+    description: 'The site explicitly refused the submission: put the posting back in the queue.',
+  });
   public reason = Option.String('--reason', {
     description: 'Why the application is set aside.',
     required: true,
   });
 
   protected async run(): Promise<JsonResult> {
-    const draft = await deferApplication(await resolveSessionContext(), this.id, this.reason);
+    const draft = await deferApplication(await resolveSessionContext(), this.id, {
+      notSubmitted: this.notSubmitted,
+      reason: this.reason,
+    });
     return { blockers: draft.blockers, id: draft.id, status: 'deferred' };
   }
 }
