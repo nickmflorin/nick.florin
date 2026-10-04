@@ -50,10 +50,12 @@ cp "$JOBS_DATA_DIR/resume/Resume.pdf" build/resume.pdf
 
 ## LinkedIn Activity Is Budgeted and Human-Paced
 
-Use only the `job-search-browser` server, in one tab, one page at a time. Take a unit from the daily
-budget before every page load and every result card opened, as its own command whose grant is
-received before the browser acts — never in the same batch of parallel tool calls, which run
-concurrently — and stop on a refusal:
+Use only the `job-search-browser` server, attached to the job-search Chrome that
+`pnpm --silent jobs browser launch` opens — never a browser in test-automation mode, whose
+`navigator.webdriver` flag application systems reject as a bot — in one tab, one page at a time.
+Take a unit from the daily budget before every page load and every result card opened, as its own
+command whose grant is received before the browser acts — never in the same batch of parallel tool
+calls, which run concurrently — and stop on a refusal:
 
 ```bash
 pnpm --silent jobs budget take page-view

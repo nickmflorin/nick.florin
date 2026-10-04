@@ -239,7 +239,9 @@ Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./d
       faster, and free per page. Deferred until real sessions show which fields LinkedIn's
       obfuscated markup keeps stable; the agent-read snapshot stays as the fallback when the
       extractor's output fails the candidate schema.
-- [ ] **Attach to a normally launched job-search Chrome.** A `pnpm jobs:browser` command that opens
+- [x] **Attach to a normally launched job-search Chrome.** A `pnpm jobs:browser` command that opens
       the dedicated profile as an ordinary Chrome window with a local debugging port, and a
       `--browserUrl` server entry that attaches to it — so the window is not in test-automation
-      mode, which sets `navigator.webdriver` for every site and blocks Google sign-in.
+      mode, which sets `navigator.webdriver` for every site and blocks Google sign-in. Moved into v1
+      and landed 2026-10-04 as `jobs browser launch|status`, after Ashby rejected the first agent
+      submission from the automation-mode window as possible spam.

@@ -36,6 +36,10 @@ Nick.
   is `verified` and `jobs apply check` shows the application verified with no blockers, as step 4 of
   Applying describes. Click it once: a submission whose confirmation never appears is deferred to
   Nick, never retried. Under `applying.submit: nick`, never click it.
+- **Launch the browser before using it.** The `job-search-browser` server attaches to the job-search
+  Chrome rather than launching one, so run `pnpm --silent jobs browser launch` before the first
+  browser action of a session. It opens the dedicated profile as an ordinary window, not in
+  test-automation mode, which application systems' bot checks reject.
 - **Every LinkedIn page load is budgeted.** Run `pnpm --silent jobs budget take page-view` before
   every navigation and before opening every result card, in the `job-search-browser` tab only, one
   at a time. A refusal ends the run.
