@@ -4,6 +4,7 @@ import { Command, Option } from 'clipanion';
 import { z } from 'zod';
 
 import { resolveSessionContext } from '~/scripts/job-search/context';
+import { addToPool } from '~/scripts/job-search/discovery/pool';
 import { CandidatesSchema, TriageStages } from '~/scripts/job-search/schemas';
 import { triageBatch } from '~/scripts/job-search/session';
 
@@ -37,7 +38,8 @@ export class JobsTriageCommand extends JsonCommand {
       Reads a JSON array of candidates from standard input. At the \`card\` stage, facts a result
       card does not publish are deferred and survivors are not recorded; at the \`detail\` stage,
       unpublished facts are decided by the configured policies and survivors are recorded as
-      pending their score. Rejections are recorded at both stages.
+      pending their score. Rejections are recorded at both stages. Card-stage survivors are added
+      to the run's pool, which \`jobs pool next\` ranks.
     `,
     examples: [
       ['Triage result cards', '$0 jobs triage --run 2026-10-03-1 --stage card < cards.json'],
@@ -56,8 +58,11 @@ export class JobsTriageCommand extends JsonCommand {
 
   protected async run(): Promise<JsonResult> {
     const candidates = parseCandidates(await text(this.context.stdin));
+    const context = await resolveSessionContext();
+    const result = await triageBatch(context, this.runId, this.stage, candidates);
     return {
-      ...(await triageBatch(await resolveSessionContext(), this.runId, this.stage, candidates)),
+      ...result,
+      pooled: this.stage === 'card' ? await addToPool(context, this.runId, result.survivors) : null,
       status: 'triaged',
     };
   }

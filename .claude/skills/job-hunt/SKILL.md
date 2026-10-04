@@ -181,14 +181,17 @@ JSON
 ### 3. Pool the survivors, then open the most promising
 
 Card-stage survivors are not recorded, so the same posting surfacing in several searches survives
-each time. Keep a running pool across the run's sources, deduplicated by company and title, outside
-the repository (the session's scratch directory). A card pass typically lets most cards through —
-titles fit and few cards list compensation — so do not open every survivor:
+each time. `jobs triage --stage card` adds each source's survivors to the run's pool, once each by
+company and title, and `jobs pool next` ranks the unopened ones — listed pay at or above the floor,
+then applications needing no account, then the most recent:
 
-- **Cap the openings** at about 20 per run, leaving the day's page budget well clear of its limit.
-- **Open the most promising first:** listed compensation at or above the floor, then Easy Apply,
-  then the titles closest to the strongest recent work, then the most recent postings.
-- **Leave the rest unrecorded.** They surface again in a later run.
+```bash
+pnpm --silent jobs pool next --run <run-id> --cap 20
+```
+
+A card pass typically lets most cards through, so open only what `jobs pool next` returns — about 20
+per run, leaving the day's page budget well clear of its limit — and leave the rest: they surface
+again in a later run.
 
 Open them source by source, so each search page is loaded once: take a page view, navigate to the
 search, then for each target take a page view and run the `open-card` script built for it:

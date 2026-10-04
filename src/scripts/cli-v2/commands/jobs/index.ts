@@ -21,6 +21,7 @@ export { JobsConfigShowCommand, JobsConfigStatusCommand, JobsConfigWriteCommand 
 export { JobsLearningReportCommand } from './learning';
 export { JobsPacketBuildCommand } from './packet';
 export { JobsPageScriptCommand } from './page-script';
+export { JobsPoolNextCommand } from './pool';
 export {
   JobsPostingDescribeCommand,
   JobsPostingListCommand,
