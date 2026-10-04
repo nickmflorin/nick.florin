@@ -1,6 +1,10 @@
-import { Command, Option } from 'clipanion';
+import { Command, Option, UsageError } from 'clipanion';
 
-import { markFilled, markSubmitted } from '~/scripts/job-search/applying/applications';
+import {
+  markFilled,
+  markSubmitted,
+  recordManualSubmission,
+} from '~/scripts/job-search/applying/applications';
 import { resolveSessionContext } from '~/scripts/job-search/context';
 
 import { JsonCommand, type JsonResult } from '../json-command';
@@ -51,22 +55,35 @@ export class JobsApplicationSubmittedCommand extends JsonCommand {
       Without \`--by-agent\`, records Nick's word that he submitted it — never run it on the
       strength of a form having been filled. With \`--by-agent\`, records the agent's own
       submission, which is refused unless \`applying.submit\` is \`verified\` and the draft is
-      verified, unblocked and not deferred. Discards the application's draft and staged resume.
+      verified, unblocked and not deferred. With \`--by-hand\`, records an application Nick made
+      himself from its answer packet, on a system the tooling does not fill; the posting need not
+      have been filled. Discards the application's draft and staged resume.
     `,
     examples: [
       ['Record that Nick submitted', '$0 jobs application submitted 4012345678'],
       ["Record the agent's submission", '$0 jobs application submitted 4012345678 --by-agent'],
+      [
+        'Record an application Nick made by hand',
+        '$0 jobs application submitted 4012345678 --by-hand',
+      ],
     ],
   });
   public byAgent = Option.Boolean('--by-agent', false, {
     description: 'The agent submitted the application, under the verified submit policy.',
   });
+  public byHand = Option.Boolean('--by-hand', false, {
+    description: 'Nick applied by hand, from the answer packet.',
+  });
   public id = Option.String({ name: 'id', required: true });
 
   protected async run(): Promise<JsonResult> {
-    const posting = await markSubmitted(await resolveSessionContext(), this.id, {
-      by: this.byAgent ? 'agent' : 'nick',
-    });
+    if (this.byAgent && this.byHand) {
+      throw new UsageError('Pass at most one of --by-agent and --by-hand.');
+    }
+    const context = await resolveSessionContext();
+    const posting = this.byHand
+      ? await recordManualSubmission(context, this.id)
+      : await markSubmitted(context, this.id, { by: this.byAgent ? 'agent' : 'nick' });
     return { id: posting.id, status: posting.status };
   }
 }

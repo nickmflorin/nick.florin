@@ -8,9 +8,10 @@ import { competenciesNamedIn } from '~/scripts/job-search/applying/answer-contex
 import {
   markFilled,
   markSubmitted,
-  renderPacket,
+  recordManualSubmission,
   saveCustomAnswer,
 } from '~/scripts/job-search/applying/applications';
+import { renderPacket } from '~/scripts/job-search/applying/packets';
 import { YamlLedgerStore } from '~/scripts/job-search/ledger/yaml-ledger-store';
 import { approveResume } from '~/scripts/job-search/resume/approved-resume';
 import { AnswersSchema, PreferencesSchema } from '~/scripts/job-search/schemas';
@@ -106,6 +107,17 @@ describe('applications', () => {
     });
   });
 
+  describe('recordManualSubmission()', () => {
+    it('records an application Nick made by hand, without a filled form', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await expect(recordManualSubmission(context(), '4012345678')).resolves.toMatchObject({
+        application: { submittedAt: '2026-10-04T12:00:00.000Z', submittedBy: 'nick' },
+        status: 'submitted',
+      });
+    });
+  });
+
   describe('saveCustomAnswer()', () => {
     it('saves an answer, replacing an earlier answer to the same question', async () => {
       expect.hasAssertions();
@@ -159,6 +171,10 @@ describe('renderPacket()', () => {
     );
     expect(workdayPacket()).toContain('- Needs an account: yes');
     expect(workdayPacket()).toContain('- Resume to attach: /data/resume/Jane-Doe-Resume.pdf');
+  });
+
+  it('says how to record the application once Nick has submitted it', () => {
+    expect(workdayPacket()).toContain('jobs application submitted 4012345678 --by-hand');
   });
 
   it('lists every answer, marking the unanswered ones, and the years table', () => {

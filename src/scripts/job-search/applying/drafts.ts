@@ -12,6 +12,7 @@ import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas'
 import { type SessionContext } from '../session';
 
 import { type FillPlan, isDocumentPicker } from './fill-plan';
+import { PacketDirectoryName, packetFileFor } from './packets';
 import {
   type FieldValue,
   FieldValueSchema,
@@ -489,13 +490,18 @@ export interface HeldApplication {
   readonly blockers: Blocker[];
   readonly company: string;
   readonly id: string;
+  /**
+   * The answer packet of an application handed to Nick to make by hand, or `null`.
+   */
+  readonly packet: null | string;
   readonly reason: null | string;
   readonly title: string;
 }
 
 /**
- * Lists the applications waiting on Nick: those deferred to him, and those whose drafts hold
- * blockers — the one list an unattended run hands him, in place of interrupting it.
+ * Lists the applications waiting on Nick: those deferred to him, those whose drafts hold blockers,
+ * and those handed to him to make by hand from an answer packet, while the posting is still
+ * approved and unapplied — the one list an unattended run hands him, in place of interrupting it.
  *
  * @param {SessionContext} context The ledger and the data directory.
  *
@@ -511,12 +517,34 @@ export const listHeldApplications = async (context: SessionContext): Promise<Hel
     (draft): draft is ApplicationDraft =>
       draft !== null && (draft.deferral !== null || draft.blockers.length > 0),
   );
-  return Promise.all(
-    held.map(async ({ blockers, deferral, id }) => {
-      const { company, title } = await requirePosting(context, id);
-      return { blockers, company, id, reason: deferral?.reason ?? null, title };
-    }),
+  const handedOff = await Promise.all(
+    (await listDirectory(path.join(context.dataDirectory, PacketDirectoryName)))
+      .filter(name => name.endsWith('.md'))
+      .map(name => name.replace(/\.md$/, ''))
+      .filter(id => !held.some(draft => draft.id === id))
+      .map(id => context.store.getPosting(id)),
   );
+  return [
+    ...(await Promise.all(
+      held.map(async ({ blockers, deferral, id }) => {
+        const { company, title } = await requirePosting(context, id);
+        return { blockers, company, id, packet: null, reason: deferral?.reason ?? null, title };
+      }),
+    )),
+    ...handedOff
+      .filter(
+        (posting): posting is NonNullable<typeof posting> =>
+          posting !== null && posting.status === 'queued' && posting.review.decision === 'approved',
+      )
+      .map(({ applyVia, company, id, title }) => ({
+        blockers: [],
+        company,
+        id,
+        packet: packetFileFor(context.dataDirectory, id),
+        reason: `Apply by hand: ${applyVia} is not filled by the tooling.`,
+        title,
+      })),
+  ];
 };
 
 /**

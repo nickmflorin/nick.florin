@@ -287,9 +287,15 @@ can end it; the daily `easy-apply-fill` budget caps how many go out.
 pnpm --silent jobs apply start <id>
 ```
 
-A refusal means the application system needs an account Nick has not approved: note the posting for
-the report and move on. Start it with `--account-approved` only once he has approved it. The result
-gives `applyAt`, where the form lives, and `resume`, the staged copy of the approved resume.
+A refusal means the application system needs an account Nick has not approved. Hand the posting to
+him: build its answer packet, which `jobs apply held` then lists for him, and move on.
+
+```bash
+pnpm --silent jobs packet build <id>
+```
+
+Start it with `--account-approved` only once he has approved the account. Otherwise the result gives
+`applyAt`, where the form lives, and `resume`, the staged copy of the approved resume.
 
 ### 2. Open the form
 
@@ -385,13 +391,14 @@ At the end of the run, give Nick one report:
 
 - the applications submitted;
 - `jobs apply held` — each deferred application, with its blockers (the questions to answer, the
-  remembered values to confirm or clear) and reasons;
-- the postings refused for an account he has not approved;
+  remembered values to confirm or clear) and reasons, and each posting handed to him to apply to by
+  hand, with the path of its answer packet;
 - the maybe list awaiting his review.
 
 He answers questions with `jobs answers add`; a deferred posting is then started afresh on the next
-run. A posting he drops is discarded with `jobs apply discard <id>`.
+run. A posting he drops is discarded with `jobs apply discard <id>`. When he says he applied to a
+handed-off posting, record it in one step:
 
-A posting whose system the tooling does not fill — Workday, or an unrecognized board — gets an
-answer packet instead (`jobs packet build <id>`). Nick applies from it by hand; record the
-application with `jobs application filled <id> --by-hand`, then the submission as above.
+```bash
+pnpm --silent jobs application submitted <id> --by-hand
+```

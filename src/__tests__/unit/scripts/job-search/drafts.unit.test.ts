@@ -12,6 +12,7 @@ import {
   startApplication,
 } from '~/scripts/job-search/applying/drafts';
 import { type FillPlan } from '~/scripts/job-search/applying/fill-plan';
+import { packetFileFor } from '~/scripts/job-search/applying/packets';
 import { type FormReading, type ReadField } from '~/scripts/job-search/applying/form-scripts';
 import { YamlLedgerStore } from '~/scripts/job-search/ledger/yaml-ledger-store';
 import { approveResume } from '~/scripts/job-search/resume/approved-resume';
@@ -273,8 +274,24 @@ describe('application drafts', () => {
           blockers: [],
           company: posting().company,
           id: Id,
+          packet: null,
           reason: 'Two screening questions need Nick',
           title: posting().title,
+        },
+      ]);
+    });
+  });
+
+  describe('hand-offs', () => {
+    it('lists an approved posting with an answer packet for Nick to apply to by hand', async () => {
+      expect.hasAssertions();
+      await fs.mkdir(path.dirname(packetFileFor(dataDirectory(), Id)), { recursive: true });
+      await fs.writeFile(packetFileFor(dataDirectory(), Id), '# Packet');
+      await expect(listHeldApplications(context())).resolves.toMatchObject([
+        {
+          id: Id,
+          packet: packetFileFor(dataDirectory(), Id),
+          reason: expect.stringMatching(/^Apply by hand/),
         },
       ]);
     });

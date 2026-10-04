@@ -6,7 +6,7 @@ import {
   StandardQuestions,
 } from '~/scripts/job-search/applying/answer-context';
 import { resolveAnswer } from '~/scripts/job-search/applying/answers';
-import { packetFileFor, renderPacket } from '~/scripts/job-search/applying/applications';
+import { packetFileFor, renderPacket } from '~/scripts/job-search/applying/packets';
 import { requireApprovedResume, requirePosting } from '~/scripts/job-search/applying/requirements';
 import { resolveSessionContext } from '~/scripts/job-search/context';
 import { writeFileAtomically } from '~/scripts/job-search/fs';

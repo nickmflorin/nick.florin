@@ -1,24 +1,14 @@
-import path from 'node:path';
-
 import { stringify } from 'yaml';
 
 import { withLedgerLock } from '../budget/lock';
 import { configFileIn, writeConfigFile } from '../config-files';
-import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord } from '../ledger/yaml-records';
 import { type Answers, AnswersSchema, type Posting, type Submitter } from '../schemas';
 import { type SessionContext } from '../session';
 
-import { type ResolvedAnswer } from './answers';
 import { discardDraft, requireSubmittableDraft, requireVerifiedDraft } from './drafts';
 import { requireApprovedResume, requirePosting } from './requirements';
-
-/**
- * The directory, inside the job-search data directory, that holds the answer packets for postings
- * applied to outside an automated form.
- */
-export const PacketDirectoryName = 'packets';
 
 /**
  * Records that a posting's application has been filled and awaits Nick's submission, with the
@@ -110,6 +100,39 @@ export const markSubmitted = (
   });
 
 /**
+ * Records an application Nick made himself, from its answer packet, on a system the tooling does
+ * not fill — one that needs an account, such as Workday — in one step: the approved resume he was
+ * pointed to, and his word that he submitted.
+ *
+ * @param {SessionContext} context The ledger, the clock and the data directory.
+ * @param {string} id The job identifier of the posting.
+ *
+ * @throws {Error} If the posting was not approved for applying, or no resume is approved.
+ *
+ * @returns {Promise<Posting>} The posting, now `submitted`.
+ */
+export const recordManualSubmission = (context: SessionContext, id: string): Promise<Posting> =>
+  withLedgerLock(context.dataDirectory, async () => {
+    const posting = await requirePosting(context, id);
+    if (posting.status !== 'queued' || posting.review.decision !== 'approved') {
+      throw new Error(`The posting '${id}' is not approved for applying.`);
+    }
+    const resume = await requireApprovedResume(context.dataDirectory);
+    const submitted: Posting = {
+      ...posting,
+      application: {
+        resumeSha256: resume.manifest.sha256,
+        submittedAt: context.clock.now().toISOString(),
+        submittedBy: 'nick',
+      },
+      status: 'submitted',
+    };
+    await context.store.putPosting(submitted);
+    await discardDraft(context.dataDirectory, id);
+    return submitted;
+  });
+
+/**
  * Saves Nick's answer to a form question the data did not answer, replacing any earlier answer to
  * the same question, so that the question is never asked twice.
  *
@@ -142,54 +165,3 @@ export const saveCustomAnswer = async (
   };
   await writeConfigFile(context.dataDirectory, 'answers', stringify(updated));
 };
-
-export interface PacketInput {
-  readonly answers: readonly ResolvedAnswer[];
-  readonly posting: Posting;
-  readonly resumeFile: string;
-  /**
-   * The years of experience with the competencies the posting's description names.
-   */
-  readonly years: readonly { readonly label: string; readonly years: number }[];
-}
-
-/**
- * Renders the answer packet for a posting applied to by hand: where to apply, whether that needs an
- * account, the resume to attach, and every standard answer, so that the application takes minutes.
- *
- * @param {PacketInput} input The posting, the resolved answers, the resume and the years table.
- *
- * @returns {string} The packet, as Markdown.
- */
-export const renderPacket = ({ answers, posting, resumeFile, years }: PacketInput): string => {
-  const destination =
-    posting.applyUrl === null ? null : resolveApplyDestination(posting.applyUrl)?.href;
-  return [
-    `# ${posting.title} — ${posting.company}`,
-    '',
-    `- Posting: ${posting.url}`,
-    `- Apply at: ${destination ?? 'Easy Apply, on the posting'}`,
-    `- Applies through: ${posting.applyVia}`,
-    `- Needs an account: ${AccountRequirements[posting.applyVia]}`,
-    `- Resume to attach: ${resumeFile}`,
-    ...(posting.score === null ? [] : [`- Score: ${posting.score.total}`]),
-    '',
-    '## Answers',
-    '',
-    ...answers.map(answer =>
-      'unanswered' in answer
-        ? `- ${answer.label}: _not in the data — answer it, then save it with \`jobs answers add\`_`
-        : `- ${answer.label}: ${answer.value}`,
-    ),
-    '',
-    '## Years of experience',
-    '',
-    ...(years.length === 0
-      ? ['_No competency in the digest is named in the description._']
-      : years.map(({ label, years: count }) => `- ${label}: ${count}`)),
-    '',
-  ].join('\n');
-};
-
-export const packetFileFor = (dataDirectory: string, id: string): string =>
-  path.join(dataDirectory, PacketDirectoryName, `${id}.md`);
