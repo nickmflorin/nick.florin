@@ -55,11 +55,16 @@ pnpm --silent jobs browser launch   # { "browser": "Chrome/…", "status": "runn
 ```
 
 **Why:** The first agent submission — a fully verified Ashby application — was rejected with "Your
-application submission was flagged as possible spam". A Chrome launched by the server runs in
-test-automation mode, which sets `navigator.webdriver` on every page and shows an automation banner,
-and the invisible bot checks application systems run score that as a bot. A normally launched window
-carries neither, and is the same profile, so the LinkedIn session survives. It also lifts the
-earlier block on Google sign-in.
+application submission was flagged as possible spam". The likely cause, still to be verified, is
+that a Chrome launched by the server runs in test-automation mode, which sets `navigator.webdriver`
+on every page, and the invisible bot checks application systems run score that as a bot. Other
+signals may have counted too: twelve fields filled by script in seconds, with no keystrokes, from a
+profile with little history. A normally launched window carries no automation flag and is the same
+profile, so the LinkedIn session survives; it also lifts the earlier block on Google sign-in.
+
+The first submission after the switch is the test: one Ashby posting other than the one already
+flagged, submitted once. If it is flagged too, unattended submission to Ashby and Greenhouse stops —
+their postings are handed to Nick with answer packets — rather than working against the bot checks.
 
 **Alternatives considered:** Masking the automation flags in the launched browser (fragile, and
 indistinguishable from evasion). Leaving employer-site submissions to Nick (defeats running
