@@ -58,6 +58,13 @@ const UsRegionNames = new Map<string, string>([
 ]);
 
 /**
+ * Spells out a United States region's postal abbreviation — `DC` as `District of Columbia` — or
+ * returns `undefined` for anything else.
+ */
+export const regionName = (abbreviation: string): string | undefined =>
+  UsRegionNames.get(abbreviation.trim().toUpperCase());
+
+/**
  * What to type into a typeahead for a value, and the words that pick the right suggestion.
  *
  * A typeahead searches better on a place's leading name alone — "Washington, DC" finds nothing

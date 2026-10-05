@@ -101,18 +101,28 @@ const FormHelpers = String.raw`
       input.id ? 'react-select-' + input.id + '-listbox' : null].filter(Boolean);
     const owned = ids.map((id) => document.getElementById(id)).find((el) => el && visible(el));
     if (owned) return owned;
-    const listboxes = [...document.querySelectorAll('[role="listbox"]')].filter(visible);
+    const listboxes = [...document.querySelectorAll('[role="listbox"], [role="menu"]')]
+      .filter(visible);
     const following = listboxes.filter(
       (box) => input.compareDocumentPosition(box) & Node.DOCUMENT_POSITION_FOLLOWING,
     );
     return following[0] || listboxes[listboxes.length - 1] || null;
+  };
+  const popupButtonFor = (select) => {
+    let node = select.parentElement;
+    for (let depth = 0; node && depth < 3; depth += 1) {
+      const button = node.querySelector('button[aria-haspopup]');
+      if (button) return button;
+      node = node.parentElement;
+    }
+    return null;
   };
   const pressButtons = (input) =>
     input.type === 'checkbox' && input.parentElement
       ? [...input.parentElement.querySelectorAll('button[aria-pressed]')]
       : [];
   const optionsIn = (listbox) => {
-    const roleOptions = [...listbox.querySelectorAll('[role="option"]')];
+    const roleOptions = [...listbox.querySelectorAll('[role="option"], [role="menuitem"]')];
     return roleOptions.length > 0 ? roleOptions : [...listbox.querySelectorAll('button, li')];
   };
 `;
@@ -132,6 +142,9 @@ const FormHelpers = String.raw`
  * required when it is marked so, or when its label carries a `*`, a `required` class, or a `*`
  * drawn by CSS.
  *
+ * A hidden select driven by a button that opens a menu — BambooHR's dropdowns — is reported as a
+ * combobox, keyed on the button too, so that it is opened and chosen like any other.
+ *
  * A checkbox that sits beside `aria-pressed` buttons — Ashby's yes-or-no questions — is reported as
  * a choice among the buttons, with the pressed one as its value, since the checkbox's own state
  * cannot tell an unanswered question from a "No".
@@ -142,7 +155,8 @@ const FormHelpers = String.raw`
  */
 const FormReadScript = `() => {${FormHelpers}
   const GenericLabel =
-    /^(attach|upload|upload file|choose file|browse|enter manually|select\\.*|type here\\.*)$/i;
+    new RegExp('^(attach|upload|upload file|choose file|file[- ]?input|browse|enter manually|' +
+      'select\\\\.*|type here\\\\.*)$', 'i');
   const Typeahead = /location|city|address|school|university|college|degree|discipline|major/i;
   const GroupContainer = 'fieldset, [role="radiogroup"], [role="group"]';
   const controlCount = (el) =>
@@ -237,6 +251,7 @@ const FormReadScript = `() => {${FormHelpers}
   const controls = [...root.querySelectorAll('input, select, textarea')].filter((el) => {
     if (['hidden', 'submit', 'button', 'image', 'reset'].includes(el.type)) return false;
     if (/recaptcha/i.test(el.name + ' ' + el.id)) return false;
+    if (el.tagName === 'SELECT' && popupButtonFor(el)) return true;
     if (el.getAttribute('aria-hidden') === 'true') return false;
     if (el.type === 'file' || el.type === 'radio' || el.type === 'checkbox') return true;
     if (el.tabIndex === -1 && !el.id) return false;
@@ -256,7 +271,14 @@ const FormReadScript = `() => {${FormHelpers}
     const { label, required } = labelOf(el, group);
     const key = keyOf(group);
     const base = { key, label, required };
-    if (el.tagName === 'SELECT') {
+    if (el.tagName === 'SELECT' && popupButtonFor(el)) {
+      const button = popupButtonFor(el);
+      button.setAttribute(KeyAttribute, key);
+      const probed = button.getAttribute(OptionsAttribute);
+      const shownText = clean(button.innerText);
+      return { ...base, options: probed ? JSON.parse(probed) : null, type: 'select',
+        value: shownText && !/select/i.test(shownText) ? shownText : null, widget: 'combobox' };
+    } else if (el.tagName === 'SELECT') {
       const options = [...el.options].filter((option) =>
         option.value !== '' && !/^(select|choose)\\b/i.test(clean(option.text)));
       const selected = el.selectedIndex >= 0 ? el.options[el.selectedIndex] : null;
@@ -289,7 +311,8 @@ const FormReadScript = `() => {${FormHelpers}
         : { ...base, options: probed ? JSON.parse(probed) : null, type: 'select',
             value: shown(el) || null, widget: 'combobox' };
     }
-    return { ...base, options: [], type: el.type === 'number' ? 'number' : 'text',
+    return { ...base, options: [],
+      type: el.type === 'number' || el.type === 'date' ? el.type : 'text',
       value: el.value || null, widget: 'native' };
   });
   const unsupported = [...root.querySelectorAll(
@@ -328,11 +351,16 @@ const FormReadScript = `() => {${FormHelpers}
 /**
  * Reads the options of the combobox whose menu is open — opened by a click through the browser
  * server, since its menu answers only to trusted input — and records them on the combobox, so that
- * the next {@link FormReadScript} reading reports them. It closes the menu without choosing.
+ * the next {@link FormReadScript} reading reports them. It closes the menu without choosing. The
+ * combobox is the read control that has focus, or, when opening the menu moved focus into it, the
+ * read control that reports its menu expanded.
  */
 const ComboboxOptionsScript = `async () => {${FormHelpers}
-  const input = document.activeElement;
-  if (!input || !input.hasAttribute(KeyAttribute)) {
+  const focused = document.activeElement;
+  const input = focused && focused.hasAttribute(KeyAttribute)
+    ? focused
+    : document.querySelector('[' + KeyAttribute + '][aria-expanded="true"]');
+  if (!input) {
     return { error: 'No read combobox has focus. Read the form, then click the combobox.' };
   }
   let listbox = null;

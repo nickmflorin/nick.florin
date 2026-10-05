@@ -318,6 +318,15 @@ Start it with `--account-approved` only once he has approved the account. Otherw
   script there and navigate to the `href` it returns, adding `/application` to an Ashby job's
   address, which opens its form. Without an `href`, hand the posting to Nick.
 
+**Check the pay before filling.** An employer's page often states pay that LinkedIn's card did not.
+When it states a range whose top is below `hard.compensation.floor`, skip the posting instead of
+applying:
+
+```bash
+pnpm --silent jobs apply discard <id>
+pnpm --silent jobs review <id> --decision skipped --reason "Pay \$115K-\$145K, below the floor"
+```
+
 ### 3. Fill each step
 
 Repeat for each Easy Apply step — the review step included — or once for a single-page form:

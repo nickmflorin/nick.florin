@@ -9,6 +9,28 @@ import { TextSchema, TimestampSchema } from './common';
 const SelfIdentificationSchema = TextSchema.default('decline');
 
 /**
+ * When Nick can start, as a span from the day an application is filled.
+ */
+export const StartOffsets = [
+  'immediately',
+  '1 week',
+  '2 weeks',
+  '3 weeks',
+  '1 month',
+  '2 months',
+  '3 months',
+] as const;
+
+/**
+ * When Nick can start: a span from the day an application is filled, or a fixed date. A form's
+ * date field takes the date it works out to; a question asking when he can start takes the phrase.
+ */
+const StartSchema = z.union([
+  z.enum(StartOffsets),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'A start date is written as YYYY-MM-DD.'),
+]);
+
+/**
  * An answer to a form question that none of the structured fields cover.
  *
  * These accumulate over time: a question that cannot be answered from this file halts its
@@ -28,7 +50,10 @@ const CustomAnswerSchema = z
  */
 export const AnswersSchema = z
   .object({
-    availability: z.object({ noticePeriodWeeks: z.number().int().nonnegative() }).strict(),
+    availability: z
+      .object({ start: StartSchema.default('immediately') })
+      .strict()
+      .default({}),
     compensation: z
       .object({
         currency: z
@@ -44,7 +69,9 @@ export const AnswersSchema = z
         country: TextSchema,
         email: z.string().email(),
         phone: TextSchema,
+        postalCode: TextSchema.nullable().default(null),
         region: TextSchema,
+        street: TextSchema.nullable().default(null),
       })
       .strict(),
     custom: z.array(CustomAnswerSchema).default([]),

@@ -11,7 +11,7 @@ import { MinimalPreferences } from './fixtures';
  */
 const Context: AnswerContext = {
   answers: AnswersSchema.parse({
-    availability: { noticePeriodWeeks: 0 },
+    availability: { start: 'immediately' },
     compensation: { target: 225000 },
     contact: {
       city: 'Springfield',
@@ -24,6 +24,7 @@ const Context: AnswerContext = {
     workAuthorization: { authorizedCountries: ['US'] },
   }),
   competencies: [],
+  now: new Date('2026-10-05T12:00:00'),
   preferences: PreferencesSchema.parse(MinimalPreferences),
   profile: { firstName: 'Jane', lastName: 'Doe' },
 };

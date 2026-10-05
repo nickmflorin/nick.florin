@@ -125,7 +125,7 @@ describe('applications', () => {
       await fs.writeFile(
         path.join(dataDirectory(), 'answers.yaml'),
         stringify({
-          availability: { noticePeriodWeeks: 0 },
+          availability: { start: 'immediately' },
           compensation: { target: 225000 },
           contact: {
             city: 'Springfield',

@@ -11,7 +11,7 @@ import { MinimalPreferences } from './fixtures';
  * Placeholder answers: no real contact details appear in the suite.
  */
 const Answers = AnswersSchema.parse({
-  availability: { noticePeriodWeeks: 0 },
+  availability: { start: 'immediately' },
   compensation: { target: 225000 },
   contact: {
     city: 'Springfield',
@@ -38,6 +38,7 @@ const Context: AnswerContext = {
     { label: 'React Native', months: 12, proficiency: null, slug: 'react-native', years: 1 },
     { label: 'TypeScript', months: 72, proficiency: 'EXPERT', slug: 'typescript', years: 5 },
   ],
+  now: new Date('2026-10-05T12:00:00'),
   preferences: PreferencesSchema.parse(MinimalPreferences),
   profile: { firstName: 'Jane', lastName: 'Doe' },
 };
@@ -67,6 +68,36 @@ describe('resolveAnswer()', () => {
     ['Are you willing to relocate?', 'No', 'custom'],
   ])('answers %j with %j from %s', (label, value, source) => {
     expect(resolveAnswer(text(label), Context)).toStrictEqual({ label, source, value });
+  });
+
+  it('fills a start-date field with the date the availability works out to', () => {
+    expect([
+      resolveAnswer(text('Date Available'), Context),
+      resolveAnswer({ label: 'Earliest start date', options: [], type: 'date' }, Context),
+    ]).toMatchObject([{ value: '10/05/2026' }, { value: '2026-10-05' }]);
+  });
+
+  it('answers a street address and ZIP only once they are configured', () => {
+    const configured: AnswerContext = {
+      ...Context,
+      answers: {
+        ...Answers,
+        contact: { ...Answers.contact, postalCode: '62701', street: '1 Main St' },
+      },
+    };
+    expect([
+      resolveAnswer(text('Address'), Context),
+      resolveAnswer(text('Address'), configured),
+      resolveAnswer(text('ZIP'), configured),
+    ]).toMatchObject([{ unanswered: true }, { value: '1 Main St' }, { value: '62701' }]);
+  });
+
+  it('fits a state abbreviation to a dropdown that spells it out', () => {
+    expect(resolveAnswer(choice('State', ['Idaho', 'Illinois', 'Indiana']), Context)).toMatchObject(
+      {
+        value: 'Illinois',
+      },
+    );
   });
 
   it('reports a question none of the data answers, rather than guessing', () => {

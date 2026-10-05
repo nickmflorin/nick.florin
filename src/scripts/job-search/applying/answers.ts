@@ -2,11 +2,15 @@ import { toWords } from '../ledger/fingerprint';
 import { type DigestCompetency } from '../profile/digest';
 import { type Answers, type Preferences } from '../schemas';
 
+import { formatStartDate, startDate, startPhrase } from './availability';
+import { regionName } from './places';
+
 /**
  * The kinds of field an application form asks through, as the form reader reports them.
  */
 export const FormFieldTypes = [
   'checkbox',
+  'date',
   'number',
   'radio',
   'select',
@@ -40,13 +44,17 @@ export type ResolvedAnswer =
 export interface AnswerContext {
   readonly answers: Answers;
   readonly competencies: readonly DigestCompetency[];
+  /**
+   * The time the form is filled, from which a start date given as a span is worked out.
+   */
+  readonly now: Date;
   readonly preferences: Preferences;
   readonly profile: { readonly firstName: string; readonly lastName: string };
 }
 
 type Candidate = { readonly source: AnswerSource; readonly value: string } | null;
 
-type Resolver = (label: string, context: AnswerContext) => Candidate;
+type Resolver = (label: string, context: AnswerContext, question: FormQuestion) => Candidate;
 
 /**
  * Options that decline to answer a voluntary self-identification question.
@@ -149,6 +157,14 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
     (_label, { answers }) => from('answers', answers.links.website),
   ],
   [
+    /street|address line|^(?:home |mailing |street )?address\b/i,
+    (_label, { answers }) => from('answers', answers.contact.street ?? undefined),
+  ],
+  [
+    /\bzip\b|postal code|post ?code/i,
+    (_label, { answers }) => from('answers', answers.contact.postalCode ?? undefined),
+  ],
+  [
     /\bcity\b|location|where .*(?:live|located|based)/i,
     (_label, { answers }) => from('answers', `${answers.contact.city}, ${answers.contact.region}`),
   ],
@@ -158,14 +174,13 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   ],
   [/country/i, (_label, { answers }) => from('answers', answers.contact.country)],
   [
-    /notice period|start date|when can you start|available to start|earliest .*start/i,
-    (_label, { answers }) =>
-      from(
-        'answers',
-        answers.availability.noticePeriodWeeks === 0
-          ? 'Immediately'
-          : `${answers.availability.noticePeriodWeeks} weeks`,
-      ),
+    /date available|available (?:start )?date|start date|earliest (?:possible )?start|availability date/i,
+    (_label, { answers, now }, { type }) =>
+      from('answers', formatStartDate(startDate(answers.availability.start, now), type === 'date')),
+  ],
+  [
+    /notice period|when can you start|available to start|how soon/i,
+    (_label, { answers }) => from('answers', startPhrase(answers.availability.start)),
   ],
   [
     /salary|compensation|pay expectation|desired pay|expected pay/i,
@@ -199,6 +214,7 @@ const fitToOptions = (value: string, { options }: FormQuestion): null | string =
   return (
     options.find(option => normalized(option) === wanted) ??
     options.find(option => !declining && normalized(option).startsWith(`${wanted} `)) ??
+    options.find(option => normalized(option) === normalized(regionName(value) ?? '')) ??
     (declining ? options.find(option => DeclineOption.test(option)) : undefined) ??
     null
   );
@@ -237,7 +253,7 @@ export const resolveAnswer = (question: FormQuestion, context: AnswerContext): R
     [
       customAnswer(label, context),
       ...Resolvers.filter(([pattern]) => pattern.test(label)).map(([, resolve]) =>
-        resolve(label, context),
+        resolve(label, context, question),
       ),
     ]
       .map(candidate => fitted(label, question, candidate))

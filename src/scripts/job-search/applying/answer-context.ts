@@ -50,9 +50,11 @@ export const loadAnswerContext = async (context: SessionContext): Promise<Answer
   if (answers === null) {
     throw new Error('There is no answers.yaml. Run the job-search setup first.');
   }
+  const now = context.clock.now();
   return {
     answers,
-    competencies: buildProfileDigest(content, context.clock.now()).competencies,
+    competencies: buildProfileDigest(content, now).competencies,
+    now,
     preferences: context.preferences,
     profile,
   };
