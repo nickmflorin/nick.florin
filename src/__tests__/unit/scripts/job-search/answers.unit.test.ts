@@ -77,19 +77,33 @@ describe('resolveAnswer()', () => {
     ]).toMatchObject([{ value: '10/05/2026' }, { value: '2026-10-05' }]);
   });
 
-  it('answers a street address and ZIP only once they are configured', () => {
+  it('answers an address block from the mailing address, and a location from the city', () => {
     const configured: AnswerContext = {
       ...Context,
       answers: {
         ...Answers,
-        contact: { ...Answers.contact, postalCode: '62701', street: '1 Main St' },
+        contact: {
+          ...Answers.contact,
+          address: { city: 'Shelbyville', postalCode: '62565', region: 'IL', street: '1 Main St' },
+        },
       },
     };
+    const inAddressBlock: AnswerContext = { ...configured, inAddressBlock: true };
     expect([
       resolveAnswer(text('Address'), Context),
       resolveAnswer(text('Address'), configured),
       resolveAnswer(text('ZIP'), configured),
-    ]).toMatchObject([{ unanswered: true }, { value: '1 Main St' }, { value: '62701' }]);
+      resolveAnswer(text('City'), inAddressBlock),
+      resolveAnswer(text('City'), configured),
+      resolveAnswer(text('Where are you located?'), inAddressBlock),
+    ]).toMatchObject([
+      { unanswered: true },
+      { value: '1 Main St' },
+      { value: '62565' },
+      { value: 'Shelbyville' },
+      { value: 'Springfield, IL' },
+      { value: 'Springfield, IL' },
+    ]);
   });
 
   it('fits a state abbreviation to a dropdown that spells it out', () => {

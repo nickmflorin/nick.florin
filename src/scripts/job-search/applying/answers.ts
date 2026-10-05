@@ -45,6 +45,11 @@ export interface AnswerContext {
   readonly answers: Answers;
   readonly competencies: readonly DigestCompetency[];
   /**
+   * Whether the form asks for a full address — a street or a postal code — in which case its city
+   * and state fields belong to that address rather than to the location Nick names.
+   */
+  readonly inAddressBlock?: boolean;
+  /**
    * The time the form is filled, from which a start date given as a span is worked out.
    */
   readonly now: Date;
@@ -158,11 +163,21 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   ],
   [
     /street|address line|^(?:home |mailing |street )?address\b/i,
-    (_label, { answers }) => from('answers', answers.contact.street ?? undefined),
+    (_label, { answers }) => from('answers', answers.contact.address?.street),
   ],
   [
     /\bzip\b|postal code|post ?code/i,
-    (_label, { answers }) => from('answers', answers.contact.postalCode ?? undefined),
+    (_label, { answers }) => from('answers', answers.contact.address?.postalCode),
+  ],
+  [
+    /^(?:city|town)\b/i,
+    (_label, { answers, inAddressBlock }) =>
+      inAddressBlock === true ? from('answers', answers.contact.address?.city) : null,
+  ],
+  [
+    /^(?:state|province|region)\b|state\s*\/\s*province/i,
+    (_label, { answers, inAddressBlock }) =>
+      inAddressBlock === true ? from('answers', answers.contact.address?.region) : null,
   ],
   [
     /\bcity\b|location|where .*(?:live|located|based)/i,

@@ -45,6 +45,10 @@ const CustomAnswerSchema = z
  * The shape of `answers.yaml` in the job-search data directory: the canned answers that application
  * forms are filled from, so that no answer is ever composed by a model.
  *
+ * `contact.city` and `contact.region` are where Nick says he is located; `contact.address` is the
+ * full mailing address a form asking for one is given, which may lie elsewhere — `null` until it
+ * is configured.
+ *
  * Whether sponsorship is required is not repeated here; the hard filter of the same name in
  * `preferences.yaml` is the single source for it.
  */
@@ -65,13 +69,21 @@ export const AnswersSchema = z
       .strict(),
     contact: z
       .object({
+        address: z
+          .object({
+            city: TextSchema,
+            postalCode: TextSchema,
+            region: TextSchema,
+            street: TextSchema,
+          })
+          .strict()
+          .nullable()
+          .default(null),
         city: TextSchema,
         country: TextSchema,
         email: z.string().email(),
         phone: TextSchema,
-        postalCode: TextSchema.nullable().default(null),
         region: TextSchema,
-        street: TextSchema.nullable().default(null),
       })
       .strict(),
     custom: z.array(CustomAnswerSchema).default([]),

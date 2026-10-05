@@ -77,6 +77,13 @@ const ResumeLabel = /resume|\bcv\b|curriculum/i;
 const CoverLetterLabel = /cover letter/i;
 
 /**
+ * A field that asks for part of a full address, whose presence makes the form's city and state
+ * fields part of that address rather than Nick's general location.
+ */
+const AddressLabel =
+  /street|address line|^(?:home |mailing |street )?address\b|\bzip\b|postal code/i;
+
+/**
  * An approved cover letter staged for an application: the PDF for an upload field, and the text
  * for a field that takes it typed in.
  */
@@ -227,8 +234,9 @@ export const planFill = (
   context: AnswerContext,
   staged: StagedDocuments,
 ): FillPlan => {
+  const inAddressBlock = reading.fields.some(({ label }) => AddressLabel.test(label));
   const decided = reading.fields.map(field => ({
-    decision: decide(field, reading, context, staged),
+    decision: decide(field, reading, { ...context, inAddressBlock }, staged),
     field,
   }));
   const planned = decided.flatMap(({ decision }) =>
