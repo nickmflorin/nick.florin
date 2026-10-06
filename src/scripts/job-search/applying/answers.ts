@@ -121,6 +121,15 @@ const BenignQualifier = /\bwithout (?:any )?restrictions?\b/gi;
 // cspell:disable-next-line
 const AuthorizationNeeded = /\b(?:require|need)s?\b.*\bauthori[sz]ation\b/i;
 
+/**
+ * A question whether Nick may work without sponsorship — "eligible to work in the US without
+ * sponsorship" — which is the authorization question and the sponsorship question at once: yes when
+ * he is authorized to work in the United States and needs no sponsorship.
+ */
+const WithoutSponsorship =
+  // cspell:disable-next-line
+  /\b(?:eligible|authori[sz]ed|able|permitted)\b.*\bwork\b.*\bwithout (?:\w+ )?sponsorship\b/i;
+
 const isInverted = (label: string): boolean =>
   InvertedWording.test(label.replace(BenignQualifier, ''));
 
@@ -185,6 +194,19 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   [
     /^(?:full |legal )?name\b/i,
     (_label, { profile }) => from('profile', `${profile.firstName} ${profile.lastName}`),
+  ],
+  [
+    WithoutSponsorship,
+    (label, { answers, preferences }) =>
+      isInverted(label.replace(WithoutSponsorship, ''))
+        ? null
+        : from(
+            'answers',
+            yesNo(
+              answers.workAuthorization.authorizedCountries.includes('US') &&
+                !preferences.hard.sponsorshipRequired,
+            ),
+          ),
   ],
   [
     /sponsor/i,

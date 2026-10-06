@@ -200,6 +200,11 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       optional questions left empty are listed as `optional`; Ashby's yes-or-no checkbox pairs are
       one question; phone numbers and combobox values compare as the form formats them; and a resume
       the form shows by name after taking it counts as attached.
+- [ ] **Fill with trusted input from the CLI.** Ashby keeps its own form state and does not reliably
+      register values set by script: three of four Ashby submissions were refused once with "Missing
+      entry for required field" until the field was retyped or clicked through the browser server. A
+      `jobs apply fill --page` that types through the DevTools protocol's `Input.insertText` and
+      clicks with `Input.dispatchMouseEvent` would make every fill trusted.
 - [ ] **Answer more screening questions from the data.** Most deferrals in the first live run were
       yes-or-no experience questions ("built production front ends with React?", "designed
       PostgreSQL schemas?"), which the profile digest could answer when every named technology is in

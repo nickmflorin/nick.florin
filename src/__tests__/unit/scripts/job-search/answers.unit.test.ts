@@ -252,7 +252,6 @@ describe('resolveAnswer()', () => {
   });
 
   it.each([
-    'Are you able to work in the US without sponsorship?',
     'Do you require work authorization to work in the US?',
     'Are you not authorized to work in the US?',
     "Aren't you eligible to work in the US?",
@@ -260,6 +259,14 @@ describe('resolveAnswer()', () => {
     expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject({
       unanswered: true,
     });
+  });
+
+  it.each([
+    ['Are you eligible to work in the US without Sponsorship?', { value: 'Yes' }],
+    ['Are you able to work in the US without sponsorship?', { value: 'Yes' }],
+    ['Are you not eligible to work in the US without sponsorship?', { unanswered: true }],
+  ])('answers %j from authorization and sponsorship together', (label, expected) => {
+    expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject(expected);
   });
 
   it('falls through to the next matching category when an answer does not fit the options', () => {

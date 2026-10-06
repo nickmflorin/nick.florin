@@ -141,9 +141,11 @@ const digitsOf = (text: string): string => text.replace(/\D/g, '');
 
 /**
  * Whether a field's shown text is the value planned for it, allowing for the formatting forms
- * apply to what they show: a phone number by its digits — "(555) 555-0100" for "5555550100" — and a
+ * apply to what they show: a phone number by its digits — "(555) 555-0100" for "5555550100" — a
  * combobox by the end of its option, since Greenhouse shows "+1" once "United States +1" is
- * chosen.
+ * chosen, and a typeahead by the place before its first comma, or by a suggestion beginning with
+ * the value, since "Washington, DC" may be chosen as "Washington, District of Columbia, United
+ * States".
  *
  * @param {string} shown The text the field shows.
  * @param {string} planned The value planned for it.
@@ -160,7 +162,13 @@ export const showsValue = (shown: string, planned: string, widget: FormWidget): 
       digitsOf(shown).endsWith(digitsOf(planned)) || digitsOf(planned).endsWith(digitsOf(shown))
     );
   }
-  return actual === wanted || (widget === 'combobox' && ` ${wanted}`.endsWith(` ${actual}`));
+  const placeHead = (text: string): string => normalizedWords(text.split(',').at(0) ?? '');
+  return (
+    actual === wanted ||
+    (widget === 'combobox' && ` ${wanted}`.endsWith(` ${actual}`)) ||
+    (widget === 'typeahead' &&
+      (placeHead(shown) === placeHead(planned) || actual.startsWith(`${wanted} `)))
+  );
 };
 
 const hasValue = (value: FieldValue | null): boolean =>

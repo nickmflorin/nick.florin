@@ -373,13 +373,15 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    pnpm --silent jobs apply defer <id> --reason "Questions only Nick can answer"
    ```
 
-4. **Fill.** On a single-page form, upload the resume (step 5) first: Ashby parses an uploaded
-   resume and can drop answers filled before it. Run the plan's `fillFunction`; every result must be
-   `ok`. Then, for each `interactive` entry: a combobox is clicked open by its uid; a typeahead is
-   focused by script and its `typeText` typed with `mcp__job-search-browser__type_text`, which needs
-   no snapshot, passing the entry's `submitKey` as the tool's `submitKey` when it has one; either
-   way its `chooseFunction` then picks the option. A `chosen: null` result means no option fits:
-   defer.
+4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Ashby does not reliably
+   register values set by script — the field shows them, but its submit reports "Missing entry for
+   required field" — so on an Ashby form, retype each text field with `type_text` after the fill,
+   and click each chosen option with `mcp__job-search-browser__click`, confirming its option wrapper
+   carries Ashby's `_checked` class. Then, for each `interactive` entry: a combobox is clicked open
+   by its uid; a typeahead is focused by script and its `typeText` typed with
+   `mcp__job-search-browser__type_text`, which needs no snapshot, passing the entry's `submitKey` as
+   the tool's `submitKey` when it has one; either way its `chooseFunction` then picks the option. A
+   `chosen: null` result means no option fits: defer.
 
 5. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or

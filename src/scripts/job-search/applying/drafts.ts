@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { withLedgerLock } from '../budget/lock';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { listDirectory } from '../fs';
-import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
 import { stageApprovedResume, unstageResume } from '../resume/staging';
 import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas';
@@ -279,15 +278,6 @@ export const recordPlan = async (
   return updated;
 };
 
-const normalized = (value: string): string => toWords(value).join(' ');
-
-/**
- * The part of a place before its first comma, which is all a typeahead's chosen suggestion is
- * expected to share with the value typed into it: "Washington, DC" may be chosen as "Washington,
- * District of Columbia, United States".
- */
-const placeHead = (value: string): string => normalized(value.split(',').at(0) ?? '');
-
 const sameMembers = (expected: readonly string[], actual: readonly string[]): boolean =>
   expected.length === actual.length && expected.every(value => actual.includes(value));
 
@@ -299,10 +289,7 @@ const shows = (entry: DraftEntry, actual: FieldValue | null): boolean => {
   } else if (typeof actual !== 'string') {
     return false;
   }
-  return entry.widget === 'typeahead'
-    ? placeHead(actual) === placeHead(entry.value) ||
-        normalized(actual).startsWith(`${normalized(entry.value)} `)
-    : showsValue(actual, entry.value, entry.widget);
+  return showsValue(actual, entry.value, entry.widget);
 };
 
 /**
