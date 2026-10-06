@@ -14,7 +14,7 @@ const Span = /^(\d+) (week|month)s?$/;
  * @param {Start} start The availability setting.
  * @param {Date} now The day the application is filled.
  *
- * @returns {Date} The start date.
+ * @returns {Date} The first day Nick could begin work.
  */
 export const startDate = (start: Start, now: Date): Date => {
   if (start === 'immediately') {
