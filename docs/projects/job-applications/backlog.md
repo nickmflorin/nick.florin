@@ -1,8 +1,8 @@
 # Backlog
 
 The running list of work items, organized by area. Check items off as they land (`[x]`), and add new
-items to the appropriate section as they come up. Items are independent unless noted; each lands on
-its own branch/PR.
+items to the appropriate section as they come up. Items are independent unless noted. v1 was built
+on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on their own PRs.
 
 ## Configuration
 
@@ -21,6 +21,10 @@ its own branch/PR.
       2026-10-03 in `src/scripts/job-search/schemas/answers.ts`: contact, links, work authorization,
       availability, compensation target, self-identification (declined by default), and a `custom`
       list grown from halted questions. Shape approved 2026-10-03.
+- [x] **Configure a mailing address and a start date.** A concrete address for forms that ask for
+      one, distinct from the general location a form's location question is answered with, and the
+      date available as `immediately`, a span (`2 weeks`, `1 month`) or a date, worked out on the
+      day a form is filled. Landed 2026-10-04 in `contact.address` and `availability.start`.
 - [x] **Implement the hard filters.** Title include/exclude, workplace and locations, compensation
       floor with the unlisted policy, sponsorship, posting age, employee-count band with the unknown
       policy, and the fuzzy-matched company block list. Landed 2026-10-03 in
@@ -74,8 +78,9 @@ its own branch/PR.
       computed from the ledger; barren searches are proposed for retirement, never retired unasked.
 - [x] **Learn from review.** Record an optional short reason with each approve or skip, and
       periodically propose individual `preferences.yaml` edits from the reasons and yields. (v1)
-      Partly landed 2026-10-04: `jobs review` records a reason with each decision; proposing
-      preference edits from them is stage 6.
+      Landed 2026-10-04: `jobs review` records a reason with each decision, and
+      `jobs learning report` proposes preference edits from them and the yields at the end of each
+      run.
 - [x] **Settle the DC-area hybrid locations.** The hybrid search's rejections were mostly roles in
       Arlington, McLean, Bethesda, Tysons, Reston and other suburbs, which `Washington DC` does not
       match. Nick to decide which belong in `hard.locations`. Settled 2026-10-04: hybrid anywhere
@@ -141,9 +146,13 @@ its own branch/PR.
       `pnpm --silent jobs …` call as an error: argument errors are printed by the CLI framework
       before a command runs. Landed as `.claude/skills/job-hunt/`, now through applying, with an
       Unattended Run section.
-- [x] **Add the guardrail rules** — human submit, no invented answers, stop on a challenge, human
-      pace — under `.claude/rules/`, with their Copilot mirrors per the parity convention. Landed
-      2026-10-04 in `.claude/rules/workflow/job-search.md` and its Copilot mirror.
+- [x] **Add the guardrail rules** — submitting only verified applications, no invented answers, stop
+      on a challenge, human pace — under `.claude/rules/`, with their Copilot mirrors per the parity
+      convention. Landed 2026-10-04 in `.claude/rules/workflow/job-search.md` and its Copilot
+      mirror.
+- [ ] **Run the job hunt on a schedule.** Decided 2026-10-04: on demand for now. The three ways to
+      start a run — on demand, a schedule inside a session, and a macOS LaunchAgent running
+      `claude -p` headlessly — are written up in [running.md](./running.md), ready to switch to.
 
 ## Browser
 
@@ -153,20 +162,35 @@ its own branch/PR.
       created.
 - [x] **Detect a logged-out session** and stop the run with a request to log in manually in the
       job-search window. Landed: discovery checks each page's address, and the form reader reports
-      `signIn`, which the plan refuses.
-- [x] **Fill LinkedIn Easy Apply forms**, stopping before Submit. (v1) Landed 2026-10-04 (stage 5b)
-      as one generic form reader, planner and filler (`src/scripts/job-search/applying/`), driven
-      step by step through `jobs apply start|plan|check|pause|discard`. Not yet run end to end.
-- [x] **Fill Ashby and Greenhouse forms**, stopping before Submit, through the same reader, planner
-      and filler as Easy Apply, on the employer's form directly. (v1) Landed 2026-10-04 (stage 5b);
-      read and planned against live Ashby and Greenhouse forms, and Greenhouse's comboboxes and
-      location typeahead filled live.
-- [ ] **Fill the first approved applications end to end:** one Easy Apply, one Ashby and one
-      Greenhouse posting, each left on its final step for him to submit, to confirm the resume
-      upload and the review-step check against live forms. (v1) Easy Apply done 2026-10-04. The
-      first Ashby submission was rejected as spam from the automation-mode browser, which led to
-      attaching to a normally launched one; Ashby and Greenhouse remain to be run through it. The
-      first Workday application was filled through three of its six steps on 2026-10-05.
+      `signIn`, which the plan refuses. Since 2026-10-05 it also reports a board's sign-in step and
+      an error page in place of the form, which the plan and check refuse.
+- [x] **Sign in to LinkedIn automatically**, behind `signIn.automatic`, with the credentials the
+      environment variables it names hold in `.env.local`, typed by `jobs linkedin sign-in` so they
+      never pass through the agent; without them, Nick signs in by hand. Landed 2026-10-04.
+- [x] **Fill LinkedIn Easy Apply forms.** (v1) Landed 2026-10-04 (stage 5b) as one generic form
+      reader, planner and filler (`src/scripts/job-search/applying/`), driven step by step through
+      `jobs apply start|plan|check|pause|discard`. The first application was filled end to end the
+      same day.
+- [x] **Fill Ashby and Greenhouse forms** through the same reader, planner and filler as Easy Apply,
+      on the employer's form directly. (v1) Landed 2026-10-04 (stage 5b); read and planned against
+      live Ashby and Greenhouse forms, and Greenhouse's comboboxes and location typeahead filled
+      live.
+- [x] **Fill Workday and BambooHR forms** once Nick has signed in or created the account
+      (`jobs apply start --account-approved`). (v1) Read and planned 2026-10-04; the first Workday
+      application filled through three of its six steps on 2026-10-05, which brought its search
+      prompts, question dropdowns and drop-zone uploads.
+- [x] **Submit verified applications unattended.** Under `applying.submit: verified` the agent
+      clicks Submit once, only when every planned value and the approved resume were seen in the
+      form and nothing blocks it, and reads the confirmation; anything else is deferred to one held
+      list (`jobs apply defer|held`), with an answer packet where the board needs an account. (v1)
+      Landed 2026-10-04.
+- [ ] **Submit the first applications end to end** from the attached browser, one each on Ashby,
+      Greenhouse and Workday, to confirm the resume upload, the review-step check and the
+      confirmation reading against live forms, and that the spam rejection does not recur. (v1) Easy
+      Apply was filled end to end on 2026-10-04 and submitted by Nick. The first Ashby submission
+      was rejected as spam from the automation-mode browser, which led to attaching to a normally
+      launched one. The first Workday application was filled through three of its six steps on
+      2026-10-05 and stopped when its session expired.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
       then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04;
@@ -204,8 +228,8 @@ its own branch/PR.
       provenance and hash. (v1) Landed 2026-10-03; approved copies are also archived by hash under
       `resume/archive/`.
 - [x] **Keep approval human-only.** Deny the command to agents in `.claude/settings.json`, and state
-      it in the guardrail rules. (v1) The deny rules landed 2026-10-03; the rule statement lands
-      with the guardrail rules in stage 4.
+      it in the guardrail rules. (v1) The deny rules landed 2026-10-03, and the rule statement with
+      the guardrail rules on 2026-10-04.
 - [x] **Use the approved resume when applying.** Block filling without one; verify the copy's hash
       against the manifest before attaching; record the hash on each application. (v1) Landed
       2026-10-04: `jobs apply start` stages a verified copy per application, and an application is
@@ -224,27 +248,27 @@ its own branch/PR.
 ## Cover Letters
 
 - [x] **Draft cover letters** where the form requires one, or offers one and the posting scored 80
-      or above, from the description, profile digest, fit rationale and `voice.md`; cite the role or
-      project behind each claim. (v1) Landed 2026-10-04: the `cover-letter-writer` agent saves each
-      draft, with its citations, through `jobs cover-letter save`; Nick approves it with
-      `jobs cover-letter approve`, which agents are denied, before it is attached anywhere.
+      or above, from the description, profile digest and fit rationale; cite the role or project
+      behind each claim. (v1) Landed 2026-10-04: the `cover-letter-writer` agent saves each draft,
+      with its citations, through `jobs cover-letter save`; Nick approves it with
+      `jobs cover-letter approve`, which agents are denied, before it is attached anywhere. The
+      agent matches the samples in `voice.md` when there are any, and writes plainly until then;
+      adding them is the open item below.
 - [x] **Render cover letters to PDF** for upload fields, reusing the headless-Chrome approach of
       `pnpm resume:generate`. (v1) Landed 2026-10-04: `jobs apply start` renders an approved letter
       beside the staged resume.
-- [ ] **Run the job hunt on a schedule.** Decided 2026-10-04: on demand for now. The three ways to
-      start a run — on demand, a schedule inside a session, and a macOS LaunchAgent running
-      `claude -p` headlessly — are written up in [running.md](./running.md), ready to switch to.
 - [ ] **Add `voice.md`**, samples of Nick's own writing, to the data directory, so that drafts sound
-      like him rather than like a plain default.
+      like him rather than like a plain default. Nick supplies the samples;
+      `jobs cover-letter     context` already passes them to the writer once the file exists.
 
 ## Future Improvements
 
 Beyond v1. Each was considered and deliberately deferred; see [decisions.md](./decisions.md).
 
-- [ ] **Fill Greenhouse, Lever and Ashby forms**, stopping before Submit. Greenhouse's public
-      job-board API returns a posting's questions, so answers can be drafted before the browser
-      opens. (v2) Ashby and Greenhouse moved into v1 on 2026-10-04 and landed the same day; Lever
-      stays here.
+- [ ] **Fill Lever forms** through the same reader, planner and filler. Greenhouse's public
+      job-board API returns a posting's questions, so answers could likewise be drafted before the
+      browser opens. (v2) Ashby and Greenhouse moved into v1 on 2026-10-04 and landed the same day;
+      Lever stays here.
 - [ ] **Discover from a company watchlist.** Read the public job-board APIs of Greenhouse, Lever and
       Ashby for a list of named companies, with plain HTTP from the cli and no browser — no LinkedIn
       activity, full descriptions, often earlier than LinkedIn, and the system is known in advance.
