@@ -6,17 +6,17 @@ into [the CLI](./index.md) yet.
 The CLI is being built in parallel: **every script below still works unchanged**, and each is ported
 across one at a time. `jsonify` is the one script that will not be ported.
 
-| Script                   | Status       | CLI command    |
-| ------------------------ | ------------ | -------------- |
-| `sync-content/`          | **Ported**   | `content sync` |
-| `generate-resume/`       | Not yet      | —              |
-| `emit-resume-fixtures`   | Not yet      | —              |
-| `seed/`                  | Not yet      | —              |
-| `sync-repositories`      | Not yet      | —              |
-| `calculate-experience`   | Not yet      | —              |
-| `update-company-logo`    | Not yet      | —              |
-| `transcode-project-gifs` | Not yet      | —              |
-| `jsonify/`               | **Excluded** | never          |
+| Script                   | Status       | CLI command       |
+| ------------------------ | ------------ | ----------------- |
+| `sync-content/`          | **Ported**   | `content sync`    |
+| `generate-resume/`       | **Ported**   | `resume generate` |
+| `emit-resume-fixtures`   | Not yet      | —                 |
+| `seed/`                  | Not yet      | —                 |
+| `sync-repositories`      | Not yet      | —                 |
+| `calculate-experience`   | Not yet      | —                 |
+| `update-company-logo`    | Not yet      | —                 |
+| `transcode-project-gifs` | Not yet      | —                 |
+| `jsonify/`               | **Excluded** | never             |
 
 ## Content
 
@@ -43,11 +43,11 @@ Renders the resume to static HTML, prints it to PDF through headless Chrome, and
 into a single distributable file. Output lands in `build/documents/resume/`.
 
 ```bash
-pnpm resume:generate                  # all three steps
-pnpm resume:generate:html             # --steps=html
-pnpm resume:generate:pdf              # --steps=pdf
-pnpm resume:generate:artifact         # --steps=artifact
-pnpm resume:generate --steps=html,pdf # any subset, always run in pipeline order
+pnpm cli resume generate                         # all three steps (also `pnpm resume:generate`)
+pnpm resume:generate:html                        # --step html
+pnpm resume:generate:pdf                         # --step pdf
+pnpm resume:generate:artifact                    # --step artifact
+pnpm cli resume generate --step html --step pdf  # any subset, always run in pipeline order
 ```
 
 Steps always execute in `html → pdf → artifact` order regardless of the order given. The PDF step
@@ -143,6 +143,6 @@ Worth knowing, because the CLI deliberately diverges from all of them:
 - **Named arguments require `=value`.** A bare `--name` throws rather than being read as a switch.
 - **Argument matching is a prefix match**, so a lookup for `--dry` would also match `--dry-run`.
 - **No `--help` anywhere**, and no validation of unrecognized flags.
-- **Three scripts bypass the script lifecycle entirely** — `generate-resume`,
-  `transcode-project-gifs` and `emit-resume-fixtures` need neither a database nor Clerk, and do not
-  run through `runScript`.
+- **Two scripts bypass the script lifecycle entirely** — `transcode-project-gifs` and
+  `emit-resume-fixtures` need neither a database nor Clerk, and do not run through `runScript`.
+  (`generate-resume` was a third, until it moved to `pnpm cli resume generate`.)

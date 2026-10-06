@@ -37,6 +37,34 @@ documentation (`best-practices.md`). Single-word names (`query.ts`, `util.ts`) a
 The one exception is `README.md`, which keeps its conventional uppercase name and must never be
 renamed.
 
+## Names Do Not Repeat Their Folders
+
+A file is named for what sets it apart within its folder. The folders it sits in already say what it
+belongs to, so the name never restates them, and never adds a suffix that the folder implies.
+
+```text
+Correct: the folder path carries "commands" and "jobs"; the file name carries only "apply".
+  src/scripts/cli-v2/commands/jobs/apply.ts
+  src/scripts/cli-v2/commands/jobs/answers.ts
+
+Disallowed: both folders are restated, and every file in the folder carries the same suffix.
+  src/scripts/cli-v2/commands/jobs/jobs-apply-commands.ts
+  src/scripts/cli-v2/commands/jobs/jobs-answers-commands.ts
+```
+
+A folder that groups such files into a module exposes what the rest of the codebase uses through an
+`index.ts` barrel, and code outside the folder imports through it (subject to the client-import rule
+below):
+
+```typescript
+// src/scripts/cli-v2/commands/jobs/index.ts
+export { JobsAnswersAddCommand, JobsAnswersResolveCommand } from './answers';
+export { JobsApplyPlanCommand, JobsApplyStartCommand } from './apply';
+
+// src/scripts/cli-v2/cli.ts — Correct: one import through the module's barrel.
+import { JobsAnswersAddCommand, JobsApplyStartCommand } from './commands/jobs';
+```
+
 ## Folders: hyphen-case, Always
 
 Folders are always named in hyphen-case. PascalCase folders are disallowed, even when the folder

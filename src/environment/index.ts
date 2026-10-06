@@ -37,6 +37,7 @@ export const environment = NextEnvironment.create(
       CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
       DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
       GITHUB_USERNAME: process.env.GITHUB_USERNAME,
+      JOBS_DATA_DIR: process.env.JOBS_DATA_DIR,
       LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
       LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
@@ -70,6 +71,7 @@ export const environment = NextEnvironment.create(
       }[environmentName],
       DATABASE_LOG_LEVEL: PrismaLogLevelSchema.optional(),
       GITHUB_USERNAME: z.string(),
+      JOBS_DATA_DIR: TestRestricted(z.string().optional()),
       LOGFLARE_API_KEY: {
         development: z.string(),
         local: z.string().optional(),

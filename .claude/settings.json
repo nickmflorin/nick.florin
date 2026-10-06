@@ -1,6 +1,24 @@
 {
   "permissions": {
-    "allow": ["Bash(pnpm run:*)", "Edit(/.claude/skills/sync-ai-config/**)"]
+    "allow": ["Bash(pnpm run:*)", "Edit(/.claude/skills/sync-ai-config/**)"],
+    "deny": [
+      "Bash(pnpm cli jobs resume approve:*)",
+      "Bash(pnpm run cli jobs resume approve:*)",
+      "Bash(pnpm --silent cli jobs resume approve:*)",
+      "Bash(pnpm jobs resume approve:*)",
+      "Bash(pnpm run jobs resume approve:*)",
+      "Bash(pnpm --silent jobs resume approve:*)",
+      "Bash(pnpm cli jobs cover-letter approve:*)",
+      "Bash(pnpm run cli jobs cover-letter approve:*)",
+      "Bash(pnpm --silent cli jobs cover-letter approve:*)",
+      "Bash(pnpm jobs cover-letter approve:*)",
+      "Bash(pnpm run jobs cover-letter approve:*)",
+      "Bash(pnpm --silent jobs cover-letter approve:*)",
+      "Read(./.env.local)",
+      "Read(./.env.*.local)",
+      "Bash(cat .env.local:*)",
+      "Bash(cat ./.env.local:*)"
+    ]
   },
   "enabledPlugins": {
     "nextjs@nextjs-marketplace": true,

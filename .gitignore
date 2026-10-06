@@ -58,3 +58,7 @@ yarn-error.log*
 
 # Claude Code worktrees.
 .claude/worktrees/
+
+# Private Project Notes
+/docs/projects/monorepo/
+docs/notes.md

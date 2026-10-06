@@ -80,6 +80,9 @@ Long-running project working context (status, decisions, codebase maps) lives un
 - [Test Coverage](./projects/test-coverage/README.md) - Building out a real Jest setup for unit and
   React Testing Library component tests, then actually using it — starting from seven test files and
   zero React tests
+- [Job Applications](./projects/job-applications/README.md) - A configurable process — skills, an
+  agent, rules and CLI commands — that finds LinkedIn jobs, scores them against stated preferences,
+  and fills applications for a human to review and submit
 
 ## AI Instructions vs Human Documentation
 

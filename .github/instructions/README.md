@@ -59,6 +59,7 @@ Unlike the human-readable documentation in [docs/](../../docs/index.md), these i
 | `code-quality/strings.instructions.md`                     | String quoting, line length, and `+` wrapping                      | TypeScript/JavaScript files |
 | `documentation/code-examples.instructions.md`              | Illustrating documented code concepts with code blocks             | Markdown files              |
 | `workflow/agent-behavior.instructions.md`                  | Blast radius, pattern mining, and escalation thresholds            | Source + tooling files      |
+| `workflow/job-search.instructions.md`                      | Job-search guardrails: private data, LinkedIn pacing, Nick-only    | All files                   |
 | `workflow/verification-commands.instructions.md`           | Which checkers may be run automatically                            | All files                   |
 
 Both Claude Code and Copilot discover instruction files recursively, so the `code-quality/`,

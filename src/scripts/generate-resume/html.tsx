@@ -23,6 +23,12 @@ import {
   StackedPagePath,
   StylesheetPath,
 } from './config';
+import {
+  captureSourceProvenance,
+  provenanceFileFor,
+  type SourceProvenance,
+  writeSourceProvenance,
+} from './provenance';
 import { ResumeStaticDocument } from './ResumeStaticDocument';
 import { pathExists } from './util';
 
@@ -146,6 +152,25 @@ const assertReferencesAreRelative = async (): Promise<void> => {
 };
 
 /**
+ * Captures the state of the resume sources before the HTML is rendered, so that the provenance
+ * describes the sources the rendering was made from.
+ *
+ * A failure to run git does not fail the emission: the HTML is emitted without provenance, which
+ * marks every PDF printed from it as a possible draft — the safe reading of an unknown source.
+ */
+const captureSourceProvenanceForEmission = async (): Promise<null | SourceProvenance> => {
+  try {
+    return await captureSourceProvenance(process.cwd());
+  } catch (error) {
+    stdout.warn(
+      'The state of the resume sources could not be read from git, so the HTML is emitted ' +
+        `without provenance: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return null;
+  }
+};
+
+/**
  * Emits the resume as a directory of static HTML files that render identically whether they are
  * served or opened straight off disk.
  *
@@ -154,14 +179,21 @@ const assertReferencesAreRelative = async (): Promise<void> => {
  * references is copied in beside it.
  */
 export const emitStaticHtml = async (): Promise<void> => {
+  const source = await captureSourceProvenanceForEmission();
   pointAssetHelpersAtEmittedAssets();
 
-  await fs.rm(HtmlDir, { force: true, recursive: true });
+  await Promise.all([
+    fs.rm(HtmlDir, { force: true, recursive: true }),
+    fs.rm(provenanceFileFor(HtmlDir), { force: true }),
+  ]);
   await fs.mkdir(AssetsDir, { recursive: true });
 
   await Promise.all([emitStylesheet(), fs.cp(LogosSourceDir, LogosOutputDir, { recursive: true })]);
   await emitPages();
   await assertReferencesAreRelative();
+  if (source !== null) {
+    await writeSourceProvenance(HtmlDir, source);
+  }
 
   stdout.complete(`Emitted the static resume documents to '${HtmlDir}'.`);
 };
