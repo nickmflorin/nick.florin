@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises';
 import os from 'node:os';
 import { type Readable } from 'node:stream';
 import { text } from 'node:stream/consumers';
@@ -21,6 +22,7 @@ import {
   type FormReading,
   FormReadingSchema,
   type PlannedFill,
+  revealFileInputScript,
 } from '~/scripts/job-search/applying/form-scripts';
 import { typeaheadQuery } from '~/scripts/job-search/applying/places';
 import { delayWithinMs } from '~/scripts/job-search/budget/budget';
@@ -42,14 +44,52 @@ const withChooser = (fill: PlannedFill) => {
   return { ...fill, chooseFunction: chooseOptionScript(fill.value, hints), typeText };
 };
 
-const readFormReading = async (stdin: Readable): Promise<FormReading> => {
-  const raw: unknown = JSON.parse(await text(stdin));
+/**
+ * Reads a form reading from the file the browser server saved it to, deleting the file once read
+ * since the reading holds Nick's answers, or from standard input when no file is given.
+ */
+const readFormReading = async (stdin: Readable, file: string | undefined): Promise<FormReading> => {
+  const source = file ?? 'standard input';
+  const raw: unknown = JSON.parse(
+    file === undefined ? await text(stdin) : await fs.readFile(file, 'utf-8'),
+  );
+  if (file !== undefined) {
+    await fs.rm(file, { force: true });
+  }
   const parsed = FormReadingSchema.safeParse(raw);
   if (!parsed.success) {
-    throw new Error(`The form reading on standard input is invalid: ${parsed.error.message}`);
+    throw new Error(`The form reading in ${source} is invalid: ${parsed.error.message}`);
   }
   return parsed.data;
 };
+
+/**
+ * Why a reading cannot be planned or checked: the page shows a CAPTCHA, asks to sign in, or shows
+ * an error in place of the form.
+ */
+const refusalOf = ({ challenge, pageError, signIn }: FormReading): JsonResult | null => {
+  if (challenge) {
+    return { reason: 'The page is showing a CAPTCHA challenge.', status: 'refused' };
+  } else if (signIn) {
+    return {
+      reason:
+        'The page asks to sign in: on LinkedIn the session has lapsed; elsewhere the board ' +
+        'wants an account, or its session expired.',
+      status: 'refused',
+    };
+  } else if (pageError) {
+    return {
+      reason: 'The page shows an error in place of the form, often an expired session.',
+      status: 'refused',
+    };
+  }
+  return null;
+};
+
+const readingOption = () =>
+  Option.String('--reading', {
+    description: 'A file holding the reading, deleted once read; standard input otherwise.',
+  });
 
 /**
  * Starts an application to an approved posting.
@@ -97,18 +137,24 @@ export class JobsApplyPlanCommand extends JsonCommand {
     category: 'Jobs',
     description: "Plan how to fill a form reading from Nick's data, and print the fill script.",
     details: `
-      Reads the \`form-read\` page script's result from standard input. Prints the plan — the
+      Reads the \`form-read\` page script's result from the \`--reading\` file the browser
+      server saved it to, or from standard input, and prints the plan — the
       native fills and the \`fillFunction\` that sets them; the comboboxes and typeaheads to choose
       through the browser server, each with the \`chooseFunction\` to run once its menu is open,
-      and a typeahead with the \`typeText\` that opens it; the uploads; the comboboxes whose options
-      must be probed first; and the required questions only Nick can answer — and records the
-      planned values in the draft. Refuses a reading that shows a CAPTCHA challenge, or a page that
-      asks to sign in.
+      and a typeahead with the \`typeText\` that opens it, and the \`submitKey\` that runs its
+      search where it needs one; the uploads, each with the \`revealFunction\` that shows a hidden
+      file input; the comboboxes whose options must be probed first; and the required questions
+      only Nick can answer — and records the planned values in the draft. Refuses a reading that
+      shows a CAPTCHA challenge, a page that asks to sign in, or an error page.
 
       \`--preview\` plans without a started application and records nothing, to see what a form
       asks before applying; the resume upload is then reported unanswered.
     `,
     examples: [
+      [
+        'Plan a saved reading',
+        '$0 jobs apply plan 4012345678 --reading build/job-search/reading.json',
+      ],
       ['Plan a reading', '$0 jobs apply plan 4012345678 < reading.json'],
       ['Preview a form', '$0 jobs apply plan 4012345678 --preview < reading.json'],
     ],
@@ -117,30 +163,30 @@ export class JobsApplyPlanCommand extends JsonCommand {
   public preview = Option.Boolean('--preview', false, {
     description: 'Plan without a started application, recording nothing.',
   });
+  public reading = readingOption();
 
   protected async run(): Promise<JsonResult> {
-    const reading = await readFormReading(this.context.stdin);
-    if (reading.challenge) {
-      return { reason: 'The page is showing a CAPTCHA challenge.', status: 'refused' };
-    } else if (reading.signIn) {
-      return {
-        reason:
-          'The page asks to sign in: on LinkedIn the session has lapsed; elsewhere the board ' +
-          'wants an account.',
-        status: 'refused',
-      };
+    const reading = await readFormReading(this.context.stdin, this.reading);
+    const refusal = refusalOf(reading);
+    if (refusal !== null) {
+      return refusal;
     }
     const context = await resolveSessionContext();
-    const [answerContext, draft] = await Promise.all([
+    const [answerContext, draft, posting] = await Promise.all([
       loadAnswerContext(context),
       this.preview ? null : readDraft(context.dataDirectory, this.id),
+      context.store.getPosting(this.id),
     ]);
-    const plan = planFill(reading, answerContext, {
-      coverLetter: draft?.coverLetter
-        ? { file: draft.coverLetter.stagedFile, text: draft.coverLetter.text }
-        : null,
-      resumeFile: draft?.resume.stagedFile ?? null,
-    });
+    const plan = planFill(
+      reading,
+      { ...answerContext, company: posting?.company },
+      {
+        coverLetter: draft?.coverLetter
+          ? { file: draft.coverLetter.stagedFile, text: draft.coverLetter.text }
+          : null,
+        resumeFile: draft?.resume.stagedFile ?? null,
+      },
+    );
     if (!this.preview) {
       await recordPlan(context, this.id, plan, reading);
     }
@@ -151,6 +197,10 @@ export class JobsApplyPlanCommand extends JsonCommand {
       progress: reading.progress,
       status: 'planned',
       unsupported: reading.unsupported,
+      uploads: plan.uploads.map(upload => ({
+        ...upload,
+        revealFunction: revealFileInputScript(upload.key),
+      })),
     };
   }
 }
@@ -164,19 +214,32 @@ export class JobsApplyCheckCommand extends JsonCommand {
     category: 'Jobs',
     description: 'Check a reading of the filled form against the planned values.',
     details: `
-      Reads the \`form-read\` page script's result, taken after filling, from standard input, and
-      records which planned values the form shows. Prints the values it shows differently, those
-      not yet seen, whether the approved resume has been seen attached, and the blockers that keep
+      Reads the \`form-read\` page script's result, taken after filling, from the \`--reading\`
+      file or standard input, and records which planned values the form shows. Prints the values
+      it shows differently, those not yet seen, whether the approved resume has been seen
+      attached, and the blockers that keep
       the agent from submitting it — including any required field no plan covered. An application
       can be recorded as filled only once nothing is pending and the resume is verified, and
-      submitted by the agent only once, in addition, nothing blocks it.
+      submitted by the agent only once, in addition, nothing blocks it. Refuses the readings the
+      plan refuses.
     `,
-    examples: [['Check a filled form', '$0 jobs apply check 4012345678 < reading.json']],
+    examples: [
+      [
+        'Check a saved reading',
+        '$0 jobs apply check 4012345678 --reading build/job-search/reading.json',
+      ],
+      ['Check a filled form', '$0 jobs apply check 4012345678 < reading.json'],
+    ],
   });
   public id = Option.String({ name: 'id', required: true });
+  public reading = readingOption();
 
   protected async run(): Promise<JsonResult> {
-    const reading = await readFormReading(this.context.stdin);
+    const reading = await readFormReading(this.context.stdin, this.reading);
+    const refusal = refusalOf(reading);
+    if (refusal !== null) {
+      return refusal;
+    }
     const check = await checkReading(await resolveSessionContext(), this.id, reading);
     return { ...check, status: check.mismatches.length === 0 ? 'ok' : 'mismatched' };
   }

@@ -1,5 +1,7 @@
 import { pick } from 'lodash-es';
 
+import { toWords } from '../ledger/fingerprint';
+
 import { type AnswerContext, resolveAnswer } from './answers';
 import {
   type FieldValue,
@@ -43,6 +45,12 @@ export interface FillPlan {
    */
   readonly kept: UnplannedField[];
   /**
+   * Fields that already show Nick's answer — a value the form defaults to, or one set on an earlier
+   * pass — which are left as they are but recorded with the value shown, so that the check confirms
+   * them like any planned field.
+   */
+  readonly matched: PlannedFill[];
+  /**
    * Comboboxes whose options are not yet known: each is opened and probed, and the form read
    * again, before it can be planned.
    */
@@ -59,6 +67,7 @@ type Decision =
   | { readonly fill: PlannedFill; readonly kind: 'fill' }
   | { readonly kind: 'cover-letter' }
   | { readonly kind: 'keep' }
+  | { readonly kind: 'matched' }
   | { readonly kind: 'needs-options' }
   | { readonly kind: 'skip' }
   | { readonly kind: 'unanswered' };
@@ -68,9 +77,11 @@ type Decision =
  * "Phone country code", Greenhouse's "Country" — in whose presence the number is entered without
  * its code.
  */
-const CountryCodeLabel = /country code|^country$/i;
+const CountryCodeLabel = /country (?:phone )?code|phone code|^country$/i;
 
 const PhoneLabel = /phone|mobile/i;
+
+const PhoneNumber = /^\+?[\d\s().-]{7,}$/;
 
 const ResumeLabel = /resume|\bcv\b|curriculum/i;
 
@@ -117,14 +128,21 @@ export const nationalNumber = (phone: string): string => {
   return digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
 };
 
+const normalizedWords = (text: string): string => toWords(text).join(' ');
+
 const hasValue = (value: FieldValue | null): boolean =>
   value !== null &&
   value !== false &&
   value !== '' &&
   !(Array.isArray(value) && value.length === 0);
 
+/**
+ * The properties of a read field that a planned fill carries over.
+ */
+const PlannedKeys = ['key', 'label', 'submitKey', 'type', 'widget'] as const;
+
 const fill = (field: ReadField, value: FieldValue): Decision => ({
-  fill: { ...pick(field, ['key', 'label', 'type', 'widget']), value },
+  fill: { ...pick(field, PlannedKeys), value },
   kind: 'fill',
 });
 
@@ -185,13 +203,20 @@ const decide = (
   );
   if ('unanswered' in answer) {
     return unansweredOrKept(field);
-  } else if (field.type === 'checkbox') {
-    return fill(field, [answer.value]);
   }
   const separateCode =
     PhoneLabel.test(field.label) &&
+    PhoneNumber.test(answer.value) &&
     reading.fields.some(other => other.key !== field.key && CountryCodeLabel.test(other.label));
-  return fill(field, separateCode ? nationalNumber(answer.value) : answer.value);
+  const value = separateCode ? nationalNumber(answer.value) : answer.value;
+  if (
+    typeof field.value === 'string' &&
+    field.value !== '' &&
+    normalizedWords(field.value).startsWith(normalizedWords(value))
+  ) {
+    return { kind: 'matched' };
+  }
+  return fill(field, field.type === 'checkbox' ? [value] : value);
 };
 
 /**
@@ -214,7 +239,8 @@ const unplanned = ({ key, label, required, value }: ReadField): UnplannedField =
  * Plans how to fill one reading of an application form from Nick's data.
  *
  * Every field the data answers is planned, with its value fitted to the field's options; a phone
- * number beside a separate country-code field loses its code. The approved resume is planned into
+ * number beside a separate country-code field loses its code. A field that already shows the answer
+ * is left as it is and recorded as matched. The approved resume is planned into
  * the resume upload, and a picker among earlier uploads is left alone, since the approved resume is
  * uploaded and then checked as selected. A cover-letter field takes the approved letter, and
  * without one is left alone when optional and reported when required. LinkedIn's follow and
@@ -253,6 +279,9 @@ export const planFill = (
     fills: planned.filter(({ widget }) => widget === 'native'),
     interactive: planned.filter(({ widget }) => widget === 'combobox' || widget === 'typeahead'),
     kept: fieldsWhere('keep').map(unplanned),
+    matched: fieldsWhere('matched').flatMap(field =>
+      field.value === null ? [] : [{ ...pick(field, PlannedKeys), value: field.value }],
+    ),
     needsOptions: fieldsWhere('needs-options').map(({ key, label }) => ({ key, label })),
     unanswered: fieldsWhere('unanswered').map(unplanned),
     uploads: decided.flatMap(({ decision, field: { key, label } }) =>

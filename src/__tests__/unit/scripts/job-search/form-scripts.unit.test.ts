@@ -4,6 +4,8 @@ import {
   chooseOptionScript,
   formFillScript,
   FormScripts,
+  FormToolsGoneMessage,
+  revealFileInputScript,
 } from '~/scripts/job-search/applying/form-scripts';
 
 /**
@@ -17,11 +19,32 @@ describe('form scripts', () => {
     expect(compile(script)).toBeInstanceOf(Script);
   });
 
-  it('emits the sign-in path pattern with its escapes intact', () => {
-    expect(FormScripts['form-read']).toContain(
-      String.raw`/\/(?:login|signin|sign-in|authwall|checkpoint|uas\/login)\b/i`,
-    );
+  it('emits the sign-in patterns with their escapes intact', () => {
+    expect([
+      FormScripts['form-read'].includes(
+        String.raw`/\/(?:login|signin|sign-in|authwall|checkpoint|uas\/login)\b/i`,
+      ),
+      FormScripts['form-read'].includes(
+        String.raw`/current step \d+ of \d+\s+(create account\s*\/\s*)?sign in/i`,
+      ),
+    ]).toStrictEqual([true, true]);
   });
+
+  it.each([
+    ['form-reread', FormScripts['form-reread']],
+    ['combobox-options', FormScripts['combobox-options']],
+    ['choose-option', chooseOptionScript('No')],
+    ['reveal', revealFileInputScript('f16')],
+  ])(
+    'reports that the form tools are gone when %s runs on a page not read',
+    async (_name, script) => {
+      expect.hasAssertions();
+      const serialized: unknown = new Script(
+        `(${script})().then((result) => JSON.stringify(result));`,
+      ).runInNewContext({ window: {} });
+      await expect(serialized).resolves.toBe(JSON.stringify({ error: FormToolsGoneMessage }));
+    },
+  );
 
   it('compiles the choose-option script with quotes and hints in the value', () => {
     expect(
@@ -36,10 +59,10 @@ describe('form scripts', () => {
     ]);
     expect(compile(script)).toBeInstanceOf(Script);
     expect(script).toContain(
-      `const fills = ${JSON.stringify([
+      `fill(${JSON.stringify([
         { key: 'f0', type: 'text', value: 'jane@example.com' },
         { key: 'f1', type: 'checkbox', value: false },
-      ])};`,
+      ])})`,
     );
   });
 });

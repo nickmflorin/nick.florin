@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { omit } from 'lodash-es';
 import { z } from 'zod';
 
 import { withLedgerLock } from '../budget/lock';
@@ -253,7 +254,10 @@ export const recordPlan = async (
     ...reading.unsupported.map(label => ({ kind: 'unsupported' as const, label, step })),
   ];
   const planned: DraftEntry[] = [
-    ...[...plan.fills, ...plan.interactive].map(fill => ({ ...fill, verified: false })),
+    ...[...plan.fills, ...plan.interactive, ...plan.matched].map(fill => ({
+      ...omit(fill, ['submitKey']),
+      verified: false,
+    })),
     ...plan.uploads.map(({ file, key, label }) => ({
       key,
       label,
@@ -296,7 +300,8 @@ const shows = (entry: DraftEntry, actual: FieldValue | null): boolean => {
     return false;
   }
   return entry.widget === 'typeahead'
-    ? placeHead(actual) === placeHead(entry.value)
+    ? placeHead(actual) === placeHead(entry.value) ||
+        normalized(actual).startsWith(`${normalized(entry.value)} `)
     : normalized(actual) === normalized(entry.value);
 };
 

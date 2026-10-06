@@ -35,7 +35,8 @@ Two places outside the data directory hold private files briefly, both because t
 reads and writes only inside the workspace and the operating system's temporary directory:
 
 - `build/job-search/`, where the browser server saves a posting's text for `jobs posting describe`
-  to move into the ledger. It is gitignored, and each file is deleted on attach.
+  to move into the ledger, and a form reading for `jobs apply plan` and `jobs apply check`. It is
+  gitignored, and each file is deleted by the command that reads it.
 - `job-search-resume/<id>/` in the temporary directory, where `jobs apply start` stages the approved
   resume for upload. It is readable by Nick's account alone, and is removed when the application is
   submitted or discarded.

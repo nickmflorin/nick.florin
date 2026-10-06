@@ -331,13 +331,20 @@ pnpm --silent jobs review <id> --decision skipped --reason "Pay \$115K-\$145K, b
 
 Repeat for each Easy Apply step — the review step included — or once for a single-page form:
 
-1. **Read** the form with the `form-read` script, and **plan** from the reading:
+1. **Read** the form, and **plan** from the reading. The first reading of a page runs the
+   `form-read` script, which installs the form tools on the page as it reads; every later reading of
+   the same page runs the one-line `form-reread`, as do the probes, fills and choices below. A
+   one-line script that reports the form tools are gone means the page was reloaded or left: run
+   `form-read` again and carry on.
+
+   Pass `evaluate_script` a `filePath` of `build/job-search/reading.json`, so the reading — the
+   step's whole text — goes to a file rather than into the conversation, and plan from the file,
+   which the plan deletes once read:
 
    ```bash
-   pnpm --silent jobs page-script form-read
-   pnpm --silent jobs apply plan <id> <<'JSON'
-   { … the reading … }
-   JSON
+   pnpm --silent jobs page-script form-read     # the first reading of a page
+   pnpm --silent jobs page-script form-reread   # every later one
+   pnpm --silent jobs apply plan <id> --reading build/job-search/reading.json
    ```
 
 2. **Probe** each `needsOptions` combobox — take one snapshot of the step to find its uid by its
@@ -364,23 +371,24 @@ Repeat for each Easy Apply step — the review step included — or once for a s
 
 4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
    entry: a combobox is clicked open by its uid; a typeahead is focused by script and its `typeText`
-   typed with `mcp__job-search-browser__type_text`, which needs no snapshot; either way its
-   `chooseFunction` then picks the option. A `chosen: null` result means no option fits: defer.
+   typed with `mcp__job-search-browser__type_text`, which needs no snapshot, passing the entry's
+   `submitKey` as the tool's `submitKey` when it has one; either way its `chooseFunction` then picks
+   the option. A `chosen: null` result means no option fits: defer.
 
 5. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
-   "Upload resume" button that opens it. Easy Apply's resume step has no file input: upload through
-   its "Upload resume" button, whose uid a snapshot of that step gives. The step preselects Nick's
-   newest upload, which is never assumed to be the approved resume; the plan leaves the picker
-   alone, and the check confirms the approved resume is the one selected.
+   "Upload resume" button that opens it. When the tool reports that the element could not accept the
+   file — Workday's "Select files" button — run the upload's `revealFunction`, take a snapshot, and
+   upload through the input it names `job-search-upload`. Easy Apply's resume step has no file
+   input: upload through its "Upload resume" button, whose uid a snapshot of that step gives. The
+   step preselects Nick's newest upload, which is never assumed to be the approved resume; the plan
+   leaves the picker alone, and the check confirms the approved resume is the one selected.
 
-6. **Check** the step: read it again and pass the reading to the check, re-filling anything it
-   reports as a mismatch, until its `status` is `ok`:
+6. **Check** the step: read it again with `form-reread`, saved to the same file, and pass the
+   reading to the check, re-filling anything it reports as a mismatch, until its `status` is `ok`:
 
    ```bash
-   pnpm --silent jobs apply check <id> <<'JSON'
-   { … the reading taken after filling … }
-   JSON
+   pnpm --silent jobs apply check <id> --reading build/job-search/reading.json
    ```
 
    The check also records, as a blocker, any required field no plan covered. Any blocker defers the
@@ -397,6 +405,15 @@ carry on; when it refuses — automatic sign-in off, its variables unset, a secu
 attempt — finish the run with `--ended-by logged-out` and tell Nick to sign in in the job-search
 window. On an employer's site the board wants an account: discard the draft, build the posting's
 answer packet, and continue — it is handed to Nick like any posting that needs an account.
+
+On a board whose account Nick approved and signed into — a Workday application started with
+`--account-approved` — a sign-in refusal partway through means his session there expired. Never sign
+in yourself: defer the posting with the reason "Session expired; sign in to resume", keeping the
+draft, and continue. The board keeps the steps already saved.
+
+A reading whose `pageError` is `true` — Workday's "Something went wrong" in place of the form — is
+refused as well. Reload the page once and read it with `form-read`; an expired session then shows as
+a sign-in refusal, handled as above. A second error defers the posting.
 
 ### 4. Submit
 

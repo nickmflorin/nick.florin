@@ -42,6 +42,7 @@ const reading = (fields: ReadField[]): FormReading => ({
   buttons: [],
   challenge: false,
   fields,
+  pageError: false,
   progress: null,
   signIn: false,
   text: '',
@@ -232,6 +233,35 @@ describe('planFill()', () => {
         resumeFile: null,
       }).kept,
     ).toStrictEqual([{ current: 'Green', key: 'f0', label: 'Favorite color', required: false }]);
+  });
+
+  it('records a field already showing the answer as matched, with the value it shows', () => {
+    const plan = planFill(
+      reading([
+        field({
+          key: 'f0',
+          label: 'Country Phone Code',
+          submitKey: 'Enter',
+          value: 'United States of America (+1)',
+          widget: 'typeahead',
+        }),
+      ]),
+      Context,
+      Staged,
+    );
+    expect([plan.interactive, plan.matched]).toStrictEqual([
+      [],
+      [
+        {
+          key: 'f0',
+          label: 'Country Phone Code',
+          submitKey: 'Enter',
+          type: 'text',
+          value: 'United States of America (+1)',
+          widget: 'typeahead',
+        },
+      ],
+    ]);
   });
 });
 

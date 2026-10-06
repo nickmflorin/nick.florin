@@ -84,7 +84,7 @@ describe('resolveAnswer()', () => {
         ...Answers,
         contact: {
           ...Answers.contact,
-          address: { city: 'Shelbyville', postalCode: '62565', region: 'IL', street: '1 Main St' },
+          address: { city: 'Aurora', postalCode: '62565', region: 'IL', street: '1 Main St' },
         },
       },
     };
@@ -100,10 +100,19 @@ describe('resolveAnswer()', () => {
       { unanswered: true },
       { value: '1 Main St' },
       { value: '62565' },
-      { value: 'Shelbyville' },
+      { value: 'Aurora' },
       { value: 'Springfield, IL' },
       { value: 'Springfield, IL' },
     ]);
+  });
+
+  it('fits an answer to the shortest option beginning with it', () => {
+    expect(
+      resolveAnswer(
+        choice('Country', ['United States Minor Outlying Islands', 'United States of America']),
+        Context,
+      ),
+    ).toMatchObject({ value: 'United States of America' });
   });
 
   it('fits a state abbreviation to a dropdown that spells it out', () => {

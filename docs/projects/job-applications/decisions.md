@@ -16,6 +16,28 @@ Format:
 
 ---
 
+## 2026-10-05 — Form tools are installed once per page, and readings travel through a file
+
+**Decision:** The `form-read` script installs the form tools — reader, prober, chooser, filler and
+file-input revealer — on the page as `window.__jobSearchForms`, and every later call is a one-line
+script that reports when a reload or navigation has removed them. The browser server saves each
+reading to `build/job-search/reading.json`, and `jobs apply plan` and `jobs apply check` read it
+with `--reading` and delete it.
+
+```bash
+pnpm --silent jobs page-script form-reread   # async () => (window.__jobSearchForms ? … : { error })
+pnpm --silent jobs apply plan 4012345678 --reading build/job-search/reading.json
+```
+
+**Why:** Each step of the first Workday application sent the whole reader (about 20 KB) and the
+whole reading (up to 8 KB of page text) through the conversation, several times per step. Both are
+data the agent never needs to read, and an unattended run pays for them on every step of every
+application.
+
+**Alternatives considered:** An init script injected on every navigation (installs before the page's
+own scripts, and on pages that have nothing to do with applying). Keeping one script per call
+(simplest, and the cost that prompted this).
+
 ## 2026-10-04 — Cover letters are drafted unattended and attached only once Nick approves them
 
 **Decision:** Revises "Cover letters only where the form asks" (2026-10-03), whose review of each

@@ -43,7 +43,16 @@ export type ResolvedAnswer =
 
 export interface AnswerContext {
   readonly answers: Answers;
+  /**
+   * The company of the posting applied to, when known, which a question about past employment
+   * there is answered against.
+   */
+  readonly company?: string;
   readonly competencies: readonly DigestCompetency[];
+  /**
+   * The companies of Nick's roles, from the profile digest.
+   */
+  readonly employers?: readonly string[];
   /**
    * Whether the form asks for a full address — a street or a postal code — in which case its city
    * and state fields belong to that address rather than to the location Nick names.
@@ -153,8 +162,26 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
         ? null
         : from('answers', yesNo(answers.workAuthorization.authorizedCountries.includes('US'))),
   ],
+  [
+    /\b(?:employed|worked)\b.*\b(?:by|for|at)\b/i,
+    (label, { company, employers = [] }) =>
+      company !== undefined && ` ${normalized(label)} `.includes(` ${normalized(company)} `)
+        ? from(
+            'profile',
+            yesNo(employers.some(employer => normalized(employer) === normalized(company))),
+          )
+        : null,
+  ],
   [/e-?mail/i, (_label, { answers }) => from('answers', answers.contact.email)],
-  [/phone|mobile/i, (_label, { answers }) => from('answers', answers.contact.phone)],
+  [
+    /country (?:phone )?code|phone code|dialing code/i,
+    (_label, { answers }) => from('answers', answers.contact.country),
+  ],
+  [/device type|phone type/i, () => from('answers', 'Mobile')],
+  [
+    /^(?!.*\bext(?:ension)?\b).*(?:phone|mobile)/i,
+    (_label, { answers }) => from('answers', answers.contact.phone),
+  ],
   [/linkedin/i, (_label, { answers }) => from('answers', answers.links.linkedin)],
   [/github/i, (_label, { answers }) => from('answers', answers.links.github)],
   [
@@ -162,7 +189,7 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
     (_label, { answers }) => from('answers', answers.links.website),
   ],
   [
-    /street|address line|^(?:home |mailing |street )?address\b/i,
+    /street|address line ?1\b|^(?:home |mailing |street )?address$/i,
     (_label, { answers }) => from('answers', answers.contact.address?.street),
   ],
   [
@@ -217,8 +244,9 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
 ];
 
 /**
- * Fits an answer to a choice field: the option equal to it, then the option containing it, and for
- * a decline the option that declines. A free-text field takes the answer as it is.
+ * Fits an answer to a choice field: the option equal to it, then the shortest option beginning
+ * with it — "United States of America" before "United States Minor Outlying Islands" — and for a
+ * decline the option that declines. A free-text field takes the answer as it is.
  */
 const fitToOptions = (value: string, { options }: FormQuestion): null | string => {
   if (options.length === 0) {
@@ -228,7 +256,10 @@ const fitToOptions = (value: string, { options }: FormQuestion): null | string =
   const declining = wanted === 'decline';
   return (
     options.find(option => normalized(option) === wanted) ??
-    options.find(option => !declining && normalized(option).startsWith(`${wanted} `)) ??
+    options
+      .filter(option => !declining && normalized(option).startsWith(`${wanted} `))
+      .sort((a, b) => a.length - b.length)
+      .at(0) ??
     options.find(option => normalized(option) === normalized(regionName(value) ?? '')) ??
     (declining ? options.find(option => DeclineOption.test(option)) : undefined) ??
     null

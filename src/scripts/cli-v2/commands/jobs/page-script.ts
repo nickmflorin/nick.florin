@@ -17,6 +17,7 @@ const ScriptNames = [
   'combobox-options',
   'embedded-board',
   'form-read',
+  'form-reread',
   'open-card',
   'submission-result',
 ] as const;
@@ -36,11 +37,15 @@ export class JobsPageScriptCommand extends JsonCommand {
       fetches. \`open-card\` clicks the result card with the given \`--company\` and \`--title\` and
       reads what the detail stage needs, which costs one page view.
 
-      \`form-read\` reads the application form or Easy Apply step in view without changing it.
-      \`combobox-options\` reads the options of the combobox whose menu was just opened through the
-      browser server, and \`choose-option\` chooses the option reading \`--value\` from the open
-      menu. \`embedded-board\` finds the direct link to an application form embedded in an
-      employer's careers page. \`submission-result\` waits for the confirmation that a submitted
+      \`form-read\` reads the application form or Easy Apply step in view without changing it, and
+      installs the form tools on the page as it does. The scripts that use those tools are one
+      line each: \`form-reread\` reads the form again, \`combobox-options\` reads the options of
+      the combobox whose menu was just opened through the browser server, and \`choose-option\`
+      chooses the option reading \`--value\` from the open menu. After the page is reloaded or
+      left, they report that the tools are gone, and \`form-read\` installs them again.
+
+      \`embedded-board\` finds the direct link to an application form embedded in an employer's
+      careers page. \`submission-result\` waits for the confirmation that a submitted
       application went through, and reports the page's errors when none appears.
 
       Pass the printed \`function\` to the browser server's \`evaluate_script\` tool.
@@ -52,6 +57,7 @@ export class JobsPageScriptCommand extends JsonCommand {
         '$0 jobs page-script open-card --company "Hooli" --title "Senior Software Engineer"',
       ],
       ['Print the form reader', '$0 jobs page-script form-read'],
+      ['Print the script that reads the form again', '$0 jobs page-script form-reread'],
       ['Print the script that chooses an option', '$0 jobs page-script choose-option --value No'],
     ],
   });
@@ -84,6 +90,7 @@ export class JobsPageScriptCommand extends JsonCommand {
       case 'combobox-options':
       case 'embedded-board':
       case 'form-read':
+      case 'form-reread':
       case 'submission-result':
         return FormScripts[this.name];
       case 'job-detail':

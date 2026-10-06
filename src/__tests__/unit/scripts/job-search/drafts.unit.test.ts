@@ -77,6 +77,7 @@ const reading = (fields: ReadField[]): FormReading => ({
   buttons: [],
   challenge: false,
   fields,
+  pageError: false,
   progress: null,
   signIn: false,
   text: '',
@@ -97,6 +98,7 @@ const Plan: FillPlan = {
     },
   ],
   kept: [],
+  matched: [],
   needsOptions: [],
   unanswered: [],
   uploads: [{ file: '/staged/Jane-Doe-Resume.pdf', key: 'f2', label: 'Resume/CV' }],
@@ -170,6 +172,42 @@ describe('application drafts', () => {
         pending: [],
         resumeVerified: true,
       });
+    });
+
+    it('verifies a typeahead whose chosen suggestion begins with the planned value', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await start();
+      const source = field({
+        key: 'f3',
+        label: 'How did you hear about us?',
+        submitKey: 'Enter',
+        widget: 'typeahead',
+      });
+      await recordPlan(
+        context(),
+        Id,
+        {
+          ...Plan,
+          fills: [],
+          interactive: [
+            {
+              key: 'f3',
+              label: 'How did you hear about us?',
+              submitKey: 'Enter',
+              type: 'text',
+              value: 'LinkedIn',
+              widget: 'typeahead',
+            },
+          ],
+          matched: [],
+          uploads: [],
+        },
+        reading([source]),
+      );
+      await expect(
+        checkReading(context(), Id, reading([{ ...source, value: 'LinkedIn corporate page' }])),
+      ).resolves.toMatchObject({ mismatches: [], pending: [] });
     });
 
     it('reports a value the form shows differently, and leaves it unverified', async () => {
@@ -328,6 +366,7 @@ describe('application drafts', () => {
           fills: [],
           interactive: [],
           kept: [{ current: 'Green', key: 'f5', label: 'Color', required: false }],
+          matched: [],
           needsOptions: [],
           unanswered: [],
           uploads: [],

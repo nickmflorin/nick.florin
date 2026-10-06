@@ -29,6 +29,11 @@ export const ReadFieldSchema = z.object({
   label: z.string(),
   options: z.array(z.string()).nullable(),
   required: z.boolean(),
+  /**
+   * The key that runs a typeahead's search once its text is typed, for a typeahead that suggests
+   * nothing until it is pressed — Workday's search prompts.
+   */
+  submitKey: z.literal('Enter').optional(),
   type: z.enum(ReadFieldTypes),
   value: FieldValueSchema.nullable(),
   widget: z.enum(FormWidgets),
@@ -40,13 +45,16 @@ export type ReadField = z.infer<typeof ReadFieldSchema>;
  * What the form reader returns: the fields of the form or Easy Apply step in view, with their
  * labels, options and current values; the controls it does not know how to fill; the step's
  * progress and buttons; whether a CAPTCHA challenge is showing; whether the page asks to sign in
- * instead — a lapsed LinkedIn session, or an employer's board that wants an account; and the
- * visible text, which on a review step is the whole of what will be submitted.
+ * instead — a lapsed LinkedIn session, an employer's board that wants an account, or a Workday
+ * session that expired and fell back to its sign-in step; whether the page shows an error in
+ * place of the form, as Workday's "Something went wrong" does; and the visible text, which on a
+ * review step is the whole of what will be submitted.
  */
 export const FormReadingSchema = z.object({
   buttons: z.array(z.string()),
   challenge: z.boolean(),
   fields: z.array(ReadFieldSchema),
+  pageError: z.boolean().default(false),
   progress: z.string().nullable(),
   signIn: z.boolean().default(false),
   text: z.string(),
@@ -63,10 +71,16 @@ export type FormReading = z.infer<typeof FormReadingSchema>;
 export interface PlannedFill {
   readonly key: string;
   readonly label: string;
+  readonly submitKey?: ReadField['submitKey'];
   readonly type: ReadFieldType;
   readonly value: FieldValue;
   readonly widget: FormWidget;
 }
+
+/**
+ * The accessible name a revealed file input is given, by which a snapshot of the page finds it.
+ */
+export const RevealedFileInputName = 'job-search-upload';
 
 /**
  * The helpers every form script shares, so that the reader and the filler agree on how a field is
@@ -102,7 +116,7 @@ const FormHelpers = String.raw`
     const owned = ids.map((id) => document.getElementById(id)).find((el) => el && visible(el));
     if (owned) return owned;
     const listboxes = [...document.querySelectorAll('[role="listbox"], [role="menu"]')]
-      .filter(visible);
+      .filter((box) => visible(box) && !/selected/i.test(box.getAttribute('aria-label') || ''));
     const following = listboxes.filter(
       (box) => input.compareDocumentPosition(box) & Node.DOCUMENT_POSITION_FOLLOWING,
     );
@@ -131,34 +145,65 @@ const FormHelpers = String.raw`
  * Reads the form in view — the open Easy Apply dialog, or the page's application form — without
  * changing any value.
  *
- * Each field is stamped with a `data-job-search-key` attribute, numbered across the page's
- * lifetime, so that the fill script and a later reading address the same control however the form
- * re-renders between steps. A field's label is resolved through, in order, its `aria-label`, its
- * `aria-labelledby`, its `label[for]` (unless that only says "Attach" or "Upload"), its wrapping
- * label, its fieldset's legend, and finally the nearest label-like element before it that belongs
- * to no other control, which is how Ashby's radio questions and Greenhouse's file inputs are
- * labelled. Failing all of those, a lone field takes the first line of text in the nearest
- * container that holds no other control, as LinkedIn's location typeahead needs. A field is
- * required when it is marked so, or when its label carries a `*`, a `required` class, or a `*`
- * drawn by CSS.
+ * Each field is stamped with a `data-job-search-key` attribute — its `id`, or a radio group's
+ * `name`, when it has one, which survive a re-render of the field; otherwise a number unique across
+ * the page's lifetime — so that the fill script and a later reading address the same control. A
+ * field's label is resolved through, in order, its `aria-label`, its `aria-labelledby`, its
+ * `label[for]` (unless that only says "Attach" or "Upload"), its wrapping label, its fieldset's
+ * legend, and finally the nearest label-like element before it that belongs to no other control,
+ * which is how Ashby's radio questions and Greenhouse's file inputs are labelled. Failing all of
+ * those, a lone field takes the first line of text in the nearest container that holds no other
+ * control, as LinkedIn's location typeahead needs. A field is required when it is marked so, or
+ * when its label carries a `*`, a `required` class, or a `*` drawn by CSS.
+ *
+ * A file input labelled only by its drop zone — Workday's "Upload a file (5MB max)" — takes the
+ * nearest heading before it, which names the document it asks for. Its value is the files it
+ * holds or, once a board has taken them and emptied it as Workday does, the file names shown
+ * beside it.
  *
  * A hidden select driven by a button that opens a menu — BambooHR's dropdowns — is reported as a
- * combobox, keyed on the button too, so that it is opened and chosen like any other.
+ * combobox, keyed on the button too, so that it is opened and chosen like any other; so is a
+ * labelled button that opens a listbox on its own, as Workday's dropdowns are, labelled by a
+ * `label[for]` or, for its questionnaire's questions, the legend of the fieldset around it.
+ * Workday's search prompts (`data-uxi-widget-type="selectinput"`) are reported as typeaheads.
  *
  * A checkbox that sits beside `aria-pressed` buttons — Ashby's yes-or-no questions — is reported as
  * a choice among the buttons, with the pressed one as its value, since the checkbox's own state
  * cannot tell an unanswered question from a "No".
  *
  * A combobox's options are known only once its menu has been opened, so a combobox not yet probed
- * by the {@link ComboboxOptionsScript} is reported with `options: null`. One with a short label
+ * by the {@link ProbeOperation} is reported with `options: null`. One with a short label
  * naming a place or a school is reported as a typeahead, whose options depend on what is typed.
  */
-const FormReadScript = `() => {${FormHelpers}
+const ReadOperation = `
   const GenericLabel =
     new RegExp('^(attach|upload|upload file|choose file|file[- ]?input|browse|enter manually|' +
       'select\\\\.*|type here\\\\.*)$', 'i');
   const Typeahead = /location|city|address|school|university|college|degree|discipline|major/i;
+  const GenericUpload = /^(upload|attach|select|choose|drop) (a |your )?files?( |$)/i;
+  const headingBefore = (el) => {
+    const headings = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]')]
+      .filter((heading) => visible(heading) &&
+        heading.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const nearest = headings[headings.length - 1];
+    return nearest ? stripMarker(nearest.innerText) : '';
+  };
+  const DocumentFile = /^[^\\/]+\\.(pdf|docx?|rtf|txt)$/i;
+  const filesShownNear = (input) => {
+    let node = input.parentElement;
+    for (let depth = 0; node && depth < 5; depth += 1) {
+      if (node.querySelectorAll('input[type="file"]').length > 1) break;
+      const names = clean(node.innerText).split(' ').filter((word) => DocumentFile.test(word));
+      if (names.length > 0) return names;
+      node = node.parentElement;
+    }
+    return [];
+  };
   const GroupContainer = 'fieldset, [role="radiogroup"], [role="group"]';
+  const legendOf = (el) => {
+    const fieldset = el.closest('fieldset');
+    return fieldset ? fieldset.querySelector('legend') : null;
+  };
   const controlCount = (el) =>
     el.querySelectorAll('input, select, textarea, [role="combobox"]').length;
   const largest = (elements) =>
@@ -208,12 +253,16 @@ const FormReadScript = `() => {${FormHelpers}
     return fallback;
   };
   const labelOf = (el, group) => {
-    const container = group.length > 1 ? el.closest(GroupContainer) : null;
+    const container = group.length > 1 || el.tagName === 'BUTTON'
+      ? el.closest(GroupContainer)
+      : null;
     const legend = container ? container.querySelector('legend') : null;
     const roleRadio = el.closest('[role="radio"]');
     const own = group.length > 1 ? null : (labelFor(el) || el.closest('label'));
     const direct = [
-      group.length > 1 ? null : { el: null, text: el.getAttribute('aria-label') },
+      group.length > 1 || el.tagName === 'BUTTON'
+        ? null
+        : { el: null, text: el.getAttribute('aria-label') },
       { el: null, text: textOfIds(el.getAttribute('aria-labelledby')) },
       own && !GenericLabel.test(stripMarker(own.innerText))
         ? { el: own, text: own.innerText }
@@ -234,15 +283,20 @@ const FormReadScript = `() => {${FormHelpers}
   };
   window.__jobSearchKeys = window.__jobSearchKeys || 0;
   const keyOf = (group) => {
+    const stable = group.length > 1 && group[0].name
+      ? 'name:' + group[0].name
+      : group[0].id ? 'id:' + group[0].id : null;
     const existing = group.map((member) => member.getAttribute(KeyAttribute)).find(Boolean);
-    const key = existing || 'f' + window.__jobSearchKeys++;
+    const key = stable || existing || 'f' + window.__jobSearchKeys++;
     group.forEach((member) => member.setAttribute(KeyAttribute, key));
     return key;
   };
   const shown = (el) => {
     let node = el.parentElement;
     for (let depth = 0; node && depth < 4; depth += 1) {
-      const single = node.querySelector('[class*="single-value"], [class*="singleValue"]');
+      const single = node.querySelector(
+        '[class*="single-value"], [class*="singleValue"], [data-automation-id="selectedItem"]',
+      );
       if (single) return clean(single.innerText);
       node = node.parentElement;
     }
@@ -257,8 +311,10 @@ const FormReadScript = `() => {${FormHelpers}
     if (el.tabIndex === -1 && !el.id) return false;
     return visible(el);
   });
+  const popupFields = [...root.querySelectorAll('button[aria-haspopup="listbox"]')]
+    .filter((button) => button.id && (labelFor(button) || legendOf(button)));
   const groups = [];
-  controls.forEach((el) => {
+  [...controls, ...popupFields].forEach((el) => {
     if (el.type !== 'radio' && el.type !== 'checkbox') return groups.push([el]);
     const container = el.closest(GroupContainer);
     const existing = groups.find((group) => group[0].type === el.type && (
@@ -271,7 +327,12 @@ const FormReadScript = `() => {${FormHelpers}
     const { label, required } = labelOf(el, group);
     const key = keyOf(group);
     const base = { key, label, required };
-    if (el.tagName === 'SELECT' && popupButtonFor(el)) {
+    if (el.tagName === 'BUTTON') {
+      const probed = el.getAttribute(OptionsAttribute);
+      const shownText = clean(el.innerText);
+      return { ...base, options: probed ? JSON.parse(probed) : null, type: 'select',
+        value: shownText && !/select/i.test(shownText) ? shownText : null, widget: 'combobox' };
+    } else if (el.tagName === 'SELECT' && popupButtonFor(el)) {
       const button = popupButtonFor(el);
       button.setAttribute(KeyAttribute, key);
       const probed = button.getAttribute(OptionsAttribute);
@@ -288,8 +349,12 @@ const FormReadScript = `() => {${FormHelpers}
     } else if (el.tagName === 'TEXTAREA') {
       return { ...base, options: [], type: 'textarea', value: el.value || null, widget: 'native' };
     } else if (el.type === 'file') {
-      return { ...base, options: [], type: 'file',
-        value: [...(el.files || [])].map((file) => file.name), widget: 'file' };
+      return { ...base, label: (GenericUpload.test(label) && headingBefore(el)) || label,
+        options: [], type: 'file',
+        value: el.files && el.files.length > 0
+          ? [...el.files].map((file) => file.name)
+          : filesShownNear(el),
+        widget: 'file' };
     } else if (pressButtons(el).length > 1) {
       const pressed = pressButtons(el).find((b) => b.getAttribute('aria-pressed') === 'true');
       return { ...base, options: pressButtons(el).map((b) => clean(b.innerText)), type: 'radio',
@@ -304,10 +369,13 @@ const FormReadScript = `() => {${FormHelpers}
             value: group.filter((member) => member.checked).map(optionText), widget: 'native' }
         : { ...base, label: label || optionText(el), options: [], type: 'checkbox',
             value: el.checked, widget: 'native' };
-    } else if (el.getAttribute('role') === 'combobox' || el.getAttribute('aria-autocomplete')) {
+    } else if (el.getAttribute('role') === 'combobox' || el.getAttribute('aria-autocomplete') ||
+      el.getAttribute('data-uxi-widget-type') === 'selectinput') {
       const probed = el.getAttribute(OptionsAttribute);
-      return Typeahead.test(label) && label.length <= 60
-        ? { ...base, options: [], type: 'text', value: shown(el) || null, widget: 'typeahead' }
+      const searched = el.getAttribute('data-uxi-widget-type') === 'selectinput';
+      return searched || (Typeahead.test(label) && label.length <= 60)
+        ? { ...base, options: [], submitKey: searched ? 'Enter' : undefined, type: 'text',
+            value: shown(el) || null, widget: 'typeahead' }
         : { ...base, options: probed ? JSON.parse(probed) : null, type: 'select',
             value: shown(el) || null, widget: 'combobox' };
     }
@@ -315,9 +383,9 @@ const FormReadScript = `() => {${FormHelpers}
       type: el.type === 'number' || el.type === 'date' ? el.type : 'text',
       value: el.value || null, widget: 'native' };
   });
-  const unsupported = [...root.querySelectorAll(
-    'button[aria-haspopup="listbox"], [role="switch"], [contenteditable="true"]',
-  )].filter(visible).map((el) => {
+  const unsupported = [...root.querySelectorAll('[role="switch"], [contenteditable="true"]')]
+    .filter(visible)
+    .map((el) => {
     const found = nearbyLabel(el, [el]);
     const name = el.innerText || el.getAttribute('aria-label');
     return clean((found ? found.text + ': ' : '') + name);
@@ -331,31 +399,36 @@ const FormReadScript = `() => {${FormHelpers}
       visible(frame) && frame.getBoundingClientRect().height > 100) ||
     /verify you are (a )?human|unusual activity|security check/i.test(document.body.innerText);
   const SignInPath = /\\/(?:login|signin|sign-in|authwall|checkpoint|uas\\/login)\\b/i;
+  const SignInStep = /current step \\d+ of \\d+\\s+(create account\\s*\\/\\s*)?sign in/i;
   const signIn =
     SignInPath.test(window.location.pathname) ||
-    [...document.querySelectorAll('input[type="password"]')].some(visible);
+    [...document.querySelectorAll('input[type="password"]')].some(visible) ||
+    SignInStep.test(document.body.innerText);
+  const pageError = /something went wrong|please refresh the page/i.test(document.body.innerText);
   return {
     buttons: [...new Set([...root.querySelectorAll('button')]
       .map((button) => clean(button.innerText || button.getAttribute('aria-label')))
       .filter((text) => text !== '' && text.length <= 40))],
     challenge,
     fields,
+    pageError,
     progress: progress ? progress[1] : null,
     signIn,
     text: root.innerText.slice(0, 8000),
     unsupported,
     url: window.location.href,
   };
-}`;
+`;
 
 /**
  * Reads the options of the combobox whose menu is open — opened by a click through the browser
  * server, since its menu answers only to trusted input — and records them on the combobox, so that
- * the next {@link FormReadScript} reading reports them. It closes the menu without choosing. The
- * combobox is the read control that has focus, or, when opening the menu moved focus into it, the
- * read control that reports its menu expanded.
+ * the next reading reports them. It closes the menu without choosing, and drops a placeholder such
+ * as Workday's "Select One". The combobox is the read control that has focus, or, when opening the
+ * menu moved focus into it, the read control that reports its menu expanded.
  */
-const ComboboxOptionsScript = `async () => {${FormHelpers}
+const ProbeOperation = `
+  const Placeholder = /^(select|choose)\\b/i;
   const focused = document.activeElement;
   const input = focused && focused.hasAttribute(KeyAttribute)
     ? focused
@@ -371,11 +444,13 @@ const ComboboxOptionsScript = `async () => {${FormHelpers}
   if (!listbox) {
     return { error: 'The combobox has no open menu.', key: input.getAttribute(KeyAttribute) };
   }
-  const options = optionsIn(listbox).map((option) => clean(option.innerText)).filter(Boolean);
+  const options = optionsIn(listbox)
+    .map((option) => clean(option.innerText))
+    .filter((text) => text !== '' && !Placeholder.test(text));
   input.setAttribute(OptionsAttribute, JSON.stringify(options));
   input.blur();
   return { key: input.getAttribute(KeyAttribute), options };
-}`;
+`;
 
 /**
  * Chooses an option from the menu that is open — a combobox opened by a click, or a typeahead's
@@ -384,8 +459,7 @@ const ComboboxOptionsScript = `async () => {${FormHelpers}
  * matches the value's, preferring the one that contains the most hints. It reports the options
  * when none fits rather than guessing.
  */
-const ChooseOptionScriptTemplate = `async () => {${FormHelpers}
-  const want = __WANT__;
+const ChooseOperation = `
   const input = document.activeElement;
   let listbox = null;
   for (let attempt = 0; attempt < 15 && !listbox; attempt += 1) {
@@ -411,7 +485,7 @@ const ChooseOptionScriptTemplate = `async () => {${FormHelpers}
   choice.click();
   await wait(400);
   return { chosen: clean(choice.innerText) };
-}`;
+`;
 
 /**
  * Fills the native fields of a plan: text through the value setter React and its peers observe,
@@ -423,8 +497,7 @@ const ChooseOptionScriptTemplate = `async () => {${FormHelpers}
  * as by key, because a re-render replaces the selected option's input without the key stamped on
  * it.
  */
-const FormFillScriptTemplate = `async () => {${FormHelpers}
-  const fills = __FILLS__;
+const FillOperation = `
   const prototypes = {
     INPUT: HTMLInputElement,
     SELECT: HTMLSelectElement,
@@ -439,8 +512,12 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
     (member.closest('[role="radio"], [role="checkbox"]') || member).click();
   const results = [];
   for (const fill of fills) {
-    const keyed = [...document.querySelectorAll('[' + KeyAttribute + '="' + fill.key + '"]')];
-    const named = keyed[0] && keyed[0].name
+    const stamped = [...document.querySelectorAll('[' + KeyAttribute + '="' + fill.key + '"]')];
+    const byId = fill.key.startsWith('id:') ? document.getElementById(fill.key.slice(3)) : null;
+    const keyed = stamped.length > 0 ? stamped : byId ? [byId] : [];
+    const named = fill.key.startsWith('name:')
+      ? [...document.querySelectorAll('input[name="' + CSS.escape(fill.key.slice(5)) + '"]')]
+      : keyed[0] && keyed[0].name
       ? [...document.querySelectorAll('input[name="' + CSS.escape(keyed[0].name) + '"]')]
       : [];
     const members = [...new Set([...keyed, ...named])];
@@ -487,7 +564,7 @@ const FormFillScriptTemplate = `async () => {${FormHelpers}
     await wait(250 + Math.floor(Math.random() * 600));
   }
   return { results };
-}`;
+`;
 
 /**
  * Reads the page after Submit was clicked, waiting up to ten seconds for a confirmation: Easy
@@ -544,7 +621,65 @@ const EmbeddedBoardScript = `async () => {${FormHelpers}
 }`;
 
 /**
- * Builds the {@link ChooseOptionScriptTemplate} script for one value, embedded as JSON.
+ * Makes a read file input visible and names it, so that a snapshot shows it and the browser
+ * server's upload tool can set its file. Workday's "Select files" button opens no file chooser the
+ * tool can catch, and its input is hidden.
+ */
+const RevealOperation = `
+  const input = [...document.querySelectorAll('input[type="file"]')]
+    .find((candidate) => candidate.getAttribute(KeyAttribute) === key);
+  if (!input) return { error: 'No read file input has that key.', key };
+  input.removeAttribute('hidden');
+  input.style.cssText = 'display:block !important;height:30px;opacity:1;position:static;' +
+    'visibility:visible;width:200px;';
+  input.title = '${RevealedFileInputName}';
+  return { key, name: '${RevealedFileInputName}' };
+`;
+
+/**
+ * The global the form tools are installed on, by the first reading of a page.
+ */
+const FormToolsGlobal = 'window.__jobSearchForms';
+
+/**
+ * Reads the form in view, installing the form tools on the page as it does: the
+ * {@link ReadOperation}, {@link ProbeOperation}, {@link ChooseOperation}, {@link FillOperation} and
+ * {@link RevealOperation}, sharing the {@link FormHelpers}.
+ *
+ * The tools stay on the page for as long as it is not reloaded or navigated away from — through
+ * every step of Easy Apply's dialog and Workday's application — so that every later call is one
+ * line rather than the whole of the tools again. After a navigation the one-line calls report that
+ * the tools are gone, and the form is read with this script again.
+ */
+const FormReadScript = `() => {
+  ${FormToolsGlobal} = (() => {${FormHelpers}
+  const read = () => {${ReadOperation}};
+  const probe = async () => {${ProbeOperation}};
+  const choose = async (want) => {${ChooseOperation}};
+  const fill = async (fills) => {${FillOperation}};
+  const reveal = (key) => {${RevealOperation}};
+  return { choose, fill, probe, read, reveal };
+  })();
+  return ${FormToolsGlobal}.read();
+}`;
+
+/**
+ * What a call to the form tools returns on a page they are not installed on.
+ */
+export const FormToolsGoneMessage =
+  'The form tools are not on this page: run the form-read script, then try again.';
+
+/**
+ * Builds a script that calls one of the form tools the {@link FormReadScript} installed, or reports
+ * that a navigation removed them.
+ */
+const formToolCall = (call: string): string =>
+  `async () => (${FormToolsGlobal} ? ${FormToolsGlobal}.${call} : { error: ${JSON.stringify(
+    FormToolsGoneMessage,
+  )} })`;
+
+/**
+ * Builds the script that chooses one value from the open menu, through the {@link ChooseOperation}.
  *
  * @param {string} value The option to choose, as the plan states it.
  * @param {readonly string[]} hints Words that favor one of several suggestions sharing a name.
@@ -552,27 +687,39 @@ const EmbeddedBoardScript = `async () => {${FormHelpers}
  * @returns {string} The script, for the browser server's `evaluate_script` tool.
  */
 export const chooseOptionScript = (value: string, hints: readonly string[] = []): string =>
-  ChooseOptionScriptTemplate.replace('__WANT__', JSON.stringify({ hints, value: value.trim() }));
+  formToolCall(`choose(${JSON.stringify({ hints, value: value.trim() })})`);
 
 /**
- * Builds the {@link FormFillScriptTemplate} script for a plan's native fills, embedded as JSON.
+ * Builds the script that fills a plan's native fields, through the {@link FillOperation}.
  *
  * @param {readonly PlannedFill[]} fills The native fills of a plan.
  *
  * @returns {string} The script, for the browser server's `evaluate_script` tool.
  */
 export const formFillScript = (fills: readonly PlannedFill[]): string =>
-  FormFillScriptTemplate.replace(
-    '__FILLS__',
-    JSON.stringify(fills.map(({ key, type, value }) => ({ key, type, value }))),
+  formToolCall(
+    `fill(${JSON.stringify(fills.map(({ key, type, value }) => ({ key, type, value })))})`,
   );
 
 /**
- * The application-form scripts that take no parameters, by name.
+ * Builds the script that reveals a read file input for an upload, through the
+ * {@link RevealOperation}.
+ *
+ * @param {string} key The key the reader stamped on the file input.
+ *
+ * @returns {string} The script, for the browser server's `evaluate_script` tool.
+ */
+export const revealFileInputScript = (key: string): string =>
+  formToolCall(`reveal(${JSON.stringify(key)})`);
+
+/**
+ * The application-form scripts that take no parameters, by name. `form-read` installs the form
+ * tools and reads the form; `form-reread` and `combobox-options` call tools it installed.
  */
 export const FormScripts = {
-  'combobox-options': ComboboxOptionsScript,
+  'combobox-options': formToolCall('probe()'),
   'embedded-board': EmbeddedBoardScript,
   'form-read': FormReadScript,
+  'form-reread': formToolCall('read()'),
   'submission-result': SubmissionResultScript,
 } as const;

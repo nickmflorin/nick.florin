@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-10-04_
+_Last updated: 2026-10-05_
 
 ## Phase
 
@@ -35,7 +35,8 @@ Nothing has been built yet. Phase 1 is the v1 build.
 
 ## In Progress
 
-- Nothing yet.
+- The first Workday application, filled through its first three steps under the attached browser and
+  stopped when the board's session expired; it resumes once Nick signs in there again.
 
 ## Next
 
@@ -81,7 +82,16 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      Ashby rejected the first agent submission (deferred) as spam from the automation-mode window;
      title spellings normalized; the approved resume reported at run start; cover letters drafted
      unattended and attached once Nick approves them; and the run pool ranked deterministically.
-   - Next: Nick reloads VS Code so the browser server attaches; then the Ashby and Greenhouse
-     applications are run end to end; then the scheduling decision.
+   - Then: runs stay on demand (the three ways to start one are in [running.md](./running.md));
+     automatic LinkedIn sign-in from `.env.local`, behind a setting; a mailing address distinct from
+     the stated location, and a start date set as a span or a date; Workday and BambooHR forms read
+     and planned.
+   - 2026-10-05, from the first Workday application: the form tools are installed on the page by the
+     first reading and called in one line after it, and readings travel through a file the plan and
+     check delete; fields the form already shows correctly are recorded and checked rather than
+     reported unplanned; Workday's search prompts, question dropdowns and drop-zone uploads are read
+     and filled; an expired session or an error page is refused rather than planned.
+   - Next: submit a first application each on Workday, Ashby and Greenhouse from the attached
+     browser, which also shows whether the spam rejection is gone.
 6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
    skip reasons), with proposals put to Nick at the end of each unattended run.

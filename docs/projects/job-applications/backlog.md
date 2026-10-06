@@ -165,10 +165,17 @@ its own branch/PR.
       Greenhouse posting, each left on its final step for him to submit, to confirm the resume
       upload and the review-step check against live forms. (v1) Easy Apply done 2026-10-04. The
       first Ashby submission was rejected as spam from the automation-mode browser, which led to
-      attaching to a normally launched one; Ashby and Greenhouse remain to be run through it.
+      attaching to a normally launched one; Ashby and Greenhouse remain to be run through it. The
+      first Workday application was filled through three of its six steps on 2026-10-05.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
-      then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04.
+      then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04;
+      Workday's listbox buttons, labelled by a `label[for]` or a fieldset legend, its search prompts
+      and its drop-zone uploads on 2026-10-05. Rich-text editors remain.
+- [x] **Install the form tools once per page.** The first reading installs the reader, prober,
+      chooser, filler and file-input revealer on the page, and every later call is one line, rather
+      than about 20 KB of script per step; readings go to a file the plan and check delete, rather
+      than through the conversation. Landed 2026-10-05.
 - [x] **Classify external postings by applicant tracking system.** Resolve the Apply button's
       redirect target and map its host to a system (`boards.greenhouse.io`, `jobs.lever.co`,
       `jobs.ashbyhq.com`, `myworkdayjobs.com`, …), deterministically. (v1) Landed 2026-10-04 in
