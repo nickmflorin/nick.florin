@@ -47,7 +47,6 @@ import {
   DjangoRESTFramework,
   Docker,
   ElasticSearch,
-  ESLint,
   EventDrivenArchitecture,
   ExpressJs,
   Flask,
@@ -79,7 +78,6 @@ import {
   NodeJs,
   NumericalComputation,
   Numpy,
-  Observability,
   Pandas,
   PerformanceEngineering,
   Pgvector,
@@ -408,14 +406,7 @@ export const Roles: RoleInput[] = [
     company: USLegeAI,
     content: {
       channels: AllSyndicationChannels,
-      competencies: [
-        TanStackQuery,
-        Pino,
-        FramerMotion,
-        MUIMaterialUI,
-        NextJs,
-        Turborepo,
-      ],
+      competencies: [TanStackQuery, Pino, FramerMotion, MUIMaterialUI, NextJs, Turborepo],
       isVisible: false,
       summary: [
         {
