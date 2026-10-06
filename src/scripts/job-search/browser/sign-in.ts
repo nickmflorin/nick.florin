@@ -6,7 +6,7 @@ import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
 import { TimestampSchema } from '../schemas';
 import { type SessionContext, takeBudget } from '../session';
 
-import { DebuggingPort } from './launch';
+import { connect, type DevToolsPage, listPages } from './devtools';
 
 /**
  * How long after an automatic sign-in attempt another is refused, so that a failing sign-in is
@@ -32,10 +32,6 @@ const SignInPage = /\/(?:login|uas\/login|signin)\b/i;
 
 const AttemptSchema = z.object({ attemptedAt: TimestampSchema }).strict();
 
-const TargetsSchema = z.array(
-  z.object({ type: z.string(), url: z.string(), webSocketDebuggerUrl: z.string() }).passthrough(),
-);
-
 export interface Credentials {
   readonly email: string;
   readonly password: string;
@@ -45,68 +41,14 @@ export type SignInResult =
   | { readonly reason: string; readonly status: 'refused' }
   | { readonly status: 'already-signed-in' | 'signed-in' };
 
-/**
- * A connection to one page of the job-search Chrome over the DevTools protocol, through which the
- * sign-in runs in this process: the credentials never pass through the agent or its transcript.
- */
-const connect = async (url: string) => {
-  const socket = new WebSocket(url);
-  await new Promise<void>((resolve, reject) => {
-    socket.addEventListener('open', () => resolve(), { once: true });
-    socket.addEventListener(
-      'error',
-      () => reject(new Error('The browser refused the connection.')),
-      {
-        once: true,
-      },
-    );
-  });
-  let nextId = 0;
-  const send = (method: string, params: Record<string, unknown> = {}): Promise<unknown> =>
-    new Promise((resolve, reject) => {
-      nextId += 1;
-      const id = nextId;
-      const onMessage = (event: MessageEvent): void => {
-        const message: unknown = JSON.parse(String(event.data));
-        const parsed = z
-          .object({
-            error: z.object({ message: z.string() }).optional(),
-            id: z.number(),
-            result: z.unknown(),
-          })
-          .safeParse(message);
-        if (!parsed.success || parsed.data.id !== id) {
-          return;
-        }
-        socket.removeEventListener('message', onMessage);
-        if (parsed.data.error === undefined) {
-          resolve(parsed.data.result);
-        } else {
-          reject(new Error(`The browser failed '${method}': ${parsed.data.error.message}`));
-        }
-      };
-      socket.addEventListener('message', onMessage);
-      socket.send(JSON.stringify({ id, method, params }));
-    });
-  const evaluate = async (expression: string): Promise<unknown> =>
-    z
-      .object({ result: z.object({ value: z.unknown() }) })
-      .parse(
-        await send('Runtime.evaluate', { awaitPromise: true, expression, returnByValue: true }),
-      ).result.value;
-  return { close: () => socket.close(), evaluate, send };
-};
-
-type Page = Awaited<ReturnType<typeof connect>>;
-
-const currentUrl = async (page: Page): Promise<string> =>
+const currentUrl = async (page: DevToolsPage): Promise<string> =>
   z.string().parse(await page.evaluate('window.location.href'));
 
 /**
  * Waits for the page to leave an address matching a pattern, or for the time to run out.
  */
 const waitWhile = async (
-  page: Page,
+  page: DevToolsPage,
   pattern: RegExp,
   sleep: SessionContext['clock']['sleep'],
 ): Promise<string> => {
@@ -125,7 +67,7 @@ const waitWhile = async (
 /**
  * Types text into the field a selector names, with the keyboard events a person's typing makes.
  */
-const typeInto = async (page: Page, selector: string, text: string): Promise<void> => {
+const typeInto = async (page: DevToolsPage, selector: string, text: string): Promise<void> => {
   await page.evaluate(
     `(() => { const el = document.querySelector(${JSON.stringify(selector)}); el.focus(); ` +
       'el.select(); })()',
@@ -210,9 +152,7 @@ export const signInToLinkedIn = async (
       status: 'refused',
     };
   }
-  const targets = TargetsSchema.parse(
-    await (await fetch(`http://127.0.0.1:${DebuggingPort}/json/list`)).json(),
-  ).filter(({ type }) => type === 'page');
+  const targets = await listPages();
   const target = targets.find(({ url }) => url.includes('linkedin.com')) ?? targets.at(0);
   if (target === undefined) {
     return { reason: 'The job-search Chrome has no open page.', status: 'refused' };

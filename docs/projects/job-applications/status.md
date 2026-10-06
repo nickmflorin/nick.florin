@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-10-05_
+_Last updated: 2026-10-06_
 
 ## Phase
 
@@ -91,7 +91,18 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      check delete; fields the form already shows correctly are recorded and checked rather than
      reported unplanned; Workday's search prompts, question dropdowns and drop-zone uploads are read
      and filled; an expired session or an error page is refused rather than planned.
-   - Next: submit a first application each on Workday, Ashby and Greenhouse from the attached
-     browser, which also shows whether the spam rejection is gone.
+   - 2026-10-06, the first live run (`2026-10-06-1`), over the approved queue: six applications
+     submitted by the agent across Easy Apply, Ashby and Greenhouse, with no spam rejection from the
+     attached browser; six deferred with questions only Nick can answer; the Workday application
+     waits on his sign-in there. The run's fixes are on `job-applications/live-runs`: reading forms
+     through the CLI over the DevTools protocol, required-question and validation detection, salary
+     as a single figure or a range, self-identification answers with several phrasings, and Ashby's
+     and Greenhouse's quirks.
+   - Later the same day, after Nick answered the deferred questions (`jobs answers add`), a second
+     run (`2026-10-06-2`) re-ran them: five submitted, one closed by the employer. It added an
+     answer for "eligible to work without sponsorship", kept the reader on a dialog step with no
+     fields, and compared typeahead choices the same way in the planner and the check.
+   - Next: fill with trusted input from the CLI, which Ashby needs; answer more screening questions
+     from the data; then a discovery run.
 6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
    skip reasons), with proposals put to Nick at the end of each unattended run.

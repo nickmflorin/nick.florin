@@ -106,6 +106,87 @@ describe('resolveAnswer()', () => {
     ]);
   });
 
+  it('gives the compensation range where a question asks for one, and the target elsewhere', () => {
+    const ranged: AnswerContext = {
+      ...Context,
+      answers: {
+        ...Answers,
+        compensation: { ...Answers.compensation, range: { max: 240000, min: 210000 } },
+      },
+    };
+    expect([
+      resolveAnswer(text('What are your salary expectations?'), ranged),
+      resolveAnswer(text('Desired salary range'), ranged),
+      resolveAnswer({ label: 'Desired salary range', options: [], type: 'number' }, ranged),
+      resolveAnswer(text('Minimum base salary'), ranged),
+      resolveAnswer(text('Maximum base salary'), ranged),
+      resolveAnswer(text('Desired salary range'), Context),
+    ]).toMatchObject([
+      { value: '225000' },
+      { value: '210000 - 240000' },
+      { value: '225000' },
+      { value: '210000' },
+      { value: '240000' },
+      { value: '225000' },
+    ]);
+  });
+
+  it.each([
+    ['Do you currently reside in the US?', { value: 'Yes' }],
+    ['Are you located in the United States?', { value: 'Yes' }],
+    ['Do you live in the U.S.?', { value: 'Yes' }],
+    ['Do you not reside in the US?', { unanswered: true }],
+  ])('answers %j from the country Nick lives in', (label, expected) => {
+    expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject(expected);
+  });
+
+  it('gives the first phrasing of a self-identification answer that the options admit', () => {
+    const identified: AnswerContext = {
+      ...Context,
+      answers: {
+        ...Answers,
+        selfIdentification: {
+          ...Answers.selfIdentification,
+          gender: ['Female', 'Woman'],
+          hispanicOrLatino: ['No'],
+          pronouns: ['She/Her/Hers', 'She/Her'],
+          veteranStatus: ['I am not a protected veteran', 'No'],
+        },
+      },
+    };
+    expect([
+      resolveAnswer(choice('Gender', ['Man', 'Woman', 'Non-binary']), identified),
+      resolveAnswer(choice('Preferred pronouns', ['He/Him', 'She/Her', 'They/Them']), identified),
+      resolveAnswer(choice('Are you Hispanic or Latino?', ['Yes', 'No']), identified),
+      resolveAnswer(
+        choice('Veteran status', [
+          'I identify as one or more of the classifications',
+          'I am not a protected veteran',
+        ]),
+        identified,
+      ),
+      resolveAnswer(choice('Are you a veteran?', ['Yes', 'No']), identified),
+    ]).toMatchObject([
+      { value: 'Woman' },
+      { value: 'She/Her' },
+      { value: 'No' },
+      { value: 'I am not a protected veteran' },
+      { value: 'No' },
+    ]);
+  });
+
+  it('recognizes an ethnicity question whose label misspells the word', () => {
+    expect(
+      resolveAnswer(choice('I identify my ethincity as:', ['Black', 'White', 'Other']), {
+        ...Context,
+        answers: {
+          ...Answers,
+          selfIdentification: { ...Answers.selfIdentification, ethnicity: ['White'] },
+        },
+      }),
+    ).toMatchObject({ value: 'White' });
+  });
+
   it('fits an answer to the shortest option beginning with it', () => {
     expect(
       resolveAnswer(
@@ -171,7 +252,6 @@ describe('resolveAnswer()', () => {
   });
 
   it.each([
-    'Are you able to work in the US without sponsorship?',
     'Do you require work authorization to work in the US?',
     'Are you not authorized to work in the US?',
     "Aren't you eligible to work in the US?",
@@ -179,6 +259,14 @@ describe('resolveAnswer()', () => {
     expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject({
       unanswered: true,
     });
+  });
+
+  it.each([
+    ['Are you eligible to work in the US without Sponsorship?', { value: 'Yes' }],
+    ['Are you able to work in the US without sponsorship?', { value: 'Yes' }],
+    ['Are you not eligible to work in the US without sponsorship?', { unanswered: true }],
+  ])('answers %j from authorization and sponsorship together', (label, expected) => {
+    expect(resolveAnswer(choice(label, ['Yes', 'No']), Context)).toMatchObject(expected);
   });
 
   it('falls through to the next matching category when an answer does not fit the options', () => {

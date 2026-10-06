@@ -39,8 +39,10 @@ const field = (overrides: Partial<ReadField> & Pick<ReadField, 'key' | 'label'>)
 });
 
 const reading = (fields: ReadField[]): FormReading => ({
+  attachments: [],
   buttons: [],
   challenge: false,
+  errors: [],
   fields,
   pageError: false,
   progress: null,
@@ -224,6 +226,16 @@ describe('planFill()', () => {
     ).toStrictEqual([
       { current: 'Remembered', key: 'f0', label: 'Describe a hard bug', required: true },
     ]);
+  });
+
+  it('lists an optional question the data does not answer, rather than skipping it unseen', () => {
+    expect(
+      planFill(
+        reading([field({ key: 'f0', label: 'Favorite color', options: ['Red', 'Blue'] })]),
+        Context,
+        Staged,
+      ).optional,
+    ).toStrictEqual([{ key: 'f0', label: 'Favorite color', options: ['Red', 'Blue'] }]);
   });
 
   it('keeps an optional prefilled value the data does not answer', () => {

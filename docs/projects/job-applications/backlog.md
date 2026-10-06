@@ -191,6 +191,36 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       was rejected as spam from the automation-mode browser, which led to attaching to a normally
       launched one. The first Workday application was filled through three of its six steps on
       2026-10-05 and stopped when its session expired.
+- [x] **Read and check forms in the browser from the CLI.**
+      `jobs apply plan|check --page <part of     the address>` installs the form tools and reads the
+      form over the DevTools protocol, so neither the reader script nor the page text passes through
+      the agent; a form that renders late is waited for. Landed 2026-10-06.
+- [x] **Catch what the first live run missed.** Landed 2026-10-06: questions starred above their
+      radio group are required; a check reports the form's validation messages as `invalid`;
+      optional questions left empty are listed as `optional`; Ashby's yes-or-no checkbox pairs are
+      one question; phone numbers and combobox values compare as the form formats them; and a resume
+      the form shows by name after taking it counts as attached.
+- [ ] **Fill with trusted input from the CLI.** Ashby keeps its own form state and does not reliably
+      register values set by script: three of four Ashby submissions were refused once with "Missing
+      entry for required field" until the field was retyped or clicked through the browser server. A
+      `jobs apply fill --page` that types through the DevTools protocol's `Input.insertText` and
+      clicks with `Input.dispatchMouseEvent` would make every fill trusted.
+- [ ] **Answer more screening questions from the data.** Most deferrals in the first live run were
+      yes-or-no experience questions ("built production front ends with React?", "designed
+      PostgreSQL schemas?"), which the profile digest could answer when every named technology is in
+      it; "comfortable working remotely?" from the workplace preferences; and "current company" from
+      the current employer.
+- [ ] **Surface a whole application's questions at once.** A deferral stops at the first step with a
+      question only Nick can answer, so later steps' questions reach him on later runs.
+- [ ] **Tell uploads of the same name apart.** Easy Apply lists every upload of
+      `Nick-Florin-Resume.pdf` under that name; the check should confirm the selected one is the
+      upload just made (its date), not merely that its name matches.
+- [ ] **Read the submission result through the CLI**, as plan and check do, and report the dialog's
+      primary button, so the agent pastes no scripts and takes fewer snapshots.
+- [ ] **Find an embedded Ashby board's address** from the page's Ashby embed script when no link
+      names the job, rather than guessing the company's slug.
+- [ ] **Score the recommendations' postings.** The first live run's learning report shows the
+      recommendations source with eight found and none scored.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
       then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04;

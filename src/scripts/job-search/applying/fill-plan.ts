@@ -6,6 +6,7 @@ import { type AnswerContext, resolveAnswer } from './answers';
 import {
   type FieldValue,
   type FormReading,
+  type FormWidget,
   type PlannedFill,
   type ReadField,
 } from './form-scripts';
@@ -56,6 +57,11 @@ export interface FillPlan {
    */
   readonly needsOptions: Pick<ReadField, 'key' | 'label'>[];
   /**
+   * Optional questions the data does not answer, left empty — voluntary questions a recruiter may
+   * still screen on — which are shown so that none is skipped unnoticed.
+   */
+  readonly optional: Pick<ReadField, 'key' | 'label' | 'options'>[];
+  /**
    * Required fields the data does not answer, which only Nick may answer.
    */
   readonly unanswered: UnplannedField[];
@@ -69,6 +75,7 @@ type Decision =
   | { readonly kind: 'keep' }
   | { readonly kind: 'matched' }
   | { readonly kind: 'needs-options' }
+  | { readonly kind: 'optional' }
   | { readonly kind: 'skip' }
   | { readonly kind: 'unanswered' };
 
@@ -130,6 +137,40 @@ export const nationalNumber = (phone: string): string => {
 
 const normalizedWords = (text: string): string => toWords(text).join(' ');
 
+const digitsOf = (text: string): string => text.replace(/\D/g, '');
+
+/**
+ * Whether a field's shown text is the value planned for it, allowing for the formatting forms
+ * apply to what they show: a phone number by its digits — "(555) 555-0100" for "5555550100" — a
+ * combobox by the end of its option, since Greenhouse shows "+1" once "United States +1" is
+ * chosen, and a typeahead by the place before its first comma, or by a suggestion beginning with
+ * the value, since "Washington, DC" may be chosen as "Washington, District of Columbia, United
+ * States".
+ *
+ * @param {string} shown The text the field shows.
+ * @param {string} planned The value planned for it.
+ * @param {FormWidget} widget The kind of field.
+ *
+ * @returns {boolean} Whether the field shows the planned value.
+ */
+export const showsValue = (shown: string, planned: string, widget: FormWidget): boolean => {
+  const [actual, wanted] = [normalizedWords(shown), normalizedWords(planned)];
+  if (actual === '' || wanted === '') {
+    return actual === wanted;
+  } else if (PhoneNumber.test(planned) && digitsOf(planned).length >= 7) {
+    return (
+      digitsOf(shown).endsWith(digitsOf(planned)) || digitsOf(planned).endsWith(digitsOf(shown))
+    );
+  }
+  const placeHead = (text: string): string => normalizedWords(text.split(',').at(0) ?? '');
+  return (
+    actual === wanted ||
+    (widget === 'combobox' && ` ${wanted}`.endsWith(` ${actual}`)) ||
+    (widget === 'typeahead' &&
+      (placeHead(shown) === placeHead(planned) || actual.startsWith(`${wanted} `)))
+  );
+};
+
 const hasValue = (value: FieldValue | null): boolean =>
   value !== null &&
   value !== false &&
@@ -150,7 +191,7 @@ const unansweredOrKept = (field: ReadField): Decision => {
   if (field.required) {
     return { kind: 'unanswered' };
   }
-  return hasValue(field.value) ? { kind: 'keep' } : { kind: 'skip' };
+  return hasValue(field.value) ? { kind: 'keep' } : { kind: 'optional' };
 };
 
 const decideCheckbox = (field: ReadField, context: AnswerContext): Decision => {
@@ -212,7 +253,8 @@ const decide = (
   if (
     typeof field.value === 'string' &&
     field.value !== '' &&
-    normalizedWords(field.value).startsWith(normalizedWords(value))
+    (normalizedWords(field.value).startsWith(normalizedWords(value)) ||
+      showsValue(field.value, value, field.widget))
   ) {
     return { kind: 'matched' };
   }
@@ -283,6 +325,7 @@ export const planFill = (
       field.value === null ? [] : [{ ...pick(field, PlannedKeys), value: field.value }],
     ),
     needsOptions: fieldsWhere('needs-options').map(({ key, label }) => ({ key, label })),
+    optional: fieldsWhere('optional').map(({ key, label, options }) => ({ key, label, options })),
     unanswered: fieldsWhere('unanswered').map(unplanned),
     uploads: decided.flatMap(({ decision, field: { key, label } }) =>
       decision.kind === 'upload' ? [{ file: decision.file, key, label }] : [],
