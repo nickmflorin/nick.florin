@@ -361,6 +361,10 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    awaiting approval". Once he approves it, the next run's `jobs apply start` stages it and the plan
    attaches it.
 
+   A plan's `optional` entries are questions the form does not require and the data does not answer;
+   they are left empty and the application goes on, but list them in the report, since a recruiter
+   may screen on them and Nick may want to answer them for next time.
+
    An optional cover-letter field is left empty unless a letter was approved; when the posting's
    score is at or above `coverLetters.optionalAt`, launch the agent to draft one for next time, and
    carry on with the application.
@@ -369,17 +373,19 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    pnpm --silent jobs apply defer <id> --reason "Questions only Nick can answer"
    ```
 
-4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
-   entry: a combobox is clicked open by its uid; a typeahead is focused by script and its `typeText`
-   typed with `mcp__job-search-browser__type_text`, which needs no snapshot, passing the entry's
-   `submitKey` as the tool's `submitKey` when it has one; either way its `chooseFunction` then picks
-   the option. A `chosen: null` result means no option fits: defer.
+4. **Fill.** On a single-page form, upload the resume (step 5) first: Ashby parses an uploaded
+   resume and can drop answers filled before it. Run the plan's `fillFunction`; every result must be
+   `ok`. Then, for each `interactive` entry: a combobox is clicked open by its uid; a typeahead is
+   focused by script and its `typeText` typed with `mcp__job-search-browser__type_text`, which needs
+   no snapshot, passing the entry's `submitKey` as the tool's `submitKey` when it has one; either
+   way its `chooseFunction` then picks the option. A `chosen: null` result means no option fits:
+   defer.
 
 5. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
    "Upload resume" button that opens it. When the tool reports that the element could not accept the
    file — Workday's "Select files" button — run the upload's `revealFunction`, take a snapshot, and
-   upload through the input it names `job-search-upload`. Easy Apply's resume step has no file
+   upload through the input described `job-search-upload`. Easy Apply's resume step has no file
    input: upload through its "Upload resume" button, whose uid a snapshot of that step gives. The
    step preselects Nick's newest upload, which is never assumed to be the approved resume; the plan
    leaves the picker alone, and the check confirms the approved resume is the one selected.
@@ -392,7 +398,9 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    ```
 
    The check also records, as a blocker, any required field no plan covered. Any blocker defers the
-   posting.
+   posting. A check whose `status` is `invalid` lists the validation messages the form shows — "This
+   field is required" after "Next" left the step where it was — which means the form asked for
+   something the reading missed: defer the posting with the messages in the reason.
 
 7. **Move on.** Run `jobs apply pause`, then click "Next", "Continue" or "Review".
 
@@ -434,10 +442,15 @@ then run the `submission-result` script.
   pnpm --silent jobs application submitted <id> --by-agent
   ```
 
-- `confirmed: false` — never click Submit again in this run: a retry after a success that went
-  unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
-  When the page states plainly that the application was not submitted — "We couldn't submit your
-  application" — add `--not-submitted`, which puts the posting back in the queue for a later run.
+- `confirmed: false` because the form refused the click itself — Ashby's "Your form needs
+  corrections: Missing entry for required field: Email" — means nothing was sent. The field shows
+  the value but the form never registered it: retype it with `type_text` (or click the option with
+  `mcp__job-search-browser__click`), check again, and click Submit once more.
+- `confirmed: false` otherwise — never click Submit again in this run: a retry after a success that
+  went unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can
+  look. When the page states plainly that the application was not submitted — "We couldn't submit
+  your application" — add `--not-submitted`, which puts the posting back in the queue for a later
+  run.
 - A refusal that names spam or a bot check — "flagged as possible spam" — ends unattended submission
   to that application system for the rest of the run: build the answer packets of its remaining
   postings for Nick instead, and say so in the report. Never retry against a bot check.

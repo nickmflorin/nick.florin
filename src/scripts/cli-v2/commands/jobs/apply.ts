@@ -21,10 +21,12 @@ import {
   formFillScript,
   type FormReading,
   FormReadingSchema,
+  FormScripts,
   type PlannedFill,
   revealFileInputScript,
 } from '~/scripts/job-search/applying/form-scripts';
 import { typeaheadQuery } from '~/scripts/job-search/applying/places';
+import { evaluateInPage } from '~/scripts/job-search/browser/devtools';
 import { delayWithinMs } from '~/scripts/job-search/budget/budget';
 import { resolveSessionContext } from '~/scripts/job-search/context';
 
@@ -45,20 +47,64 @@ const withChooser = (fill: PlannedFill) => {
 };
 
 /**
- * Reads a form reading from the file the browser server saved it to, deleting the file once read
- * since the reading holds Nick's answers, or from standard input when no file is given.
+ * Where a command takes its form reading from: the job-search Chrome's page itself, a file the
+ * browser server saved, or standard input.
  */
-const readFormReading = async (stdin: Readable, file: string | undefined): Promise<FormReading> => {
-  const source = file ?? 'standard input';
-  const raw: unknown = JSON.parse(
-    file === undefined ? await text(stdin) : await fs.readFile(file, 'utf-8'),
-  );
-  if (file !== undefined) {
-    await fs.rm(file, { force: true });
+interface ReadingSource {
+  /**
+   * A file holding a saved reading, deleted once read since the reading holds Nick's answers.
+   */
+  readonly file: string | undefined;
+  /**
+   * A part of the address of the page holding the form, which is read there directly: the form
+   * tools are installed and the reading taken over the DevTools protocol, so neither passes through
+   * the agent.
+   */
+  readonly page: string | undefined;
+  readonly stdin: Readable;
+}
+
+/**
+ * How many times, a second apart, the page is read while it shows no form, since a board's form
+ * often renders a moment after its page loads.
+ */
+const PageReadAttempts = 5;
+
+const hasFields = (raw: unknown): boolean =>
+  typeof raw === 'object' &&
+  raw !== null &&
+  'fields' in raw &&
+  Array.isArray(raw.fields) &&
+  raw.fields.length > 0;
+
+const readPage = async (page: string): Promise<unknown> => {
+  let raw: unknown = null;
+  for (let attempt = 0; attempt < PageReadAttempts && !hasFields(raw); attempt += 1) {
+    if (attempt > 0) {
+      /* eslint-disable-next-line no-await-in-loop -- Each attempt waits for the page to render. */
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    /* eslint-disable-next-line no-await-in-loop -- Each attempt reads the page as it is then. */
+    raw = await evaluateInPage(page, `(${FormScripts['form-read']})()`);
   }
-  const parsed = FormReadingSchema.safeParse(raw);
+  return raw;
+};
+
+const rawReading = async ({ file, page, stdin }: ReadingSource): Promise<unknown> => {
+  if (page !== undefined) {
+    return readPage(page);
+  } else if (file === undefined) {
+    return JSON.parse(await text(stdin));
+  }
+  const raw: unknown = JSON.parse(await fs.readFile(file, 'utf-8'));
+  await fs.rm(file, { force: true });
+  return raw;
+};
+
+const readFormReading = async (source: ReadingSource): Promise<FormReading> => {
+  const parsed = FormReadingSchema.safeParse(await rawReading(source));
   if (!parsed.success) {
-    throw new Error(`The form reading in ${source} is invalid: ${parsed.error.message}`);
+    throw new Error(`The form reading is invalid: ${parsed.error.message}`);
   }
   return parsed.data;
 };
@@ -89,6 +135,11 @@ const refusalOf = ({ challenge, pageError, signIn }: FormReading): JsonResult | 
 const readingOption = () =>
   Option.String('--reading', {
     description: 'A file holding the reading, deleted once read; standard input otherwise.',
+  });
+
+const pageOption = () =>
+  Option.String('--page', {
+    description: "A part of the form page's address, such as the job id: the form is read there.",
   });
 
 /**
@@ -137,8 +188,10 @@ export class JobsApplyPlanCommand extends JsonCommand {
     category: 'Jobs',
     description: "Plan how to fill a form reading from Nick's data, and print the fill script.",
     details: `
-      Reads the \`form-read\` page script's result from the \`--reading\` file the browser
-      server saved it to, or from standard input, and prints the plan — the
+      Reads the form in the job-search Chrome's page whose address contains \`--page\` — the
+      form tools are installed and the reading taken there, outside the conversation — or takes
+      the \`form-read\` page script's result from the \`--reading\` file the browser server saved
+      it to, or from standard input. Prints the plan — the
       native fills and the \`fillFunction\` that sets them; the comboboxes and typeaheads to choose
       through the browser server, each with the \`chooseFunction\` to run once its menu is open,
       and a typeahead with the \`typeText\` that opens it, and the \`submitKey\` that runs its
@@ -155,6 +208,7 @@ export class JobsApplyPlanCommand extends JsonCommand {
         'Plan a saved reading',
         '$0 jobs apply plan 4012345678 --reading build/job-search/reading.json',
       ],
+      ['Plan the form in the browser', '$0 jobs apply plan 4012345678 --page 4012345678'],
       ['Plan a reading', '$0 jobs apply plan 4012345678 < reading.json'],
       ['Preview a form', '$0 jobs apply plan 4012345678 --preview < reading.json'],
     ],
@@ -163,10 +217,15 @@ export class JobsApplyPlanCommand extends JsonCommand {
   public preview = Option.Boolean('--preview', false, {
     description: 'Plan without a started application, recording nothing.',
   });
+  public page = pageOption();
   public reading = readingOption();
 
   protected async run(): Promise<JsonResult> {
-    const reading = await readFormReading(this.context.stdin, this.reading);
+    const reading = await readFormReading({
+      file: this.reading,
+      page: this.page,
+      stdin: this.context.stdin,
+    });
     const refusal = refusalOf(reading);
     if (refusal !== null) {
       return refusal;
@@ -214,13 +273,15 @@ export class JobsApplyCheckCommand extends JsonCommand {
     category: 'Jobs',
     description: 'Check a reading of the filled form against the planned values.',
     details: `
-      Reads the \`form-read\` page script's result, taken after filling, from the \`--reading\`
-      file or standard input, and records which planned values the form shows. Prints the values
+      Reads the filled form in the page whose address contains \`--page\`, or takes a reading
+      from the \`--reading\` file or standard input, and records which planned values the form
+      shows. Prints the values
       it shows differently, those not yet seen, whether the approved resume has been seen
       attached, and the blockers that keep
       the agent from submitting it — including any required field no plan covered. An application
       can be recorded as filled only once nothing is pending and the resume is verified, and
-      submitted by the agent only once, in addition, nothing blocks it. Refuses the readings the
+      submitted by the agent only once, in addition, nothing blocks it. A form that shows
+      validation messages is reported \`invalid\`: it refused the step. Refuses the readings the
       plan refuses.
     `,
     examples: [
@@ -228,19 +289,28 @@ export class JobsApplyCheckCommand extends JsonCommand {
         'Check a saved reading',
         '$0 jobs apply check 4012345678 --reading build/job-search/reading.json',
       ],
+      ['Check the form in the browser', '$0 jobs apply check 4012345678 --page 4012345678'],
       ['Check a filled form', '$0 jobs apply check 4012345678 < reading.json'],
     ],
   });
   public id = Option.String({ name: 'id', required: true });
+  public page = pageOption();
   public reading = readingOption();
 
   protected async run(): Promise<JsonResult> {
-    const reading = await readFormReading(this.context.stdin, this.reading);
+    const reading = await readFormReading({
+      file: this.reading,
+      page: this.page,
+      stdin: this.context.stdin,
+    });
     const refusal = refusalOf(reading);
     if (refusal !== null) {
       return refusal;
     }
     const check = await checkReading(await resolveSessionContext(), this.id, reading);
+    if (check.errors.length > 0) {
+      return { ...check, status: 'invalid' };
+    }
     return { ...check, status: check.mismatches.length === 0 ? 'ok' : 'mismatched' };
   }
 }

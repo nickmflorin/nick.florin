@@ -74,8 +74,10 @@ const field = (overrides: Partial<ReadField> & Pick<ReadField, 'key' | 'label'>)
 });
 
 const reading = (fields: ReadField[]): FormReading => ({
+  attachments: [],
   buttons: [],
   challenge: false,
+  errors: [],
   fields,
   pageError: false,
   progress: null,
@@ -100,6 +102,7 @@ const Plan: FillPlan = {
   kept: [],
   matched: [],
   needsOptions: [],
+  optional: [],
   unanswered: [],
   uploads: [{ file: '/staged/Jane-Doe-Resume.pdf', key: 'f2', label: 'Resume/CV' }],
 };
@@ -168,6 +171,7 @@ describe('application drafts', () => {
       await recordPlan(context(), Id, Plan, filledReading);
       await expect(checkReading(context(), Id, filledReading)).resolves.toStrictEqual({
         blockers: [],
+        errors: [],
         mismatches: [],
         pending: [],
         resumeVerified: true,
@@ -208,6 +212,19 @@ describe('application drafts', () => {
       await expect(
         checkReading(context(), Id, reading([{ ...source, value: 'LinkedIn corporate page' }])),
       ).resolves.toMatchObject({ mismatches: [], pending: [] });
+    });
+
+    it('verifies a resume the form shows by name once it has taken the upload', async () => {
+      expect.hasAssertions();
+      await approveAResume();
+      await start();
+      await recordPlan(context(), Id, Plan, filledReading);
+      await expect(
+        checkReading(context(), Id, {
+          ...reading(filledReading.fields.filter(({ type }) => type !== 'file')),
+          attachments: [ResumeFileName],
+        }),
+      ).resolves.toMatchObject({ pending: [], resumeVerified: true });
     });
 
     it('reports a value the form shows differently, and leaves it unverified', async () => {
@@ -368,6 +385,7 @@ describe('application drafts', () => {
           kept: [{ current: 'Green', key: 'f5', label: 'Color', required: false }],
           matched: [],
           needsOptions: [],
+          optional: [],
           unanswered: [],
           uploads: [],
         },

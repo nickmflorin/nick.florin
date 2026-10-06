@@ -124,14 +124,51 @@ const AuthorizationNeeded = /\b(?:require|need)s?\b.*\bauthori[sz]ation\b/i;
 const isInverted = (label: string): boolean =>
   InvertedWording.test(label.replace(BenignQualifier, ''));
 
+/**
+ * A question whether Nick lives in the United States, answered from the country he lives in.
+ */
+const ResidesInUnitedStates =
+  /\b(?:reside|live|located|based)\b.*\bin (?:the )?(?:united states|u\.?s\.?a?\.?)(?![a-z])/i;
+
+const UnitedStates = /^(?:the )?(?:united states(?: of america)?|u\.?s\.?a?\.?)$/i;
+
 const YearsOfExperience = /years?\b.*\bexperience\b.*\b(?:with|in|using|of)\b(.+)$/i;
 
+/**
+ * The self-identification questions, by the answer each takes. A Hispanic-or-Latino question is
+ * tried before race, so that a question naming both gets the race answer only when the options do
+ * not admit the yes-or-no one.
+ */
 const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentification']])[] = [
-  [/gender|sex\b|pronoun/i, 'gender'],
-  [/race|ethnic|hispanic|latin/i, 'ethnicity'],
+  [/pronoun/i, 'pronouns'],
+  [/gender|sex\b/i, 'gender'],
+  [/hispanic|latin[oax]/i, 'hispanicOrLatino'],
+  [/\brace\b|ethn|ethin/i, 'ethnicity'],
   [/veteran|military/i, 'veteranStatus'],
   [/disability|disabilities/i, 'disability'],
 ];
+
+/**
+ * Answers a compensation question: the low or high end of the range for a question that asks for a
+ * minimum or a maximum, the whole range where a free-text question asks for one, and the single
+ * target figure everywhere else — including a number field, which cannot hold a range.
+ */
+const compensationFor = (
+  label: string,
+  type: FormFieldType,
+  { compensation: { range, target } }: Answers,
+): string => {
+  if (range === null) {
+    return String(target);
+  } else if (/\b(?:minimum|min|lowest)\b/i.test(label)) {
+    return String(range.min);
+  } else if (/\b(?:maximum|max|highest)\b/i.test(label)) {
+    return String(range.max);
+  }
+  return /\brange\b/i.test(label) && type !== 'number'
+    ? `${range.min} - ${range.max}`
+    : String(target);
+};
 
 /**
  * The question categories answered from Nick's data, in the order they are tried. Each pattern is
@@ -171,6 +208,13 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
             yesNo(employers.some(employer => normalized(employer) === normalized(company))),
           )
         : null,
+  ],
+  [
+    ResidesInUnitedStates,
+    (label, { answers }) =>
+      isInverted(label)
+        ? null
+        : from('answers', yesNo(UnitedStates.test(answers.contact.country.trim()))),
   ],
   [/e-?mail/i, (_label, { answers }) => from('answers', answers.contact.email)],
   [
@@ -226,7 +270,7 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   ],
   [
     /salary|compensation|pay expectation|desired pay|expected pay/i,
-    (_label, { answers }) => from('answers', String(answers.compensation.target)),
+    (label, { answers }, { type }) => from('answers', compensationFor(label, type, answers)),
   ],
   [
     YearsOfExperience,
@@ -239,14 +283,22 @@ const Resolvers: readonly (readonly [RegExp, Resolver])[] = [
   [/how did you (?:hear|find|learn)/i, () => from('answers', 'LinkedIn')],
   ...SelfIdentification.map(([pattern, key]): readonly [RegExp, Resolver] => [
     pattern,
-    (_label, { answers }) => from('answers', answers.selfIdentification[key]),
+    (_label, { answers }, question) => {
+      const phrasings = [answers.selfIdentification[key]].flat();
+      return from(
+        'answers',
+        phrasings.find(phrasing => fitToOptions(phrasing, question) !== null) ?? phrasings.at(0),
+      );
+    },
   ]),
 ];
 
 /**
  * Fits an answer to a choice field: the option equal to it, then the shortest option beginning
- * with it — "United States of America" before "United States Minor Outlying Islands" — and for a
- * decline the option that declines. A free-text field takes the answer as it is.
+ * with it — "United States of America" before "United States Minor Outlying Islands" — then, for
+ * an answer of three words or more, an option containing it — "Not a protected veteran" in "I
+ * identify as not a protected veteran" — and for a decline the option that declines. A free-text
+ * field takes the answer as it is.
  */
 const fitToOptions = (value: string, { options }: FormQuestion): null | string => {
   if (options.length === 0) {
@@ -260,6 +312,12 @@ const fitToOptions = (value: string, { options }: FormQuestion): null | string =
       .filter(option => !declining && normalized(option).startsWith(`${wanted} `))
       .sort((a, b) => a.length - b.length)
       .at(0) ??
+    options.find(
+      option =>
+        !declining &&
+        wanted.split(' ').length >= 3 &&
+        ` ${normalized(option)} `.includes(` ${wanted} `),
+    ) ??
     options.find(option => normalized(option) === normalized(regionName(value) ?? '')) ??
     (declining ? options.find(option => DeclineOption.test(option)) : undefined) ??
     null

@@ -14,7 +14,7 @@ import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas'
 import { type SessionContext } from '../session';
 
 import { stageCoverLetter } from './cover-letters';
-import { type FillPlan, isDocumentPicker } from './fill-plan';
+import { type FillPlan, isDocumentPicker, showsValue } from './fill-plan';
 import {
   type FieldValue,
   FieldValueSchema,
@@ -302,14 +302,16 @@ const shows = (entry: DraftEntry, actual: FieldValue | null): boolean => {
   return entry.widget === 'typeahead'
     ? placeHead(actual) === placeHead(entry.value) ||
         normalized(actual).startsWith(`${normalized(entry.value)} `)
-    : normalized(actual) === normalized(entry.value);
+    : showsValue(actual, entry.value, entry.widget);
 };
 
 /**
- * Whether a reading shows the resume attached: a file input holding it, or a selected option — the
- * resume LinkedIn shows selected among the uploaded ones — that names it.
+ * Whether a reading shows the resume attached: a file input holding it, a selected option — the
+ * resume LinkedIn shows selected among the uploaded ones — that names it, or an attachment the form
+ * shows by name once it has taken the upload.
  */
-const resumeShownIn = ({ fields }: FormReading, fileName: string): boolean =>
+const resumeShownIn = ({ attachments, fields }: FormReading, fileName: string): boolean =>
+  attachments.includes(fileName) ||
   fields.some(
     ({ type, value }) =>
       (type === 'file' && Array.isArray(value) && value.includes(fileName)) ||
@@ -321,6 +323,10 @@ export interface DraftCheck {
    * Everything that keeps the application from being submitted unattended, across its steps.
    */
   readonly blockers: Blocker[];
+  /**
+   * The validation messages the form shows, which mean it refused the step.
+   */
+  readonly errors: string[];
   readonly mismatches: {
     readonly actual: FieldValue | null;
     readonly expected: FieldValue;
@@ -404,6 +410,7 @@ export const checkReading = async (
   await writeDraft(dataDirectory, updated);
   return {
     blockers: updated.blockers,
+    errors: reading.errors,
     mismatches: checked.flatMap(({ mismatch }) => (mismatch === null ? [] : [mismatch])),
     pending: updated.entries.filter(({ verified }) => !verified).map(({ label }) => label),
     resumeVerified: updated.resume.verified,

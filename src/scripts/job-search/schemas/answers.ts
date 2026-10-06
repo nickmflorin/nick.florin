@@ -4,9 +4,13 @@ import { TextSchema, TimestampSchema } from './common';
 
 /**
  * The answer given to a voluntary self-identification question, which is declined unless an answer
- * has been configured deliberately.
+ * has been configured deliberately. Forms word the same answer differently — "Male" or "Man",
+ * "White" or "Caucasian" — so an answer may list its phrasings, the first that a form's options
+ * admit being the one given.
  */
-const SelfIdentificationSchema = TextSchema.default('decline');
+const SelfIdentificationSchema = z
+  .union([TextSchema, z.array(TextSchema).min(1)])
+  .default('decline');
 
 /**
  * When Nick can start, as a span from the day an application is filled.
@@ -64,6 +68,19 @@ export const AnswersSchema = z
           .string()
           .regex(/^[A-Z]{3}$/)
           .default('USD'),
+        /**
+         * The range given when a form asks for one, or for a minimum and a maximum; without it,
+         * those questions take the target.
+         */
+        range: z
+          .object({ max: z.number().int().positive(), min: z.number().int().positive() })
+          .strict()
+          .refine(({ max, min }) => min <= max, 'The minimum must not exceed the maximum.')
+          .nullable()
+          .default(null),
+        /**
+         * The single figure given when a form asks for one number.
+         */
         target: z.number().int().positive(),
       })
       .strict(),
@@ -99,6 +116,8 @@ export const AnswersSchema = z
         disability: SelfIdentificationSchema,
         ethnicity: SelfIdentificationSchema,
         gender: SelfIdentificationSchema,
+        hispanicOrLatino: SelfIdentificationSchema,
+        pronouns: SelfIdentificationSchema,
         veteranStatus: SelfIdentificationSchema,
       })
       .strict()

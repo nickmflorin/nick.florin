@@ -51,8 +51,18 @@ export type ReadField = z.infer<typeof ReadFieldSchema>;
  * review step is the whole of what will be submitted.
  */
 export const FormReadingSchema = z.object({
+  /**
+   * The document file names the form shows outside any list of choices — the resume a board shows
+   * once it has taken an upload and removed its file input, as Greenhouse does.
+   */
+  attachments: z.array(z.string()).default([]),
   buttons: z.array(z.string()),
   challenge: z.boolean(),
+  /**
+   * The validation messages the form shows — "This field is required" beside a question — which
+   * mean it refused the step, whatever the reading's fields say.
+   */
+  errors: z.array(z.string()).default([]),
   fields: z.array(ReadFieldSchema),
   pageError: z.boolean().default(false),
   progress: z.string().nullable(),
@@ -153,8 +163,10 @@ const FormHelpers = String.raw`
  * legend, and finally the nearest label-like element before it that belongs to no other control,
  * which is how Ashby's radio questions and Greenhouse's file inputs are labelled. Failing all of
  * those, a lone field takes the first line of text in the nearest container that holds no other
- * control, as LinkedIn's location typeahead needs. A field is required when it is marked so, or
- * when its label carries a `*`, a `required` class, or a `*` drawn by CSS.
+ * control, as LinkedIn's location typeahead needs. A field is required when it is marked so, when
+ * its label carries a `*`, a `required` class, or a `*` drawn by CSS, or when the first line of
+ * the nearest container holding no other control ends in a `*`, which is how Easy Apply marks a
+ * question whose radio buttons are labelled by the question itself.
  *
  * A file input labelled only by its drop zone — Workday's "Upload a file (5MB max)" — takes the
  * nearest heading before it, which names the document it asks for. Its value is the files it
@@ -166,6 +178,10 @@ const FormHelpers = String.raw`
  * labelled button that opens a listbox on its own, as Workday's dropdowns are, labelled by a
  * `label[for]` or, for its questionnaire's questions, the legend of the fieldset around it.
  * Workday's search prompts (`data-uxi-widget-type="selectinput"`) are reported as typeaheads.
+ *
+ * Checkboxes whose ids differ only in a trailing number — Ashby's `…-labeled-checkbox-0` and `-1`,
+ * a yes-or-no question asked through two checkboxes labelled "Yes" and "No" — are read as one
+ * choice, labelled by the question.
  *
  * A checkbox that sits beside `aria-pressed` buttons — Ashby's yes-or-no questions — is reported as
  * a choice among the buttons, with the pressed one as its value, since the checkbox's own state
@@ -179,7 +195,8 @@ const ReadOperation = `
   const GenericLabel =
     new RegExp('^(attach|upload|upload file|choose file|file[- ]?input|browse|enter manually|' +
       'select\\\\.*|type here\\\\.*)$', 'i');
-  const Typeahead = /location|city|address|school|university|college|degree|discipline|major/i;
+  const Typeahead =
+    /\\b(location|city|address|school|university|college|degree|discipline|major)\\b/i;
   const GenericUpload = /^(upload|attach|select|choose|drop) (a |your )?files?( |$)/i;
   const headingBefore = (el) => {
     const headings = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]')]
@@ -200,6 +217,9 @@ const ReadOperation = `
     return [];
   };
   const GroupContainer = 'fieldset, [role="radiogroup"], [role="group"]';
+  const Numbered = /-\\d+$/;
+  const sameSeries = (a, b) => Boolean(a.id) && Boolean(b.id) && Numbered.test(a.id) &&
+    a.id.replace(Numbered, '') === b.id.replace(Numbered, '');
   const legendOf = (el) => {
     const fieldset = el.closest('fieldset');
     return fieldset ? fieldset.querySelector('legend') : null;
@@ -252,6 +272,19 @@ const ReadOperation = `
     }
     return fallback;
   };
+  const starredAbove = (el, group) => {
+    let node = el.parentElement;
+    for (let depth = 0; node && depth < 7; depth += 1) {
+      const foreign = [...node.querySelectorAll('input, select, textarea')]
+        .filter((other) => !group.includes(other) && other.type !== 'hidden' &&
+          other.getAttribute('aria-hidden') !== 'true');
+      if (foreign.length > 0) return false;
+      const firstLine = (node.innerText || '').split('\\n').map(clean).find(Boolean);
+      if (firstLine && /\\*$/.test(firstLine)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  };
   const labelOf = (el, group) => {
     const container = group.length > 1 || el.tagName === 'BUTTON'
       ? el.closest(GroupContainer)
@@ -278,7 +311,7 @@ const ReadOperation = `
       label: found.text.slice(0, 300),
       required: group.some((member) => member.required ||
         member.getAttribute('aria-required') === 'true') || marked(found.el) ||
-        Boolean(found.starred) || (own ? marked(own) : false),
+        Boolean(found.starred) || (own ? marked(own) : false) || starredAbove(el, group),
     };
   };
   window.__jobSearchKeys = window.__jobSearchKeys || 0;
@@ -319,7 +352,8 @@ const ReadOperation = `
     const container = el.closest(GroupContainer);
     const existing = groups.find((group) => group[0].type === el.type && (
       (el.name && group[0].name === el.name) ||
-      (container && el.type === 'radio' && group[0].closest(GroupContainer) === container)));
+      (container && el.type === 'radio' && group[0].closest(GroupContainer) === container) ||
+      sameSeries(group[0], el)));
     return existing ? existing.push(el) : groups.push([el]);
   });
   const fields = groups.map((group) => {
@@ -405,11 +439,35 @@ const ReadOperation = `
     [...document.querySelectorAll('input[type="password"]')].some(visible) ||
     SignInStep.test(document.body.innerText);
   const pageError = /something went wrong|please refresh the page/i.test(document.body.innerText);
+  const inChoiceList = (el) => {
+    let node = el.parentElement;
+    for (let depth = 0; node && depth < 4; depth += 1) {
+      if (node.querySelector('input[type="radio"], [role="radio"]')) return true;
+      node = node.parentElement;
+    }
+    return false;
+  };
+  const attachments = [...new Set([...root.querySelectorAll('*')]
+    .filter((el) => el.children.length === 0 && visible(el))
+    .map((el) => [el, clean(el.textContent)])
+    .filter(([el, text]) => DocumentFile.test(text) && !inChoiceList(el))
+    .map(([, text]) => text))];
+  const ValidationError = new RegExp('^(this (field|question) is required|this is a required ' +
+    'field|required field|missing entry for required field.{0,200}|your form needs ' +
+    'corrections|.{1,60} (is|are) required|(please )?(enter|select|provide|choose) a ' +
+    'valid .{1,60}|please (answer|complete|fill (in|out)) this (field|question)|enter a (whole|' +
+    'decimal) number .{0,60}|invalid .{1,60})[.!]?$', 'i');
+  const errors = [...new Set([...root.querySelectorAll('*')]
+    .filter((el) => el.children.length === 0 && visible(el))
+    .map((el) => clean(el.textContent))
+    .filter((text) => text.length < 140 && ValidationError.test(text)))];
   return {
+    attachments,
     buttons: [...new Set([...root.querySelectorAll('button')]
       .map((button) => clean(button.innerText || button.getAttribute('aria-label')))
       .filter((text) => text !== '' && text.length <= 40))],
     challenge,
+    errors,
     fields,
     pageError,
     progress: progress ? progress[1] : null,
