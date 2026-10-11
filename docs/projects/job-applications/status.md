@@ -1,12 +1,14 @@
 # Project Status
 
-_Last updated: 2026-10-06_
+_Last updated: 2026-10-11_
 
 ## Phase
 
-**Phase 0 — Design (2026-10-02 to 2026-10-03), complete.** All ten design questions are settled and
-recorded in [decisions.md](./decisions.md); [open-questions.md](./open-questions.md) is empty.
-Nothing has been built yet. Phase 1 is the v1 build.
+**v1 is built and in live use (from 2026-10-06).** Design (2026-10-02 to 2026-10-03) settled all ten
+questions, recorded in [decisions.md](./decisions.md); the v1 build merged to `master` as PR #5 on
+2026-10-05; the first live runs on 2026-10-06 submitted eleven applications unattended, and the
+fixes they prompted are in PR #6 (`job-applications/live-runs`), open.
+[open-questions.md](./open-questions.md) is empty.
 
 ## Done
 
@@ -37,6 +39,7 @@ Nothing has been built yet. Phase 1 is the v1 build.
 
 - The first Workday application, filled through its first three steps under the attached browser and
   stopped when the board's session expired; it resumes once Nick signs in there again.
+- PR #6 is open and has not been through `tsc`, Jest, ESLint or cspell; those run before it merges.
 
 ## Next
 
@@ -102,7 +105,23 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      run (`2026-10-06-2`) re-ran them: five submitted, one closed by the employer. It added an
      answer for "eligible to work without sponsorship", kept the reader on a dialog step with no
      fields, and compared typeahead choices the same way in the planner and the check.
-   - Next: fill with trusted input from the CLI, which Ashby needs; answer more screening questions
-     from the data; then a discovery run.
+   - Answer policies Nick set while answering the held questions (the values stay in the private
+     data directory; the policies are in [decisions.md](./decisions.md)): a voluntary question is
+     never declined, a technology he lacks or barely has is answered No, or "limited experience" in
+     free text, and salary is a single figure or a range depending on what the form allows.
+
+   What is left, in order:
+
+   1. Run `tsc`, Jest, ESLint and cspell on PR #6, then merge it.
+   2. Nick signs in to Workday; the Reputation application resumes and, as the first Workday
+      submission, stops for his review before Submit.
+   3. Fill with trusted input from the CLI, which Ashby needs (three of four Ashby submissions were
+      refused once until a field was retyped or clicked through the browser server).
+   4. Answer more screening questions from the data, which most deferrals asked.
+   5. A discovery run for new postings; the learning report shows the recommendations source with
+      eight found and none scored.
+   6. `voice.md`, so cover-letter drafts sound like Nick; his decision on rewriting PR #5's history
+      does not apply now that it is squashed into `master`.
+
 6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
    skip reasons), with proposals put to Nick at the end of each unattended run.

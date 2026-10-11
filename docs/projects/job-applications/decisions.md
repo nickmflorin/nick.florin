@@ -16,6 +16,37 @@ Format:
 
 ---
 
+## 2026-10-06 — Standing answer policies for questions the data cannot answer
+
+**Decision:** Four policies, set by Nick while answering the questions the first live run held.
+
+- A voluntary self-identification question is never declined. Each answer lists its phrasings
+  (`selfIdentification.gender: [Male, Man]`), the first that a form's options admit is given, and a
+  question none admits is left for Nick rather than declined.
+- A question about experience with a technology he lacks or barely has is answered No in a yes-or-no
+  field or dropdown, and "limited experience, a quick study, learning it on the side" in free text.
+  Nothing is invented.
+- Salary is one figure where a form allows one number, and a range (`compensation.range`) where it
+  asks for a range or a minimum and a maximum.
+- Every answer Nick gives to a worded question is saved with `jobs answers add` under the form's
+  exact wording, so the same question fills itself on later forms.
+
+```yaml
+selfIdentification:
+  gender: [Male, Man]
+compensation:
+  target: 0 # the single figure
+  range: { min: 0, max: 0 } # asked for as a range
+```
+
+**Why:** Nick wants applications to go out rather than be held or skipped, and a clear, truthful
+answer to every question rather than a declined or invented one. Most held applications in the first
+live run asked yes-or-no experience questions, so saved answers are what clear the next ones.
+
+**Alternatives considered:** Declining by default (the setup's default; Nick does not want it).
+Answering experience questions Yes whenever the stack is close (risks saying he has experience he
+does not).
+
 ## 2026-10-05 — Form tools are installed once per page, and readings travel through a file
 
 **Decision:** The `form-read` script installs the form tools — reader, prober, chooser, filler and

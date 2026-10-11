@@ -210,6 +210,11 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       PostgreSQL schemas?"), which the profile digest could answer when every named technology is in
       it; "comfortable working remotely?" from the workplace preferences; and "current company" from
       the current employer.
+- [ ] **Answer remote-work and current-employer questions from the preferences:** "comfortable
+      working remotely?" from the workplace preferences, and an optional "current company" field
+      from the current employer. A field of this kind is otherwise left empty and only listed.
+- [ ] **Run the checks on PR #6 and merge it.** `tsc`, Jest, ESLint and cspell have not been run on
+      `job-applications/live-runs`.
 - [ ] **Surface a whole application's questions at once.** A deferral stops at the first step with a
       question only Nick can answer, so later steps' questions reach him on later runs.
 - [ ] **Tell uploads of the same name apart.** Easy Apply lists every upload of
