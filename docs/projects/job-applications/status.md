@@ -113,7 +113,7 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
    What is left, in order:
 
    1. Run `tsc`, Jest, ESLint and cspell on PR #6, then merge it.
-   2. Nick signs in to Workday; the Reputation application resumes and, as the first Workday
+   2. Nick signs in to Workday; the Workday application resumes and, as the first Workday
       submission, stops for his review before Submit.
    3. Fill with trusted input from the CLI, which Ashby needs (three of four Ashby submissions were
       refused once until a field was retyped or clicked through the browser server).
