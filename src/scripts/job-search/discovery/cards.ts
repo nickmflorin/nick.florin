@@ -74,7 +74,7 @@ const NoSponsorshipPatterns = [
 ] as const;
 
 const FactLinePattern =
-  /employees|\$\s?\d|USD|salary|compensation|sponsor|visa|hybrid|on-?site|in-office|office|relocat/i;
+  /employees|\$\s?\d|USD|salary|compensation|sponsor|visa|hybrid|on-?site|in-office|office|relocate|relocation/i;
 
 const FactLimit = 20;
 

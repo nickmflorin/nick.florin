@@ -118,7 +118,7 @@ describe('opening the pool', () => {
 
   it('opens the pooled postings the page shows, and records them with their text', async () => {
     expect.hasAssertions();
-    await poolOf('Hooli', 'Pied Piper', 'Aviato');
+    await poolOf('Hooli', 'Pied Piper', 'Globex');
     const { driver } = fakePage({
       cards: [cardOf('Pied Piper'), cardOf('Hooli')],
       opens: { Hooli: '4012345678', 'Pied Piper': '4012345679' },

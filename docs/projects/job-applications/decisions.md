@@ -16,6 +16,32 @@ Format:
 
 ---
 
+## 2026-10-11 — Discovery drives the page itself, and a finished run still accepts triage
+
+**Decision:** `jobs cards read` and `jobs pool open` read and act on the job-search Chrome's page
+over the DevTools protocol (the connection `jobs linkedin sign-in` already used, now shared in
+`src/scripts/job-search/browser/devtools.ts`), and the skill no longer has the agent convert cards
+or open postings by hand. `jobs pool open` matches the page's cards against the whole unopened pool
+rather than expecting the ranked top to appear. A posting whose card carries its job identifier is
+opened by loading its own page, any other by clicking its card, and a text is kept only when the
+page shows the target's identifier. Triage accepts a run that finished as `completed`, `aborted` or
+`budget`, and refuses one that ended on a challenge or a logout.
+
+**Why:** LinkedIn's AI search returns different results on every load, so reopening a search found 1
+of 25 ranked targets, and the agent compensated with scratch scripts that put the parsing, the
+budgeting and the id check outside the tested code. On the recommendations page a click leaves
+`currentJobId` unchanged, so the texts saved from it belonged to the wrong postings. Triage reads no
+LinkedIn page and takes no budget, so refusing it after `jobs run finish` protected nothing, while
+the daily run limit made a new run an expensive way to fix a late mistake. A challenge or logout is
+different: it means activity must stop, so those runs stay closed.
+
+**Alternatives considered:** A new `jobs run reopen` command (more surface than the problem needs,
+and it would have to interact with the run limit). Skipping the identifier check on the
+recommendations page by navigating always (impossible for search cards, which carry no identifier
+until clicked). Saving texts to `build/job-search/<id>.json` and moving them with
+`jobs posting describe` (what the scratch scripts did; the command records the text directly, which
+leaves no private file in the working tree).
+
 ## 2026-10-05 — Form tools are installed once per page, and readings travel through a file
 
 **Decision:** The `form-read` script installs the form tools — reader, prober, chooser, filler and

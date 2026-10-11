@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-10-05_
+_Last updated: 2026-10-11_
 
 ## Phase
 
@@ -95,3 +95,12 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      browser, which also shows whether the spam rejection is gone.
 6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
    skip reasons), with proposals put to Nick at the end of each unattended run.
+7. **Discovery fixes** — written 2026-10-11 on `job-applications/discovery-fixes`, from problems in
+   a live discovery run: `jobs cards read` (read and triage a page's cards in one step, waiting for
+   results to render) and `jobs pool open` (open the pooled postings the page in view shows, verify
+   each job identifier, triage at the detail stage and attach the text) replace the agent's scratch
+   scripts; a company equal to the title is parsed correctly; recommendations are opened by their
+   own address so no text is saved for the wrong posting; a run that finished still accepts triage
+   unless it ended on a challenge or logout; and the job-detail script reports a posting that no
+   longer accepts applications, which the skill checks before taking an `easy-apply-fill` unit. Unit
+   tested with a fake page; not yet run against live LinkedIn (see [backlog.md](./backlog.md)).

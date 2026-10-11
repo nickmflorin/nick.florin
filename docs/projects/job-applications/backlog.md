@@ -96,6 +96,44 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       card survivors and returns them ranked would make the cap and the order reproducible. Landed
       2026-10-04: `jobs triage --stage card` pools survivors and `jobs pool next` ranks them.
 
+- [x] **Open the pool by what the page shows.** `jobs pool open --run <id> --limit N` reads the
+      search or recommendations page in view over the DevTools protocol, matches its cards against
+      the whole unopened pool (LinkedIn returns different results on every load, so the ranked top
+      is mostly absent), and for each match takes a page view, opens the posting, verifies the page
+      shows the target's job identifier, triages at the detail stage and attaches the text. Replaces
+      the scratch scripts the 2026-10-10 discovery run needed. Landed 2026-10-11 in
+      `src/scripts/job-search/discovery/open-pool.ts`; the card parsing, the facts-to-candidate
+      conversion and the pool matching are unit tested.
+- [x] **Read and triage a page's cards in one step.** `jobs cards read --run <id> [--search <name>]`
+      converts the cards into candidates, triages them at the card stage and pools the survivors,
+      waiting up to ten seconds for results that render after navigation. Landed 2026-10-11.
+- [x] **Fix the company parsed as the title.** The card text repeats the title, so the company is
+      the first line after the last consecutive repeat. Landed 2026-10-11 with a regression test.
+- [x] **Never save a text for the wrong posting.** On the recommendations page a click does not
+      change `currentJobId`, so every card read the same posting. Cards with a known identifier are
+      now opened by loading `/jobs/view/<id>/`, and a text is kept only when the page shows the
+      target's own identifier (a repeat of an already opened one is refused). Landed 2026-10-11.
+- [x] **Let a finished run still be triaged into.** `jobs triage` (and so `jobs cards read` and
+      `jobs pool open`) accepts a run that finished as `completed`, `aborted` or `budget`, because
+      triage takes no page budget, and refuses one that ended on a challenge or a logout with a
+      message naming the fix; `jobs run finish` is no longer needed before a late fix. Landed
+      2026-10-11.
+- [x] **Check a posting still accepts applications before filling.** The `job-detail` script returns
+      `closed` (the page says "No longer accepting applications"); the skill checks it before taking
+      an `easy-apply-fill` unit, and `jobs pool open` does not record a closed posting. Landed
+      2026-10-11.
+- [ ] **Verify the new discovery commands against live LinkedIn.** `jobs cards read` and
+      `jobs pool open` were written and unit tested with a fake page, without a browser; run them
+      once against a real search and the recommendations page, and confirm the `result-cards` line
+      format the parser assumes (company after the title's repeats, `City, ST (Workplace)`,
+      `$NNK/yr - $NNK/yr`, `Posted N units ago`).
+- [ ] **Let `jobs pool open` correct the workplace from the description.** The detail pass records
+      the workplace LinkedIn labels the posting with; where the description contradicts it
+      ("On-site" with two office days) the agent can only note it in the report, not rebuild the
+      candidate as it could when it hand-built them.
+- [ ] **Refuse a closed posting in `jobs apply start`.** The check lives in the skill and the
+      `job-detail` script; `jobs apply start` reads no page, so it cannot see the posting.
+
 ## Deterministic Commands
 
 - [x] **Add a `jobs` command group to cli-v2.** Commands under `src/scripts/cli-v2/commands/`,
