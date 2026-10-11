@@ -98,6 +98,29 @@ export const attachDescription = (
   });
 
 /**
+ * Records a posting's text in its ledger record directly, for a command that read the text from the
+ * page itself and so has no saved file to move.
+ *
+ * @param {SessionContext} context The ledger and the data directory.
+ * @param {string} id The posting's job identifier.
+ * @param {string} text The posting's text, as the `job-detail` page script read it.
+ *
+ * @throws {Error} If the ledger does not hold the posting.
+ *
+ * @returns {Promise<Posting>} The posting, with its description.
+ */
+export const describePosting = (
+  context: SessionContext,
+  id: string,
+  text: string,
+): Promise<Posting> =>
+  withLedgerLock(context.dataDirectory, async () => {
+    const described: Posting = { ...(await requirePosting(context, id)), description: text };
+    await context.store.putPosting(described);
+    return described;
+  });
+
+/**
  * Decides where a scored posting goes: dropped on any dealbreaker or below the maybe threshold,
  * into the review queue at or above the queue threshold, and onto the maybe list between the two.
  *

@@ -59,12 +59,41 @@ const readDay = async ({ clock, store }: SessionContext) => {
   return { budget: budget ?? emptyBudget(date), cooldown, now };
 };
 
-const requireOpenRun = async ({ store }: SessionContext, runId: string): Promise<Run> => {
+const requireRun = async ({ store }: SessionContext, runId: string): Promise<Run> => {
   const run = await store.getRun(runId);
   if (run === null) {
     throw new Error(`There is no run '${runId}' in the ledger.`);
-  } else if (run.finishedAt !== null) {
+  }
+  return run;
+};
+
+const requireOpenRun = async (context: SessionContext, runId: string): Promise<Run> => {
+  const run = await requireRun(context, runId);
+  if (run.finishedAt !== null) {
     throw new Error(`The run '${runId}' already finished at ${run.finishedAt}.`);
+  }
+  return run;
+};
+
+/**
+ * The endings after which a run accepts no more work: LinkedIn showed a security step or signed the
+ * browser out, so the run's remaining activity must stop and wait for a new run.
+ */
+const StoppedEndings = ['challenge', 'logged-out'] as const satisfies readonly RunEnding[];
+
+/**
+ * Requires a run that can still be triaged into: one that is open, or that finished without being
+ * stopped. Triage reads no LinkedIn page and takes no budget, so a late fix to a finished run's
+ * candidates does not need a new run, which the daily run limit would make costly.
+ */
+const requireTriageableRun = async (context: SessionContext, runId: string): Promise<Run> => {
+  const run = await requireRun(context, runId);
+  const stoppedBy = StoppedEndings.find(ending => ending === run.endedBy);
+  if (stoppedBy !== undefined) {
+    throw new Error(
+      `The run '${runId}' ended on '${stoppedBy}' at ${run.finishedAt}, so it accepts no more ` +
+        'candidates: start a new run once the cooldown, or the sign-in, allows it.',
+    );
   }
   return run;
 };
@@ -185,7 +214,9 @@ export interface TriageBatchResult extends Omit<TriageResult, 'records'> {
  * @param {TriageStage} stage The pass the candidates were read at.
  * @param {readonly Candidate[]} candidates The candidates, as the browser pass read them.
  *
- * @throws {Error} If the run does not exist or has already finished.
+ * @throws {Error}
+ *   If the run does not exist, or ended on a challenge or a logout. A run that finished otherwise
+ *   still accepts candidates.
  *
  * @returns {Promise<TriageBatchResult>} The outcome for every candidate.
  */
@@ -196,7 +227,7 @@ export const triageBatch = (
   candidates: readonly Candidate[],
 ): Promise<TriageBatchResult> =>
   withLedgerLock(context.dataDirectory, async () => {
-    await requireOpenRun(context, runId);
+    await requireTriageableRun(context, runId);
     const { records: recorded, skipped } = await context.store.listPostings();
     const { records, ...result } = triageCandidates({
       candidates,
