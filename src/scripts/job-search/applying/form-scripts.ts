@@ -228,8 +228,9 @@ const ReadOperation = `
     el.querySelectorAll('input, select, textarea, [role="combobox"]').length;
   const largest = (elements) =>
     elements.sort((a, b) => controlCount(b) - controlCount(a)).find((el) => controlCount(el) > 0);
-  const dialogs = [...document.querySelectorAll('dialog[open], [role="dialog"], [aria-modal="true"]')]
-    .filter(visible);
+  const dialogs = [
+    ...document.querySelectorAll('dialog[open], [role="dialog"], [aria-modal="true"]'),
+  ].filter(visible);
   const root =
     largest(dialogs) || dialogs[0] || largest([...document.querySelectorAll('form')]) ||
     document.body;

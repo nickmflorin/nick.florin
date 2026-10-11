@@ -214,10 +214,10 @@ export class JobsApplyPlanCommand extends JsonCommand {
     ],
   });
   public id = Option.String({ name: 'id', required: true });
+  public page = pageOption();
   public preview = Option.Boolean('--preview', false, {
     description: 'Plan without a started application, recording nothing.',
   });
-  public page = pageOption();
   public reading = readingOption();
 
   protected async run(): Promise<JsonResult> {

@@ -26,6 +26,7 @@
     "context7": true,
     "greptile": true
   },
+  "enabledMcpjsonServers": ["job-search-browser", "chrome-devtools"],
   "extraKnownMarketplaces": {
     "nextjs-marketplace": {
       "source": {

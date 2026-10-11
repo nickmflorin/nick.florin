@@ -152,6 +152,7 @@ const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentif
   [/pronoun/i, 'pronouns'],
   [/gender|sex\b/i, 'gender'],
   [/hispanic|latin[oax]/i, 'hispanicOrLatino'],
+  // cspell:disable-next-line
   [/\brace\b|ethn|ethin/i, 'ethnicity'],
   [/veteran|military/i, 'veteranStatus'],
   [/disability|disabilities/i, 'disability'],

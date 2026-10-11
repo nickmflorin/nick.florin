@@ -177,6 +177,7 @@ describe('resolveAnswer()', () => {
 
   it('recognizes an ethnicity question whose label misspells the word', () => {
     expect(
+      // cspell:disable-next-line
       resolveAnswer(choice('I identify my ethincity as:', ['Black', 'White', 'Other']), {
         ...Context,
         answers: {
