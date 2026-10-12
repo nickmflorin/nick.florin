@@ -8,6 +8,7 @@ import { type Candidate, CandidateSchema, type Preferences } from '../schemas';
 import { type SessionContext } from '../session';
 
 import { AccountRequirements } from './apply-systems';
+import { type CardFacts } from './cards';
 
 /**
  * The directory, inside the job-search data directory, that holds each run's pool of card-stage
@@ -108,8 +109,31 @@ export const rankCandidates = (
   );
 
 /**
- * Lists the most promising candidates in a run's pool that have not been opened yet — those whose
- * company and title the ledger does not hold — up to a cap.
+ * Lists every candidate in a run's pool that has not been opened yet — those whose company and
+ * title the ledger does not hold — most promising first.
+ *
+ * @param {SessionContext} context The ledger, the preferences and the data directory.
+ * @param {string} run The identifier of the run.
+ *
+ * @returns {Promise<Candidate[]>} The unopened candidates, ranked by {@link rankCandidates}.
+ */
+export const unopenedFromPool = async (
+  context: SessionContext,
+  run: string,
+): Promise<Candidate[]> => {
+  const [pool, recorded] = await Promise.all([
+    readYamlRecord(poolFileFor(context.dataDirectory, run), PoolSchema),
+    context.store.listPostings(),
+  ]);
+  const opened = new Set(recorded.records.map(({ fingerprint }) => fingerprint));
+  return rankCandidates(
+    (pool?.candidates ?? []).filter(candidate => !opened.has(postingFingerprint(candidate))),
+    context.preferences,
+  );
+};
+
+/**
+ * Lists the most promising candidates in a run's pool that have not been opened yet, up to a cap.
  *
  * @param {SessionContext} context The ledger, the preferences and the data directory.
  * @param {string} run The identifier of the run.
@@ -123,14 +147,42 @@ export const nextFromPool = async (
   run: string,
   cap: number,
 ): Promise<{ readonly candidates: Candidate[]; readonly remaining: number }> => {
-  const [pool, recorded] = await Promise.all([
-    readYamlRecord(poolFileFor(context.dataDirectory, run), PoolSchema),
-    context.store.listPostings(),
-  ]);
-  const opened = new Set(recorded.records.map(({ fingerprint }) => fingerprint));
-  const unopened = rankCandidates(
-    (pool?.candidates ?? []).filter(candidate => !opened.has(postingFingerprint(candidate))),
-    context.preferences,
-  );
+  const unopened = await unopenedFromPool(context, run);
   return { candidates: unopened.slice(0, cap), remaining: Math.max(0, unopened.length - cap) };
+};
+
+/**
+ * A pooled candidate paired with the card on the current page that shows the same posting.
+ */
+export interface PageMatch {
+  readonly card: CardFacts;
+  readonly pooled: Candidate;
+}
+
+/**
+ * Intersects a run's unopened pool with the cards on the page being viewed, keeping the pool's
+ * ranking, so that the postings opened are the most promising ones the page still shows.
+ *
+ * LinkedIn's results differ on every load, so the top of the ranked pool is often absent from the
+ * page when it is reopened; matching against the whole pool, by company and title, opens whichever
+ * ranked candidates did come back.
+ *
+ * @param {readonly Candidate[]} ranked The unopened pool, most promising first.
+ * @param {readonly CardFacts[]} cards The cards on the page.
+ * @param {number} limit How many matches to return at most.
+ *
+ * @returns {PageMatch[]} The best-ranked pooled candidates the page shows, with their cards.
+ */
+export const matchPageCards = (
+  ranked: readonly Candidate[],
+  cards: readonly CardFacts[],
+  limit: number,
+): PageMatch[] => {
+  const onPage = new Map(cards.map(card => [postingFingerprint(card), card]));
+  return ranked
+    .flatMap(pooled => {
+      const card = onPage.get(postingFingerprint(pooled));
+      return card === undefined ? [] : [{ card, pooled }];
+    })
+    .slice(0, limit);
 };

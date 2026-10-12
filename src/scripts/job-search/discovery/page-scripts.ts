@@ -53,7 +53,7 @@ const ResultCardsScript = `() => {
  * It returns the job identifier from the page URL, the pane's text from the posting's header
  * through "About the company" (title, location, posting age, workplace, compensation, description,
  * company size), whether the posting takes an Easy Apply application, the external "Apply" link
- * otherwise, and the page URL.
+ * otherwise, whether the page says it is no longer accepting applications, and the page URL.
  */
 const JobDetailScript = `() => {
   const heading = [...document.querySelectorAll('h2')]
@@ -71,8 +71,10 @@ const JobDetailScript = `() => {
   const apply = [...document.querySelectorAll('main a, main button')]
     .find((el) => /^(Easy Apply|Apply)\\b/.test(nameOf(el)));
   const easyApply = apply ? /Easy Apply/.test(nameOf(apply)) : false;
+  const main = document.querySelector('main') || document.body;
   return {
     applyUrl: apply && apply.tagName === 'A' && !easyApply ? apply.href : null,
+    closed: /No longer accepting applications/i.test(main.innerText),
     easyApply,
     id: idMatch ? idMatch[1] : null,
     text: pane ? pane.innerText.slice(0, 15000) : '',

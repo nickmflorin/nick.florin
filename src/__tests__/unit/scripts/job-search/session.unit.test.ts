@@ -125,7 +125,26 @@ describe('job-search session', () => {
       expect(second.duplicates.map(({ duplicateOf }) => duplicateOf)).toStrictEqual(['4012345678']);
     });
 
-    it('refuses a batch for a run that is not open', async () => {
+    it('still accepts a batch for a run that finished without being stopped', async () => {
+      expect.hasAssertions();
+      const context = sessionContext();
+      await startRun(context, []);
+      await finishRun(context, '2026-10-03-1', 'completed', null);
+      const result = await triageBatch(context, '2026-10-03-1', 'detail', [candidate()]);
+      expect(result.survivors).toHaveLength(1);
+    });
+
+    it('refuses a batch for a run that ended on a challenge, naming the fix', async () => {
+      expect.hasAssertions();
+      const context = sessionContext();
+      await startRun(context, []);
+      await finishRun(context, '2026-10-03-1', 'challenge', null);
+      await expect(triageBatch(context, '2026-10-03-1', 'detail', [candidate()])).rejects.toThrow(
+        "The run '2026-10-03-1' ended on 'challenge'",
+      );
+    });
+
+    it('refuses a batch for a run that does not exist', async () => {
       expect.hasAssertions();
       await expect(
         triageBatch(sessionContext(), '2026-10-03-9', 'card', [candidate()]),

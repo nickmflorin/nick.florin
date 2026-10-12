@@ -6,7 +6,7 @@ import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
 import { TimestampSchema } from '../schemas';
 import { type SessionContext, takeBudget } from '../session';
 
-import { connect, type DevToolsPage, listPages } from './devtools';
+import { Checkpoint, openLinkedInPage, type Page, SignInPage } from './devtools';
 
 /**
  * How long after an automatic sign-in attempt another is refused, so that a failing sign-in is
@@ -22,14 +22,6 @@ const LoginUrl = 'https://www.linkedin.com/login';
  */
 const NavigationSettleMs = 3000;
 
-/**
- * The address of a LinkedIn security step — a verification code, a CAPTCHA, an identity check —
- * which only Nick may complete.
- */
-const Checkpoint = /\/(?:checkpoint|challenge|authwall)\b/i;
-
-const SignInPage = /\/(?:login|uas\/login|signin)\b/i;
-
 const AttemptSchema = z.object({ attemptedAt: TimestampSchema }).strict();
 
 export interface Credentials {
@@ -41,14 +33,14 @@ export type SignInResult =
   | { readonly reason: string; readonly status: 'refused' }
   | { readonly status: 'already-signed-in' | 'signed-in' };
 
-const currentUrl = async (page: DevToolsPage): Promise<string> =>
+const currentUrl = async (page: Page): Promise<string> =>
   z.string().parse(await page.evaluate('window.location.href'));
 
 /**
  * Waits for the page to leave an address matching a pattern, or for the time to run out.
  */
 const waitWhile = async (
-  page: DevToolsPage,
+  page: Page,
   pattern: RegExp,
   sleep: SessionContext['clock']['sleep'],
 ): Promise<string> => {
@@ -67,7 +59,7 @@ const waitWhile = async (
 /**
  * Types text into the field a selector names, with the keyboard events a person's typing makes.
  */
-const typeInto = async (page: DevToolsPage, selector: string, text: string): Promise<void> => {
+const typeInto = async (page: Page, selector: string, text: string): Promise<void> => {
   await page.evaluate(
     `(() => { const el = document.querySelector(${JSON.stringify(selector)}); el.focus(); ` +
       'el.select(); })()',
@@ -152,12 +144,7 @@ export const signInToLinkedIn = async (
       status: 'refused',
     };
   }
-  const targets = await listPages();
-  const target = targets.find(({ url }) => url.includes('linkedin.com')) ?? targets.at(0);
-  if (target === undefined) {
-    return { reason: 'The job-search Chrome has no open page.', status: 'refused' };
-  }
-  const page = await connect(target.webSocketDebuggerUrl);
+  const page = await openLinkedInPage();
   try {
     if (!SignInPage.test(new URL(await currentUrl(page)).pathname)) {
       const decision = await takeBudget(context, 'page-view');

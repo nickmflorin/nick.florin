@@ -26,7 +26,7 @@ import {
   revealFileInputScript,
 } from '~/scripts/job-search/applying/form-scripts';
 import { typeaheadQuery } from '~/scripts/job-search/applying/places';
-import { evaluateInPage } from '~/scripts/job-search/browser/devtools';
+import { evaluateInPage, openPageContaining } from '~/scripts/job-search/browser/devtools';
 import { delayWithinMs } from '~/scripts/job-search/budget/budget';
 import { resolveSessionContext } from '~/scripts/job-search/context';
 
@@ -85,7 +85,13 @@ const readPage = async (page: string): Promise<unknown> => {
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
     /* eslint-disable-next-line no-await-in-loop -- Each attempt reads the page as it is then. */
-    raw = await evaluateInPage(page, `(${FormScripts['form-read']})()`);
+    const connection = await openPageContaining(page);
+    try {
+      /* eslint-disable-next-line no-await-in-loop -- The read finishes before the page closes. */
+      raw = await evaluateInPage(connection, FormScripts['form-read']);
+    } finally {
+      connection.close();
+    }
   }
   return raw;
 };

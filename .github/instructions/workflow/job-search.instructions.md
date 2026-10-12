@@ -62,6 +62,9 @@ calls, which run concurrently — and stop on a refusal:
 pnpm --silent jobs budget take page-view
 ```
 
+`jobs pool open` takes the units for the postings it opens itself, receiving each grant before it
+acts; the unit for navigating to the page it reads is still taken separately, first.
+
 A CAPTCHA, an "unusual activity" page, a security checkpoint or an unexpected sign-in page ends the
 run with `jobs run finish … --ended-by challenge` or `logged-out`. Never try to get past one.
 
