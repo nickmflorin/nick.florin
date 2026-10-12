@@ -88,6 +88,13 @@ const CountryCodeLabel = /country (?:phone )?code|phone code|^country$/i;
 
 const PhoneLabel = /phone|mobile/i;
 
+/**
+ * An optional follow-up to an earlier answer — "If you answered yes to the above, please provide
+ * details" — which a category's pattern can match through a word it shares with the question above
+ * it, and which is left empty unless Nick saved an answer for its exact wording.
+ */
+const ConditionalFollowUp = /^\(?if\b.*\b(?:answered|yes|other|so)\b/i;
+
 const PhoneNumber = /^\+?[\d\s().-]{7,}$/;
 
 const ResumeLabel = /resume|\bcv\b|curriculum/i;
@@ -243,6 +250,12 @@ const decide = (
     context,
   );
   if ('unanswered' in answer) {
+    return unansweredOrKept(field);
+  } else if (
+    !field.required &&
+    ConditionalFollowUp.test(field.label) &&
+    answer.source !== 'custom'
+  ) {
     return unansweredOrKept(field);
   }
   const separateCode =

@@ -225,7 +225,8 @@ const stepOf = ({ progress }: FormReading): string => progress ?? 'form';
 
 /**
  * Records a plan's values in the application's draft, unverified, replacing any earlier plan for
- * the same fields, and what blocks the step from being submitted unattended, replacing what was
+ * the same fields — by key, or by label, since LinkedIn gives a field a new id each time its step
+ * is shown again — and what blocks the step from being submitted unattended, replacing what was
  * found on the step before.
  *
  * @param {SessionContext} context The data directory.
@@ -270,7 +271,11 @@ export const recordPlan = async (
     ...draft,
     blockers: [...draft.blockers.filter(blocker => blocker.step !== step), ...blockers],
     entries: [
-      ...draft.entries.filter(entry => !planned.some(({ key }) => key === entry.key)),
+      ...draft.entries.filter(
+        entry =>
+          !planned.some(({ key, label }) => key === entry.key || label === entry.label) &&
+          !reading.fields.some(({ key }) => key === entry.key),
+      ),
       ...planned,
     ],
   };

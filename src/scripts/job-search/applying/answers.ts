@@ -150,7 +150,7 @@ const YearsOfExperience = /years?\b.*\bexperience\b.*\b(?:with|in|using|of)\b(.+
  */
 const SelfIdentification: readonly (readonly [RegExp, keyof Answers['selfIdentification']])[] = [
   [/pronoun/i, 'pronouns'],
-  [/gender|sex\b/i, 'gender'],
+  [/gender|sex\b|think of yourself as/i, 'gender'],
   [/hispanic|latin[oax]/i, 'hispanicOrLatino'],
   // cspell:disable-next-line
   [/\brace\b|ethn|ethin/i, 'ethnicity'],

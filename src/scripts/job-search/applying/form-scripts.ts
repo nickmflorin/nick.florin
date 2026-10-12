@@ -168,6 +168,11 @@ const FormHelpers = String.raw`
  * the nearest container holding no other control ends in a `*`, which is how Easy Apply marks a
  * question whose radio buttons are labelled by the question itself.
  *
+ * A radio wrapped in an element with the `radio` role takes that element's `aria-label`, or the
+ * text of the elements its `aria-labelledby` names, as the group's label — how Easy Apply labels
+ * its disability question. A group is also required when the element just before it ends in a `*`,
+ * as Easy Apply marks a Yes-or-No question.
+ *
  * A file input labelled only by its drop zone — Workday's "Upload a file (5MB max)" — takes the
  * nearest heading before it, which names the document it asks for. Its value is the files it
  * holds or, once a board has taken them and emptied it as Workday does, the file names shown
@@ -286,6 +291,11 @@ const ReadOperation = `
     }
     return false;
   };
+  const starredBefore = (el) => {
+    const container = el.closest(GroupContainer);
+    const before = container ? container.previousElementSibling : null;
+    return Boolean(before) && /\\*\\s*$/.test(clean(before.innerText));
+  };
   const labelOf = (el, group) => {
     const container = group.length > 1 || el.tagName === 'BUTTON'
       ? el.closest(GroupContainer)
@@ -304,6 +314,7 @@ const ReadOperation = `
       legend ? { el: legend, text: legend.innerText } : null,
       container ? { el: null, text: container.getAttribute('aria-label') } : null,
       roleRadio ? { el: null, text: roleRadio.getAttribute('aria-label') } : null,
+      roleRadio ? { el: null, text: textOfIds(roleRadio.getAttribute('aria-labelledby')) } : null,
     ].find((found) => found && stripMarker(found.text));
     const found = direct
       ? { el: direct.el, text: stripMarker(direct.text) }
@@ -312,7 +323,8 @@ const ReadOperation = `
       label: found.text.slice(0, 300),
       required: group.some((member) => member.required ||
         member.getAttribute('aria-required') === 'true') || marked(found.el) ||
-        Boolean(found.starred) || (own ? marked(own) : false) || starredAbove(el, group),
+        Boolean(found.starred) || (own ? marked(own) : false) || starredAbove(el, group) ||
+        starredBefore(el),
     };
   };
   window.__jobSearchKeys = window.__jobSearchKeys || 0;
