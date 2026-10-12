@@ -7,14 +7,13 @@ import { z } from 'zod';
 import { withLedgerLock } from '../budget/lock';
 import { AccountRequirements, resolveApplyDestination } from '../discovery/apply-systems';
 import { listDirectory } from '../fs';
-import { toWords } from '../ledger/fingerprint';
 import { readYamlRecord, writeYamlRecord } from '../ledger/yaml-records';
 import { stageApprovedResume, unstageResume } from '../resume/staging';
 import { type ApplicationSystem, TextSchema, TimestampSchema } from '../schemas';
 import { type SessionContext } from '../session';
 
 import { stageCoverLetter } from './cover-letters';
-import { type FillPlan, isDocumentPicker } from './fill-plan';
+import { type FillPlan, isDocumentPicker, showsValue } from './fill-plan';
 import {
   type FieldValue,
   FieldValueSchema,
@@ -226,7 +225,8 @@ const stepOf = ({ progress }: FormReading): string => progress ?? 'form';
 
 /**
  * Records a plan's values in the application's draft, unverified, replacing any earlier plan for
- * the same fields, and what blocks the step from being submitted unattended, replacing what was
+ * the same fields — by key, or by label, since LinkedIn gives a field a new id each time its step
+ * is shown again — and what blocks the step from being submitted unattended, replacing what was
  * found on the step before.
  *
  * @param {SessionContext} context The data directory.
@@ -271,22 +271,17 @@ export const recordPlan = async (
     ...draft,
     blockers: [...draft.blockers.filter(blocker => blocker.step !== step), ...blockers],
     entries: [
-      ...draft.entries.filter(entry => !planned.some(({ key }) => key === entry.key)),
+      ...draft.entries.filter(
+        entry =>
+          !planned.some(({ key, label }) => key === entry.key || label === entry.label) &&
+          !reading.fields.some(({ key }) => key === entry.key),
+      ),
       ...planned,
     ],
   };
   await writeDraft(dataDirectory, updated);
   return updated;
 };
-
-const normalized = (value: string): string => toWords(value).join(' ');
-
-/**
- * The part of a place before its first comma, which is all a typeahead's chosen suggestion is
- * expected to share with the value typed into it: "Washington, DC" may be chosen as "Washington,
- * District of Columbia, United States".
- */
-const placeHead = (value: string): string => normalized(value.split(',').at(0) ?? '');
 
 const sameMembers = (expected: readonly string[], actual: readonly string[]): boolean =>
   expected.length === actual.length && expected.every(value => actual.includes(value));
@@ -299,17 +294,16 @@ const shows = (entry: DraftEntry, actual: FieldValue | null): boolean => {
   } else if (typeof actual !== 'string') {
     return false;
   }
-  return entry.widget === 'typeahead'
-    ? placeHead(actual) === placeHead(entry.value) ||
-        normalized(actual).startsWith(`${normalized(entry.value)} `)
-    : normalized(actual) === normalized(entry.value);
+  return showsValue(actual, entry.value, entry.widget);
 };
 
 /**
- * Whether a reading shows the resume attached: a file input holding it, or a selected option — the
- * resume LinkedIn shows selected among the uploaded ones — that names it.
+ * Whether a reading shows the resume attached: a file input holding it, a selected option — the
+ * resume LinkedIn shows selected among the uploaded ones — that names it, or an attachment the form
+ * shows by name once it has taken the upload.
  */
-const resumeShownIn = ({ fields }: FormReading, fileName: string): boolean =>
+const resumeShownIn = ({ attachments, fields }: FormReading, fileName: string): boolean =>
+  attachments.includes(fileName) ||
   fields.some(
     ({ type, value }) =>
       (type === 'file' && Array.isArray(value) && value.includes(fileName)) ||
@@ -321,6 +315,10 @@ export interface DraftCheck {
    * Everything that keeps the application from being submitted unattended, across its steps.
    */
   readonly blockers: Blocker[];
+  /**
+   * The validation messages the form shows, which mean it refused the step.
+   */
+  readonly errors: string[];
   readonly mismatches: {
     readonly actual: FieldValue | null;
     readonly expected: FieldValue;
@@ -404,6 +402,7 @@ export const checkReading = async (
   await writeDraft(dataDirectory, updated);
   return {
     blockers: updated.blockers,
+    errors: reading.errors,
     mismatches: checked.flatMap(({ mismatch }) => (mismatch === null ? [] : [mismatch])),
     pending: updated.entries.filter(({ verified }) => !verified).map(({ label }) => label),
     resumeVerified: updated.resume.verified,

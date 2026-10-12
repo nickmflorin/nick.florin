@@ -728,7 +728,7 @@ export const Turborepo = competency('Turborepo', {
 });
 export const TypeScript = competency('TypeScript', {
   channels: AllSyndicationChannels,
-  experience: 5,
+  experience: 6,
   isHighlighted: true,
   isPrioritized: true,
   proficiency: Proficiency.Expert,

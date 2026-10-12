@@ -96,6 +96,44 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       card survivors and returns them ranked would make the cap and the order reproducible. Landed
       2026-10-04: `jobs triage --stage card` pools survivors and `jobs pool next` ranks them.
 
+- [x] **Open the pool by what the page shows.** `jobs pool open --run <id> --limit N` reads the
+      search or recommendations page in view over the DevTools protocol, matches its cards against
+      the whole unopened pool (LinkedIn returns different results on every load, so the ranked top
+      is mostly absent), and for each match takes a page view, opens the posting, verifies the page
+      shows the target's job identifier, triages at the detail stage and attaches the text. Replaces
+      the scratch scripts the 2026-10-10 discovery run needed. Landed 2026-10-11 in
+      `src/scripts/job-search/discovery/open-pool.ts`; the card parsing, the facts-to-candidate
+      conversion and the pool matching are unit tested.
+- [x] **Read and triage a page's cards in one step.** `jobs cards read --run <id> [--search <name>]`
+      converts the cards into candidates, triages them at the card stage and pools the survivors,
+      waiting up to ten seconds for results that render after navigation. Landed 2026-10-11.
+- [x] **Fix the company parsed as the title.** The card text repeats the title, so the company is
+      the first line after the last consecutive repeat. Landed 2026-10-11 with a regression test.
+- [x] **Never save a text for the wrong posting.** On the recommendations page a click does not
+      change `currentJobId`, so every card read the same posting. Cards with a known identifier are
+      now opened by loading `/jobs/view/<id>/`, and a text is kept only when the page shows the
+      target's own identifier (a repeat of an already opened one is refused). Landed 2026-10-11.
+- [x] **Let a finished run still be triaged into.** `jobs triage` (and so `jobs cards read` and
+      `jobs pool open`) accepts a run that finished as `completed`, `aborted` or `budget`, because
+      triage takes no page budget, and refuses one that ended on a challenge or a logout with a
+      message naming the fix; `jobs run finish` is no longer needed before a late fix. Landed
+      2026-10-11.
+- [x] **Check a posting still accepts applications before filling.** The `job-detail` script returns
+      `closed` (the page says "No longer accepting applications"); the skill checks it before taking
+      an `easy-apply-fill` unit, and `jobs pool open` does not record a closed posting. Landed
+      2026-10-11.
+- [ ] **Verify the new discovery commands against live LinkedIn.** `jobs cards read` and
+      `jobs pool open` were written and unit tested with a fake page, without a browser; run them
+      once against a real search and the recommendations page, and confirm the `result-cards` line
+      format the parser assumes (company after the title's repeats, `City, ST (Workplace)`,
+      `$NNK/yr - $NNK/yr`, `Posted N units ago`).
+- [ ] **Let `jobs pool open` correct the workplace from the description.** The detail pass records
+      the workplace LinkedIn labels the posting with; where the description contradicts it
+      ("On-site" with two office days) the agent can only note it in the report, not rebuild the
+      candidate as it could when it hand-built them.
+- [ ] **Refuse a closed posting in `jobs apply start`.** The check lives in the skill and the
+      `job-detail` script; `jobs apply start` reads no page, so it cannot see the posting.
+
 ## Deterministic Commands
 
 - [x] **Add a `jobs` command group to cli-v2.** Commands under `src/scripts/cli-v2/commands/`,
@@ -191,6 +229,41 @@ on one PR (#5), squash-merged into `master` on 2026-10-05; later items land on t
       was rejected as spam from the automation-mode browser, which led to attaching to a normally
       launched one. The first Workday application was filled through three of its six steps on
       2026-10-05 and stopped when its session expired.
+- [x] **Read and check forms in the browser from the CLI.**
+      `jobs apply plan|check --page <part of     the address>` installs the form tools and reads the
+      form over the DevTools protocol, so neither the reader script nor the page text passes through
+      the agent; a form that renders late is waited for. Landed 2026-10-06.
+- [x] **Catch what the first live run missed.** Landed 2026-10-06: questions starred above their
+      radio group are required; a check reports the form's validation messages as `invalid`;
+      optional questions left empty are listed as `optional`; Ashby's yes-or-no checkbox pairs are
+      one question; phone numbers and combobox values compare as the form formats them; and a resume
+      the form shows by name after taking it counts as attached.
+- [ ] **Fill with trusted input from the CLI.** Ashby keeps its own form state and does not reliably
+      register values set by script: three of four Ashby submissions were refused once with "Missing
+      entry for required field" until the field was retyped or clicked through the browser server. A
+      `jobs apply fill --page` that types through the DevTools protocol's `Input.insertText` and
+      clicks with `Input.dispatchMouseEvent` would make every fill trusted.
+- [ ] **Answer more screening questions from the data.** Most deferrals in the first live run were
+      yes-or-no experience questions ("built production front ends with React?", "designed
+      PostgreSQL schemas?"), which the profile digest could answer when every named technology is in
+      it; "comfortable working remotely?" from the workplace preferences; and "current company" from
+      the current employer.
+- [ ] **Answer remote-work and current-employer questions from the preferences:** "comfortable
+      working remotely?" from the workplace preferences, and an optional "current company" field
+      from the current employer. A field of this kind is otherwise left empty and only listed.
+- [ ] **Run the checks on PR #6 and merge it.** `tsc`, Jest, ESLint and cspell have not been run on
+      `job-applications/live-runs`.
+- [ ] **Surface a whole application's questions at once.** A deferral stops at the first step with a
+      question only Nick can answer, so later steps' questions reach him on later runs.
+- [ ] **Tell uploads of the same name apart.** Easy Apply lists every upload of
+      `Nick-Florin-Resume.pdf` under that name; the check should confirm the selected one is the
+      upload just made (its date), not merely that its name matches.
+- [ ] **Read the submission result through the CLI**, as plan and check do, and report the dialog's
+      primary button, so the agent pastes no scripts and takes fewer snapshots.
+- [ ] **Find an embedded Ashby board's address** from the page's Ashby embed script when no link
+      names the job, rather than guessing the company's slug.
+- [ ] **Score the recommendations' postings.** The first live run's learning report shows the
+      recommendations source with eight found and none scored.
 - [ ] **Fill controls the reader reports as unsupported** — button-group yes/no questions,
       `aria-haspopup="listbox"` buttons, rich-text editors — as live forms show which occur. Until
       then a form with one is stopped and reported. Ashby's yes-or-no buttons landed 2026-10-04;

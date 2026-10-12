@@ -1,12 +1,14 @@
 # Project Status
 
-_Last updated: 2026-10-05_
+_Last updated: 2026-10-11_
 
 ## Phase
 
-**Phase 0 — Design (2026-10-02 to 2026-10-03), complete.** All ten design questions are settled and
-recorded in [decisions.md](./decisions.md); [open-questions.md](./open-questions.md) is empty.
-Nothing has been built yet. Phase 1 is the v1 build.
+**v1 is built and in live use (from 2026-10-06).** Design (2026-10-02 to 2026-10-03) settled all ten
+questions, recorded in [decisions.md](./decisions.md); the v1 build merged to `master` as PR #5 on
+2026-10-05; the first live runs on 2026-10-06 submitted eleven applications unattended, and the
+fixes they prompted are in PR #6 (`job-applications/live-runs`), open.
+[open-questions.md](./open-questions.md) is empty.
 
 ## Done
 
@@ -37,6 +39,7 @@ Nothing has been built yet. Phase 1 is the v1 build.
 
 - The first Workday application, filled through its first three steps under the attached browser and
   stopped when the board's session expired; it resumes once Nick signs in there again.
+- PR #6 is open and has not been through `tsc`, Jest, ESLint or cspell; those run before it merges.
 
 ## Next
 
@@ -91,7 +94,43 @@ The v1 build, in dependency order (items in [backlog.md](./backlog.md)):
      check delete; fields the form already shows correctly are recorded and checked rather than
      reported unplanned; Workday's search prompts, question dropdowns and drop-zone uploads are read
      and filled; an expired session or an error page is refused rather than planned.
-   - Next: submit a first application each on Workday, Ashby and Greenhouse from the attached
-     browser, which also shows whether the spam rejection is gone.
+   - 2026-10-06, the first live run (`2026-10-06-1`), over the approved queue: six applications
+     submitted by the agent across Easy Apply, Ashby and Greenhouse, with no spam rejection from the
+     attached browser; six deferred with questions only Nick can answer; the Workday application
+     waits on his sign-in there. The run's fixes are on `job-applications/live-runs`: reading forms
+     through the CLI over the DevTools protocol, required-question and validation detection, salary
+     as a single figure or a range, self-identification answers with several phrasings, and Ashby's
+     and Greenhouse's quirks.
+   - Later the same day, after Nick answered the deferred questions (`jobs answers add`), a second
+     run (`2026-10-06-2`) re-ran them: five submitted, one closed by the employer. It added an
+     answer for "eligible to work without sponsorship", kept the reader on a dialog step with no
+     fields, and compared typeahead choices the same way in the planner and the check.
+   - Answer policies Nick set while answering the held questions (the values stay in the private
+     data directory; the policies are in [decisions.md](./decisions.md)): a voluntary question is
+     never declined, a technology he lacks or barely has is answered No, or "limited experience" in
+     free text, and salary is a single figure or a range depending on what the form allows.
+
+   What is left, in order:
+
+   1. Run `tsc`, Jest, ESLint and cspell on PR #6, then merge it.
+   2. Nick signs in to Workday; the Workday application resumes and, as the first Workday
+      submission, stops for his review before Submit.
+   3. Fill with trusted input from the CLI, which Ashby needs (three of four Ashby submissions were
+      refused once until a field was retyped or clicked through the browser server).
+   4. Answer more screening questions from the data, which most deferrals asked.
+   5. A discovery run for new postings; the learning report shows the recommendations source with
+      eight found and none scored.
+   6. `voice.md`, so cover-letter drafts sound like Nick; his decision on rewriting PR #5's history
+      does not apply now that it is squashed into `master`.
+
 6. **Learning** — done 2026-10-04: `jobs learning report` (each source's yield, barren searches,
    skip reasons), with proposals put to Nick at the end of each unattended run.
+7. **Discovery fixes** — written 2026-10-11 on `job-applications/discovery-fixes`, from problems in
+   a live discovery run: `jobs cards read` (read and triage a page's cards in one step, waiting for
+   results to render) and `jobs pool open` (open the pooled postings the page in view shows, verify
+   each job identifier, triage at the detail stage and attach the text) replace the agent's scratch
+   scripts; a company equal to the title is parsed correctly; recommendations are opened by their
+   own address so no text is saved for the wrong posting; a run that finished still accepts triage
+   unless it ended on a challenge or logout; and the job-detail script reports a posting that no
+   longer accepts applications, which the skill checks before taking an `easy-apply-fill` unit. Unit
+   tested with a fake page; not yet run against live LinkedIn (see [backlog.md](./backlog.md)).

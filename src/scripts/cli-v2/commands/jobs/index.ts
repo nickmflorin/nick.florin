@@ -11,6 +11,7 @@ export {
 } from './apply';
 export { JobsBrowserLaunchCommand, JobsBrowserStatusCommand } from './browser';
 export { JobsBudgetTakeCommand } from './budget';
+export { JobsCardsReadCommand } from './cards';
 export { JobsConfigShowCommand, JobsConfigStatusCommand, JobsConfigWriteCommand } from './config';
 export {
   JobsCoverLetterApproveCommand,
@@ -22,7 +23,7 @@ export { JobsLearningReportCommand } from './learning';
 export { JobsLinkedInSignInCommand } from './linkedin';
 export { JobsPacketBuildCommand } from './packet';
 export { JobsPageScriptCommand } from './page-script';
-export { JobsPoolNextCommand } from './pool';
+export { JobsPoolNextCommand, JobsPoolOpenCommand } from './pool';
 export {
   JobsPostingDescribeCommand,
   JobsPostingListCommand,

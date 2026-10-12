@@ -129,12 +129,14 @@ both files report `complete`.
 
 ## Discovery
 
-Run discovery once both configuration files are `complete`. Every page is read with the read-only
-page scripts, never with a full snapshot unless a script comes back empty:
+Run discovery once both configuration files are `complete`. The pages are read by `jobs cards read`
+and `jobs pool open`, which drive the job-search Chrome over its debugging port and run the
+read-only page scripts themselves — never write scratch scripts to read cards or open postings. The
+`job-search-browser` server is used only to navigate between sources, and for the scripts below when
+a posting is read outside those commands:
 
 ```bash
-pnpm --silent jobs page-script result-cards   # prints { "function": "() => { … }" }
-pnpm --silent jobs page-script job-detail
+pnpm --silent jobs page-script job-detail   # prints { "function": "() => { … }" }
 ```
 
 Pass the printed `function` to `mcp__job-search-browser__evaluate_script` with
@@ -157,74 +159,86 @@ as information only: the approved resume is attached until Nick approves another
 
 The sources are the recommendations page (`https://www.linkedin.com/jobs/collections/recommended/`)
 and each search in the preferences, by its `url`. For each: take a page view, navigate the tab, and
-run the `result-cards` script.
+read the page with one command, which converts every card into a candidate and triages the batch at
+the card stage:
 
-- **Check the page first.** If its `url` is a sign-in, `authwall`, `checkpoint` or challenge page,
-  finish the run as `logged-out` or `challenge` and tell Nick.
+```bash
+pnpm --silent jobs cards read --run <run-id>                      # the recommendations page
+pnpm --silent jobs cards read --run <run-id> --search <name>      # a search page
+```
+
+It reads the page over the browser's debugging port, so no page script is run by hand, and it waits
+a few seconds for the results to render when the page shows no cards yet. Its output is the triage
+result plus `read` (cards on the page), `unreadable` (cards whose text named no company), `pooled`
+(the pool's size), and `filters`, `location` and `url`, which describe the page.
+
+- **A refusal means the page is wrong.** A sign-in, `authwall`, `checkpoint` or challenge page comes
+  back `refused`: finish the run as `logged-out` or `challenge` and tell Nick.
 - **Check the filters.** LinkedIn's job search reads the query as natural language and applies its
   own filters; report any `filters` that contradict the preferences (such as `Remote` missing from a
   remote search) rather than trusting the results to be filtered.
-- **Build one candidate per card** from its `lines`: `title`, `company`, `location` and `workplace`
-  from the `City, ST (Remote|Hybrid|On-site)` line, `compensation` from a `$…K/yr` line, `postedAt`
-  from `Posted N units ago` (computed back from now), `applyVia: 'easy-apply'` when a line reads
-  `Easy Apply` and `unresolved` otherwise, `id` when the card has one and `null` otherwise, and
-  `null` for every fact the card does not show. `source` is `{ "kind": "recommendations" }` or
-  `{ "kind": "search", "search": "<name>" }`.
-- **Triage the batch** at the card stage:
+- **Zero cards read** after the wait means the page did not render or the search is empty; report it
+  rather than retrying in a loop.
 
-```bash
-pnpm --silent jobs triage --run <run-id> --stage card <<'JSON'
-[ … candidates … ]
-JSON
-```
+Cards are read from the `lines` the page script returns (`jobs page-script result-cards`), and the
+company is the first line after the last repeat of the title. Never convert cards by hand.
 
 ### 3. Pool the survivors, then open the most promising
 
 Card-stage survivors are not recorded, so the same posting surfacing in several searches survives
-each time. `jobs triage --stage card` adds each source's survivors to the run's pool, once each by
-company and title, and `jobs pool next` ranks the unopened ones — listed pay at or above the floor,
-then applications needing no account, then the most recent:
+each time. `jobs cards read` adds each source's survivors to the run's pool, once each by company
+and title, and `jobs pool next` ranks the unopened ones — listed pay at or above the floor, then
+applications needing no account, then the most recent:
 
 ```bash
 pnpm --silent jobs pool next --run <run-id> --cap 20
 ```
 
-A card pass typically lets most cards through, so open only what `jobs pool next` returns — about 20
-per run, leaving the day's page budget well clear of its limit — and leave the rest: they surface
-again in a later run.
+A card pass typically lets most cards through, so open only about 20 per run, leaving the day's page
+budget well clear of its limit; the rest surface again in a later run.
 
-Open them source by source, so each search page is loaded once: take a page view, navigate to the
-search, then for each target take a page view and run the `open-card` script built for it:
-
-```bash
-pnpm --silent jobs page-script open-card --company "<company>" --title "<title>"
-```
-
-A result of `found: false` means LinkedIn's results changed and the card is gone; skip it. From the
-`header`, `facts` and `applyUrl`, rebuild the candidate with every fact the posting publishes — `id`
-(required now), `companySize` from `N-M employees`, `compensation` from a stated range,
-`sponsorshipOffered: false` only when the text says no sponsorship, and `applyUrl` — and read the
-facts in context: "hybrid" in "hybrid mobile apps" is not an office arrangement. When the
-description contradicts LinkedIn's workplace label (an "On-site" role describing two office days a
-week), use the description's arrangement. Triage each source's opened postings at the detail stage;
-survivors are recorded as `pending`.
-
-Before leaving each opened posting, save its full text for scoring — the pane is already loaded, so
-this costs no page view — by running the `job-detail` script through `evaluate_script` with
-`filePath` set to `build/job-search/<id>.json`. After the source's detail-stage triage, move each
-saved text into its posting, which deletes the file:
+**LinkedIn's results differ on every load.** The ranked top of the pool is therefore often absent
+when a search is opened again. Do not look for it: take a page view, navigate to a search (or the
+recommendations), and let the page decide what is opened:
 
 ```bash
-pnpm --silent jobs posting describe --from build/job-search/<id>.json
+pnpm --silent jobs pool open --run <run-id> --limit 10
 ```
+
+`jobs pool open` reads the cards of the page in view, matches them against the whole unopened pool
+by company and title, and opens the best-ranked matches. For each it takes a page view first —
+granted before the browser acts — then opens the posting: a card whose job identifier is known (the
+recommendations page publishes it) is opened by loading `/jobs/view/<id>/`, because clicking a
+recommendation does not change the page's current job; any other card is clicked. A text is kept
+only when the page shows the target's own job identifier, so a click that left the previous posting
+showing is refused (`id-mismatch`) and nothing is saved. The opened postings are triaged at the
+detail stage — `id`, the apply link and system, `companySize`, `compensation` from a stated yearly
+range, and `sponsorshipOffered: false` only when the text says no sponsorship — and the survivors
+are recorded as `pending`, with their text attached for scoring. A posting that says it is no longer
+accepting applications is reported as `closed` and not recorded.
+
+Repeat the command on each source's page until the pool has nothing more the pages show, or the
+run's budget is spent. Read the result:
+
+- `attempts` lists every posting tried and what became of it (`opened`, `not-found`, `not-loaded`,
+  `id-mismatch`, `closed`, or a stop). `matched` of `onPage` cards matched the pool's `unopened`.
+- `triage` is the detail-stage outcome: `survivors` are now pending, `rejected` carry their reasons.
+- `facts` holds, by job identifier, the lines of each posting that state pay, size, sponsorship or
+  an office arrangement. Read them in context: "hybrid" in "hybrid mobile apps" is not an office
+  arrangement, and an "On-site" role describing two office days a week is hybrid. Where the text
+  contradicts what was recorded, tell Nick in the run's report rather than editing the ledger.
+- A `refused` status with a `reason` means opening stopped early — the budget refused, or the page
+  turned into a security or sign-in page. What was already opened is recorded. On a challenge or
+  sign-in page, finish the run with `--ended-by challenge` or `logged-out`.
 
 The description reaches the scorer through the ledger, never through this conversation.
 
-**Take every page view as its own command, and wait for it.** Never chain `jobs budget take` after
-another command that can fail, or a page can load without having been budgeted; if one ever does,
-take the missing unit at once. Never issue the budget call in the same batch of parallel tool calls
-as the navigation or click it pays for: parallel calls run concurrently, so the page would load
-while the budget is still waiting out the delay. The grant comes back first; then the browser acts.
+**Take every page view as its own command, and wait for it.** `jobs pool open` takes and waits for
+its own units before it acts; the page view before navigating to a source is yours. Never chain
+`jobs budget take` after another command that can fail, or a page can load without having been
+budgeted; if one ever does, take the missing unit at once. Never issue the budget call in the same
+batch of parallel tool calls as the navigation it pays for: parallel calls run concurrently, so the
+page would load while the budget is still waiting out the delay.
 
 ### 4. Finish the run
 
@@ -234,6 +248,11 @@ pnpm --silent jobs run finish <run-id> --ended-by completed
 
 Report the sources read, the page views used, what was rejected and why (grouped by reason), and the
 postings now pending their score.
+
+Finishing a run does not close it to triage: `jobs triage`, `jobs cards read` and `jobs pool open`
+still accept a run that finished as `completed`, `aborted` or `budget`, because they take no page
+budget of their own beyond what they are paid for — so a late fix needs no new run, which the daily
+run limit would make costly. A run that ended on a `challenge` or `logged-out` accepts nothing more.
 
 ## Scoring
 
@@ -247,7 +266,10 @@ Score every posting pending its score.
 
    For each with `described: false`: take a page view, navigate to
    `https://www.linkedin.com/jobs/view/<id>/`, run the `job-detail` script with `filePath` set to
-   `build/job-search/<id>.json`, and run `jobs posting describe` on the file.
+   `build/job-search/<id>.json`, and run `jobs posting describe` on the file. Open a posting only by
+   its own address: clicking a card on the recommendations page does not change the page's current
+   job, so the script would return the same identifier for every card. Check that the saved file's
+   `id` is `<id>` before describing, and never describe a posting from a file whose id differs.
 
 2. **Launch `job-screener` agents in parallel,** about four posting ids each. They read the
    postings, the preferences and the profile digest through the CLI, record each score with
@@ -309,8 +331,12 @@ Start it with `--account-approved` only once he has approved the account. Otherw
 
 ### 2. Open the form
 
-- **Easy Apply:** take a page view, navigate to `applyAt`, take an `easy-apply-fill` unit, then
-  click the posting's "Easy Apply" button. The form opens in a dialog of several steps.
+- **Easy Apply:** take a page view, navigate to `applyAt`, and run the `job-detail` script: when it
+  returns `closed: true` — the page says "No longer accepting applications" — discard the
+  application and skip the posting (`jobs apply discard <id>`, then
+  `jobs review <id> --decision skipped --reason "No longer accepting applications"`) **before**
+  taking an `easy-apply-fill` unit. Only then take the unit and click the posting's "Easy Apply"
+  button. The form opens in a dialog of several steps.
 - **Ashby, Greenhouse and other boards:** navigate to `applyAt`; these pages draw on no LinkedIn
   budget. A sign-in or account-creation page means the account policy applies: defer the posting.
 - **A board embedded in the employer's site** — an `applyAt` on the employer's own domain with an
@@ -361,6 +387,10 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    awaiting approval". Once he approves it, the next run's `jobs apply start` stages it and the plan
    attaches it.
 
+   A plan's `optional` entries are questions the form does not require and the data does not answer;
+   they are left empty and the application goes on, but list them in the report, since a recruiter
+   may screen on them and Nick may want to answer them for next time.
+
    An optional cover-letter field is left empty unless a letter was approved; when the posting's
    score is at or above `coverLetters.optionalAt`, launch the agent to draft one for next time, and
    carry on with the application.
@@ -369,17 +399,21 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    pnpm --silent jobs apply defer <id> --reason "Questions only Nick can answer"
    ```
 
-4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Then, for each `interactive`
-   entry: a combobox is clicked open by its uid; a typeahead is focused by script and its `typeText`
-   typed with `mcp__job-search-browser__type_text`, which needs no snapshot, passing the entry's
-   `submitKey` as the tool's `submitKey` when it has one; either way its `chooseFunction` then picks
-   the option. A `chosen: null` result means no option fits: defer.
+4. **Fill.** Run the plan's `fillFunction`; every result must be `ok`. Ashby does not reliably
+   register values set by script — the field shows them, but its submit reports "Missing entry for
+   required field" — so on an Ashby form, retype each text field with `type_text` after the fill,
+   and click each chosen option with `mcp__job-search-browser__click`, confirming its option wrapper
+   carries Ashby's `_checked` class. Then, for each `interactive` entry: a combobox is clicked open
+   by its uid; a typeahead is focused by script and its `typeText` typed with
+   `mcp__job-search-browser__type_text`, which needs no snapshot, passing the entry's `submitKey` as
+   the tool's `submitKey` when it has one; either way its `chooseFunction` then picks the option. A
+   `chosen: null` result means no option fits: defer.
 
 5. **Upload the resume.** For each entry in `uploads`, run `mcp__job-search-browser__upload_file`
    with the staged `resume` path and the uid of the field — the file input, or the "Attach" or
    "Upload resume" button that opens it. When the tool reports that the element could not accept the
    file — Workday's "Select files" button — run the upload's `revealFunction`, take a snapshot, and
-   upload through the input it names `job-search-upload`. Easy Apply's resume step has no file
+   upload through the input described `job-search-upload`. Easy Apply's resume step has no file
    input: upload through its "Upload resume" button, whose uid a snapshot of that step gives. The
    step preselects Nick's newest upload, which is never assumed to be the approved resume; the plan
    leaves the picker alone, and the check confirms the approved resume is the one selected.
@@ -392,7 +426,9 @@ Repeat for each Easy Apply step — the review step included — or once for a s
    ```
 
    The check also records, as a blocker, any required field no plan covered. Any blocker defers the
-   posting.
+   posting. A check whose `status` is `invalid` lists the validation messages the form shows — "This
+   field is required" after "Next" left the step where it was — which means the form asked for
+   something the reading missed: defer the posting with the messages in the reason.
 
 7. **Move on.** Run `jobs apply pause`, then click "Next", "Continue" or "Review".
 
@@ -434,10 +470,15 @@ then run the `submission-result` script.
   pnpm --silent jobs application submitted <id> --by-agent
   ```
 
-- `confirmed: false` — never click Submit again in this run: a retry after a success that went
-  unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can look.
-  When the page states plainly that the application was not submitted — "We couldn't submit your
-  application" — add `--not-submitted`, which puts the posting back in the queue for a later run.
+- `confirmed: false` because the form refused the click itself — Ashby's "Your form needs
+  corrections: Missing entry for required field: Email" — means nothing was sent. The field shows
+  the value but the form never registered it: retype it with `type_text` (or click the option with
+  `mcp__job-search-browser__click`), check again, and click Submit once more.
+- `confirmed: false` otherwise — never click Submit again in this run: a retry after a success that
+  went unseen sends a duplicate. Defer the posting with the `errors` in the reason, so Nick can
+  look. When the page states plainly that the application was not submitted — "We couldn't submit
+  your application" — add `--not-submitted`, which puts the posting back in the queue for a later
+  run.
 - A refusal that names spam or a bot check — "flagged as possible spam" — ends unattended submission
   to that application system for the rest of the run: build the answer packets of its remaining
   postings for Nick instead, and say so in the report. Never retry against a bot check.
